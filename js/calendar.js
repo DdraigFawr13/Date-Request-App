@@ -17,7 +17,7 @@ export function detailLines(inv) {
     const v = inv.d?.[m.id];
     if (!v || m.id === 'rsvpby') continue;
     if (m.type === 'link') { if (v.u) lines.push(`${m.icon} ${v.l || m.label}: ${v.u}`); continue; }
-    lines.push(`${m.icon} ${m.label}: ${v}`);
+    lines.push(`${m.icon} ${inv.dl?.[m.id] || m.label}: ${v}`);
   }
   for (const c of inv.cf || []) if (c.l || c.v) lines.push(`${c.i || '✦'} ${c.l ? c.l + ': ' : ''}${c.v || ''}`);
   return lines;

@@ -3,22 +3,28 @@
 // data arrives from a URL anyone could craft.
 
 import { THEMES, MONTH_MOONS, moonPhase, partsInTz, sabbatOn } from './themes.js';
+import { wording } from './occasions.js';
 import { MODULES } from './modules.js';
-import { sealHtml } from './wrappers.js';
+import { backdropCss, backdropIsDark, decorHtml, resolvePaper, resolveRule, ruleHtml } from './decor.js';
+import { sealHtml } from './seal.js';
 import { esc } from './util.js';
 
 export { esc };
 
 export const safeUrl = u => (/^https?:\/\//i.test(u || '') ? u : '');
 
-export function applyTheme(el, theme) {
+export function applyTheme(el, theme, inv = {}) {
   const vars = {
     '--bg1': theme.bg[0], '--bg2': theme.bg[1], '--card': theme.card, '--ink': theme.ink,
     '--accent': theme.accent, '--accent2': theme.accent2, '--on-accent': theme.onAccent,
     '--font-display': theme.display, '--font-body': theme.body,
+    '--backdrop': backdropCss(theme, inv),
+    '--on-bg': backdropIsDark(theme, inv) ? '#ffffff' : theme.ink,
+    '--on-bg-glow': backdropIsDark(theme, inv) ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.75)',
   };
   for (const [k, v] of Object.entries(vars)) el.style.setProperty(k, v);
   el.dataset.theme = theme.id;
+  el.dataset.font = theme.fontId || '';
 }
 
 // Fills `el` with drifting theme particles (emoji, stars, leaves…).
@@ -56,6 +62,7 @@ export function formatShortDate(isoDate) {
   return new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric' }).format(new Date(y, m - 1, d));
 }
 
+// The default moon line, e.g. "🌕 Beneath the full Hunter’s Moon".
 export function moonLine(inv) {
   const { month, day } = partsInTz(inv.s, inv.tz);
   const phase = moonPhase(inv.s);
@@ -63,21 +70,34 @@ export function moonLine(inv) {
   const text = phase.name === 'Full Moon'
     ? `${phase.emoji} Beneath the full ${monthMoon}`
     : `${phase.emoji} ${phase.name}, in the month of the ${monthMoon}`;
-  const sabbat = sabbatOn(month, day, inv.h);
-  return { text, sabbat: sabbat ? THEMES[sabbat].name : null };
+  const sabbat = sabbatOn(month, day);
+  return sabbat ? `${text}\n✨ It falls on ${THEMES[sabbat].name} itself ✨` : text;
 }
+
+// The invitation's full wording, including the computed moon line.
+export const wordsFor = inv => wording(inv, { moon: moonLine(inv) });
 
 export const mapUrl = inv =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([inv.loc, inv.addr].filter(Boolean).join(', '))}`;
 
-export function renderCard(inv, theme) {
+export function detailLabel(inv, m) {
+  const custom = inv.dl?.[m.id];
+  return typeof custom === 'string' && custom.trim() ? custom.trim() : m.label;
+}
+
+export function renderCard(inv, theme, words = wordsFor(inv)) {
   const when = formatWhen(inv);
-  const moon = moonLine(inv);
   const place = inv.loc || inv.addr;
+  const rule = resolveRule(inv, theme);
+  const glyphs = { emoji: esc(theme.divider), glyph: esc(theme.glyph) };
+  const divide = (small = false) => {
+    const html = ruleHtml(rule, theme, glyphs);
+    return small ? html.replace(/class="(rule|divider)/, 'class="$1 small') : html;
+  };
 
   const details = MODULES
     .filter(m => inv.d?.[m.id] && !['link', 'rsvpby'].includes(m.id))
-    .map(m => `<li class="detail"><span class="detail-icon">${m.icon}</span><span><b>${esc(m.label)}</b>${esc(inv.d[m.id])}</span></li>`);
+    .map(m => `<li class="detail"><span class="detail-icon">${m.icon}</span><span><b>${esc(detailLabel(inv, m))}</b>${esc(inv.d[m.id])}</span></li>`);
   for (const c of inv.cf || []) {
     if (c.l || c.v) details.push(`<li class="detail"><span class="detail-icon">${esc(c.i || '✦')}</span><span><b>${esc(c.l)}</b>${esc(c.v)}</span></li>`);
   }
@@ -86,24 +106,27 @@ export function renderCard(inv, theme) {
   const linkHref = safeUrl(link?.u);
 
   return `
-  <article class="card">
-    <div class="card-badge">${esc(theme.glyph)} ${esc(theme.name)} <span>· ${esc(theme.tagline)}</span></div>
-    ${inv.to ? `<p class="dear">Dear ${esc(inv.to)},</p>` : ''}
-    <p class="greeting">${esc(theme.greeting)}</p>
-    <h1 class="title">${esc(inv.title || 'A little bit of magic')}</h1>
-    ${inv.msg ? `<p class="message">${esc(inv.msg)}</p>` : ''}
-    <div class="divider" aria-hidden="true">${esc(theme.divider)}</div>
-    <ul class="when">
-      <li><span class="detail-icon">📅</span><span>${esc(when.date)}</span></li>
-      <li><span class="detail-icon">🕰️</span><span>${esc(when.time)}</span></li>
-      ${place ? `<li><span class="detail-icon">📍</span><span>${inv.loc ? `<b class="plain">${esc(inv.loc)}</b>` : ''}${inv.addr ? `<a href="${esc(mapUrl(inv))}" target="_blank" rel="noopener">${esc(inv.addr)}</a>` : ''}</span></li>` : ''}
-      <li class="moon"><span>${esc(moon.text)}</span></li>
-      ${moon.sabbat ? `<li class="sabbat-day">✨ It falls on ${esc(moon.sabbat)} itself ✨</li>` : ''}
-    </ul>
-    ${details.length ? `<div class="divider small" aria-hidden="true">${esc(theme.divider)}</div><ul class="details">${details.join('')}</ul>` : ''}
-    ${linkHref ? `<a class="btn link-btn" href="${esc(linkHref)}" target="_blank" rel="noopener">🔗 ${esc(link.l || 'More info')}</a>` : ''}
-    ${inv.d?.rsvpby ? `<p class="rsvp-by">⏳ Kindly reply by ${esc(formatShortDate(inv.d.rsvpby))}</p>` : ''}
-    <p class="closing">${esc(inv.cl || theme.closing)}${inv.from ? `<span class="signature">${esc(inv.from)}</span>` : ''}</p>
-    ${sealHtml(inv, theme, 'card-seal')}
+  <article class="card" data-paper="${esc(resolvePaper(inv, theme))}"${theme.dark ? ' data-dark' : ''}>
+    ${decorHtml(inv, theme)}
+    <div class="card-body">
+      ${words.badge ? `<div class="card-badge">${esc(words.badge)}</div>` : ''}
+      ${words.dear ? `<p class="dear">${esc(words.dear)}</p>` : ''}
+      ${words.greet ? `<p class="greeting">${esc(words.greet)}</p>` : ''}
+      <h1 class="title">${esc(inv.title || 'A little bit of magic')}</h1>
+      ${inv.msg ? `<p class="message">${esc(inv.msg)}</p>` : ''}
+      ${divide()}
+      <ul class="when">
+        <li><span class="detail-icon">📅</span><span>${esc(when.date)}</span></li>
+        <li><span class="detail-icon">🕰️</span><span>${esc(when.time)}</span></li>
+        ${place ? `<li><span class="detail-icon">📍</span><span>${inv.loc ? `<b class="plain">${esc(inv.loc)}</b>` : ''}${inv.addr ? `<a href="${esc(mapUrl(inv))}" target="_blank" rel="noopener">${esc(inv.addr)}</a>` : ''}</span></li>` : ''}
+        ${words.moon.trim() ? `<li class="moon"><span>${esc(words.moon.trim())}</span></li>` : ''}
+      </ul>
+      ${details.length ? `${divide(true)}<ul class="details">${details.join('')}</ul>` : ''}
+      ${linkHref ? `<a class="btn link-btn" href="${esc(linkHref)}" target="_blank" rel="noopener">🔗 ${esc(link.l || 'More info')}</a>` : ''}
+      ${inv.d?.rsvpby ? `<p class="rsvp-by">⏳ ${esc(words.by)} ${esc(formatShortDate(inv.d.rsvpby))}</p>` : ''}
+      ${divide(true)}
+      <p class="closing">${esc(words.close)}${inv.from ? `<span class="signature">${esc(inv.from)}</span>` : ''}</p>
+      ${sealHtml(inv, theme, 'card-seal')}
+    </div>
   </article>`;
 }

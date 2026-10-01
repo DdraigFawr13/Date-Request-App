@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { decodeInvite, encodeInvite, prune } from '../js/codec.js';
-import { moonPhase, resolveTheme, sabbatFor, sabbatOn } from '../js/themes.js';
+import { moonPhase, sabbatFor, sabbatOn } from '../js/themes.js';
+import { resolveTheme, wording } from '../js/occasions.js';
 import { buildIcs, detailLines, googleUrl } from '../js/calendar.js';
 import { esc, renderCard } from '../js/render.js';
 
@@ -37,16 +38,31 @@ test('dates map to the nearest Wheel of the Year season', () => {
   assert.equal(sabbatFor(5, 1), 'beltane');
   assert.equal(sabbatFor(6, 21), 'litha');
   assert.equal(sabbatFor(8, 1), 'lughnasadh');
-  assert.equal(sabbatFor(10, 31, 'S'), 'beltane', 'southern hemisphere is flipped');
   assert.equal(sabbatOn(10, 31), 'samhain');
   assert.equal(sabbatOn(10, 30), null);
 });
 
-test('auto theme uses the event date in its own time zone', () => {
+test('older "auto" links still get the season of the event date', () => {
   // 11pm Oct 31 in New York is already Nov 1 in UTC — still Samhain either way.
   assert.equal(resolveTheme(sample).id, 'samhain');
   assert.equal(resolveTheme({ ...sample, th: 'starlit' }).id, 'starlit');
   assert.equal(resolveTheme({ ...sample, th: 'nonsense' }).id, 'samhain');
+});
+
+test('the occasion sets wording and lettering; the look sets colors', () => {
+  const dinner = resolveTheme({ ...sample, k: 'dinner', th: 'blackcat' });
+  assert.equal(dinner.id, 'blackcat');
+  assert.equal(dinner.fontId, 'classic');
+  assert.equal(resolveTheme({ ...sample, k: 'dinner', fn: 'blackletter' }).fontId, 'blackletter');
+  const words = wording({ ...sample, k: 'dinner', th: 'blackcat' });
+  assert.equal(words.yes, 'It’s a date 🌹');
+  assert.equal(words.dear, 'Dear Rowan,');
+  assert.equal(words.for, 'For Rowan');
+  const own = wording({ ...sample, k: 'dinner', tx: { yes: 'Absolutely!', badge: ' ', dear: 'My dearest Rowan,' } });
+  assert.equal(own.yes, 'Absolutely!');
+  assert.equal(own.badge, '', 'a blanked line is hidden');
+  assert.equal(own.dear, 'My dearest Rowan,');
+  assert.match(wording({ ...sample, k: 'sabbat' }).greet, /veil|candle/i, 'sabbat wording follows the date');
 });
 
 test('moon phase matches a known full moon', () => {
@@ -80,25 +96,43 @@ test('google calendar link carries the details', () => {
 
 test('rendered cards escape everything from the link', () => {
   const evil = { ...sample, title: '<img src=x onerror=alert(1)>', d: { link: { l: 'x', u: 'javascript:alert(1)' } } };
-  const html = renderCard(evil, resolveTheme(evil));
+  const html = renderCard({ ...evil, tx: { greet: '<b>hi</b>' }, dl: { dress: '<i>' }, qc: ['<x>'] }, resolveTheme(evil));
   assert.ok(!html.includes('<img'));
   assert.ok(!html.includes('javascript:'));
   assert.equal(esc('"<&>\''), '&quot;&lt;&amp;&gt;&#39;');
 });
 
-test('wrappers and wax seals fall back to the theme and reject bad input', async () => {
-  const { resolveWrapper, sealColor, sealEmblem, sealHtml, wrapperHtml } = await import('../js/wrappers.js');
+test('wrappers and wax seals fall back to the look and reject bad input', async () => {
+  const { resolveWrapper, wrapperHtml } = await import('../js/wrappers.js');
+  const { sealColor, sealEmblem, sealFace, sealHtml, WAX_BY_ID } = await import('../js/seal.js');
   const { THEMES } = await import('../js/themes.js');
   const seaside = THEMES.seaside;
-  assert.equal(resolveWrapper({}, seaside), 'bottle', 'theme picks its own wrapper');
+  assert.equal(resolveWrapper({}, seaside), 'bottle', 'look picks its own wrapper');
   assert.equal(resolveWrapper({}, THEMES.samhain), 'envelope');
   assert.equal(resolveWrapper({ w: 'scroll' }, seaside), 'scroll');
   assert.equal(resolveWrapper({ w: 'trebuchet' }, seaside), 'bottle');
   assert.equal(sealColor({ sc: '#c9a227' }, seaside), '#c9a227');
-  assert.equal(sealColor({ sc: 'red;background:url(x)' }, seaside), seaside.accent);
+  assert.equal(sealColor({ sc: 'navy' }, seaside), WAX_BY_ID.navy.hex);
+  assert.equal(sealColor({ sc: 'red;background:url(x)' }, seaside), WAX_BY_ID[seaside.wax].hex);
+  assert.equal(sealFace({ sf: 'gold' }, seaside).id, 'gold');
+  assert.equal(sealFace({ sf: '#ff0000' }, seaside).id, 'custom');
+  assert.equal(sealFace({ sf: 'nope"' }, seaside).id, 'pressed');
   assert.equal(sealEmblem({}, seaside), seaside.seal);
   assert.equal(sealEmblem({ se: '  R&S  ' }, seaside), 'R&S');
   assert.equal(sealEmblem({ se: 'ABCDEFG' }, seaside), 'ABCD');
+  assert.equal(sealEmblem({ se: '@crown' }, seaside), '@crown');
+  assert.equal(sealEmblem({ se: '@<script>' }, seaside), seaside.seal);
   assert.ok(!sealHtml({ se: '<b>' }, seaside).includes('<b>'));
-  assert.ok(!wrapperHtml({ to: '<script>', w: 'chest' }, seaside).includes('<script>'));
+  assert.ok(!sealHtml({ sf: '"><script>' }, seaside).includes('<script>'));
+  const words = { for: '<script>', tap: 'Tap', fromLine: '' };
+  assert.ok(!wrapperHtml({ w: 'chest' }, seaside, words).includes('<script>'));
+});
+
+test('custom backgrounds only accept real colors', async () => {
+  const { backdropCss } = await import('../js/decor.js');
+  const { THEMES } = await import('../js/themes.js');
+  const css = backdropCss(THEMES.royal, { bs: 'paws', bc: ['#112233', 'url(evil)'] });
+  assert.match(css, /#112233/);
+  assert.ok(!css.includes('evil'));
+  assert.ok(backdropCss(THEMES.royal, { bs: 'nonsense' }).includes('data:image/svg+xml'), 'unknown scene falls back to the look’s');
 });

@@ -1,20 +1,21 @@
 // The recipient's side: an envelope (or scroll, bottle…) to open, the themed
 // card, and RSVP buttons that add the event to a calendar and text the answer back.
 
-import { resolveTheme } from './themes.js';
+import { resolveTheme } from './occasions.js';
 import { QUESTION_BY_ID } from './modules.js';
 import { decodeInvite } from './codec.js';
 import { downloadIcs, googleUrl, outlookUrl } from './calendar.js';
-import { applyTheme, esc, formatWhen, particles, renderCard } from './render.js';
+import { applyTheme, esc, formatWhen, particles, renderCard, wordsFor } from './render.js';
 import { $, copyText, smsHref, store, toast } from './util.js';
 import { playOpening, wrapperHtml } from './wrappers.js';
 
-let inv, theme, url;
+let inv, theme, url, words;
 const responseKey = () => `moonpost:rsvp:${inv.id || inv.s}`;
 
 function questions() {
   const qs = (inv.q || []).map(id => QUESTION_BY_ID[id]?.q).filter(Boolean);
-  if (inv.qc) qs.push(inv.qc);
+  const own = Array.isArray(inv.qc) ? inv.qc : [inv.qc];
+  for (const q of own) if (typeof q === 'string' && q.trim()) qs.push(q.trim());
   return qs;
 }
 
@@ -46,21 +47,17 @@ function replyControls(kind) {
   const qs = kind === 'yes' ? questions() : [];
   const fields = qs.map((q, i) => `<label>${esc(q)}<input data-answer="${i}"></label>`).join('');
   const notePlaceholder = { yes: 'Anything else to add? (optional)', maybe: 'When works better for you?', no: 'Add a note (optional)' }[kind];
-  const send = inv.ph
-    ? `<a id="reply-send" class="btn primary">💬 Text ${who} my answer</a>`
-    : `<button type="button" id="reply-send" class="btn primary" data-action="copy-reply">📋 Copy my reply</button>`;
   return `${fields}<label>${kind === 'maybe' ? 'Suggest a time' : 'A note'}<textarea data-note rows="2" placeholder="${notePlaceholder}"></textarea></label>
-    <div class="btn-row">${send}</div>
-    ${inv.ph ? '' : `<p class="hint">Copy this and send it to ${who} however you usually chat.</p>`}`;
+    <div class="btn-row">
+      <a id="reply-send" class="btn primary">💬 Text ${who} my answer</a>
+      <button type="button" id="reply-copy" class="btn" data-action="copy-reply">📋 Copy my reply</button>
+    </div>
+    <p class="hint">“Text” opens your messages with the reply written for you — just pick ${who}. Or copy it and send it however you usually chat.</p>`;
 }
 
 function renderPanel(kind, { scroll = true } = {}) {
   const panel = $('#rsvp-panel');
-  const heading = {
-    yes: `<h2 class="panel-title">Hooray! ✨</h2><p>${inv.from ? `${esc(inv.from)} will be` : 'They’ll be'} so happy.</p>`,
-    maybe: `<h2 class="panel-title">Another time? 🌙</h2><p>No worries — suggest what works for you.</p>`,
-    no: `<h2 class="panel-title">Maybe next time 💌</h2><p>It’s kind to let them know.</p>`,
-  }[kind];
+  const heading = `<h2 class="panel-title">${esc(words[`${kind}H`])}</h2>${words[`${kind}P`] ? `<p>${esc(words[`${kind}P`])}</p>` : ''}`;
   panel.innerHTML = `${heading}${replyControls(kind)}${kind === 'yes' ? calendarButtons() : ''}`;
   panel.hidden = false;
   for (const b of document.querySelectorAll('[data-r]')) b.classList.toggle('chosen', b.dataset.r === kind);
@@ -69,9 +66,8 @@ function renderPanel(kind, { scroll = true } = {}) {
     const answers = [...panel.querySelectorAll('[data-answer]')].map(i => i.value);
     const note = panel.querySelector('[data-note]').value;
     const text = replyText(kind, answers, note);
-    const send = $('#reply-send');
-    if (inv.ph) send.href = smsHref(inv.ph, text);
-    send.dataset.text = text;
+    $('#reply-send').href = smsHref(inv.ph, text);
+    $('#reply-copy').dataset.text = text;
     store.set(responseKey(), { r: kind, at: Date.now() });
   };
   panel.oninput = update;
@@ -101,14 +97,14 @@ function showCard(root, { animate }) {
   const saved = store.get(responseKey());
   root.innerHTML = `
     <div class="invite-wrap ${animate ? 'reveal' : ''}">
-      ${renderCard(inv, theme)}
+      ${renderCard(inv, theme, words)}
       <section class="respond card">
-        <h2 class="panel-title">Will you join${inv.from ? ` ${esc(inv.from)}` : ''}?</h2>
+        ${words.ask ? `<h2 class="panel-title">${esc(words.ask)}</h2>` : ''}
         ${saved ? `<p class="hint">You answered “${{ yes: 'yes', maybe: 'maybe', no: 'no' }[saved.r] || saved.r}” earlier — you can change it anytime.</p>` : ''}
         <div class="rsvp-buttons">
-          <button type="button" class="btn primary big" data-r="yes">${esc(theme.yes)}</button>
-          <button type="button" class="btn" data-r="maybe">Maybe — another time?</button>
-          <button type="button" class="btn ghost" data-r="no">Sadly, I can’t</button>
+          <button type="button" class="btn primary big" data-r="yes">${esc(words.yes)}</button>
+          <button type="button" class="btn" data-r="maybe">${esc(words.maybe)}</button>
+          <button type="button" class="btn ghost" data-r="no">${esc(words.no)}</button>
         </div>
         <div id="rsvp-panel" hidden></div>
       </section>
@@ -148,7 +144,8 @@ export async function showInvite(code) {
   }
   url = location.href;
   theme = resolveTheme(inv);
-  applyTheme(document.documentElement, theme);
+  words = wordsFor(inv);
+  applyTheme(document.documentElement, theme, inv);
   particles($('#sky'), theme);
   document.title = `${inv.title || 'An invitation'}${inv.from ? ` — from ${inv.from}` : ''}`;
   if (!showInvite.bound) {
@@ -156,5 +153,5 @@ export async function showInvite(code) {
     showInvite.bound = true;
   }
   if (store.get(responseKey())) showCard(root, { animate: false });
-  else root.innerHTML = wrapperHtml(inv, theme);
+  else root.innerHTML = wrapperHtml(inv, theme, words);
 }
