@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Moonpost — whimsical invitations</title>
+  <meta name="description" content="Someone has sent you a whimsical invitation. Tap to open it.">
+  <meta property="og:title" content="You’ve received a Moonpost ✉︎☾">
+  <meta property="og:description" content="Someone has sent you a whimsical invitation. Tap to open it.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://ddraigfawr13.github.io/Date-Request-App/og.png">
+  <meta name="theme-color" content="#2a1b4a">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Caveat:wght@600&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Fredoka:wght@500;600&family=Great+Vibes&family=Pacifico&family=Playfair+Display:ital,wght@0,700;1,500&family=Quicksand:wght@400;600;700&family=Righteous&family=Uncial+Antiqua&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="sky" class="sky" aria-hidden="true"></div>
+
+  <!-- ───────────── Builder (the sender's side) ───────────── -->
+  <main id="builder" class="builder" hidden>
+    <header class="masthead">
+      <h1>Moonpost <span aria-hidden="true">✉︎☾</span></h1>
+      <p>Write a whimsical invitation, text it to someone, and let them say yes and add it to their calendar.</p>
+    </header>
+
+    <div class="builder-grid">
+      <form id="form" class="form" autocomplete="off" onsubmit="return false">
+
+        <section class="step">
+          <h2><span class="step-num">1</span> What’s the occasion?</h2>
+          <div id="templates" class="template-grid"></div>
+        </section>
+
+        <section class="step">
+          <h2><span class="step-num">2</span> The basics</h2>
+          <div class="row">
+            <label>To <input data-bind="to" placeholder="Their name"></label>
+            <label>From <input data-bind="from" placeholder="Your name"></label>
+          </div>
+          <label>Title <input data-bind="title" placeholder="e.g. Dinner under the Hunter’s Moon"></label>
+          <label>A personal note <textarea data-bind="msg" rows="3" placeholder="I’ve been wanting to take you somewhere special…"></textarea></label>
+          <div class="row three">
+            <label>Date <input type="date" data-bind="date" required></label>
+            <label>Starts <input type="time" data-bind="time"></label>
+            <label>Ends <input type="time" data-bind="endTime"></label>
+          </div>
+          <label class="check"><input type="checkbox" data-bind="allDay"> All-day event</label>
+          <label>Place <input data-bind="loc" placeholder="e.g. The Gilded Owl"></label>
+          <label>Address <input data-bind="addr" placeholder="123 Willow Lane (becomes a map link)"></label>
+        </section>
+
+        <section class="step">
+          <h2><span class="step-num">3</span> The look</h2>
+          <div id="themes"></div>
+          <div class="hemi">
+            <span>Wheel of the Year for the</span>
+            <label class="pill"><input type="radio" name="hemi" value="N" data-bind="hemi"> Northern</label>
+            <label class="pill"><input type="radio" name="hemi" value="S" data-bind="hemi"> Southern</label>
+            <span>hemisphere</span>
+          </div>
+          <p class="sub">Delivered as</p>
+          <div id="wrappers" class="wrapper-grid"></div>
+          <p class="sub">Wax seal</p>
+          <div class="seal-designer">
+            <div id="seal-preview" class="seal-preview"></div>
+            <div class="seal-controls">
+              <div id="seal-colors" class="color-row"></div>
+              <div id="seal-emblems" class="emblem-row"></div>
+              <label>Or press your own initials or symbol
+                <input data-bind="sealEmblem" maxlength="4" placeholder="e.g. R&amp;S or 🦉">
+              </label>
+            </div>
+          </div>
+        </section>
+
+        <section class="step">
+          <h2><span class="step-num">4</span> The details</h2>
+          <p class="hint">Add only what matters for this occasion. Tap a suggestion or write your own.</p>
+          <div id="modules"></div>
+          <p class="sub">Add a detail</p>
+          <div id="module-picker" class="chip-row"></div>
+          <p class="sub">Your own fields</p>
+          <div id="custom"></div>
+          <button type="button" class="btn ghost small" data-action="add-custom">+ Add a custom field</button>
+        </section>
+
+        <section class="step">
+          <h2><span class="step-num">5</span> Questions for them</h2>
+          <p class="hint">Their answers come back in their reply text.</p>
+          <div id="asks" class="chip-row"></div>
+          <label>Your own question <input data-bind="askCustom" placeholder="e.g. Sweet or savory?"></label>
+        </section>
+
+        <section class="step">
+          <h2><span class="step-num">6</span> Sign-off & replies</h2>
+          <label>Closing line <input data-bind="closing" placeholder="Leave blank for the theme’s own"></label>
+          <label>Your mobile number, so they can text their RSVP back
+            <input type="tel" data-bind="phone" placeholder="+1 555 123 4567">
+          </label>
+          <p class="hint">🔒 Your number is stored inside the link, so anyone with the link can see it.</p>
+          <label>Calendar reminder
+            <select data-bind="remind">
+              <option value="0">None</option>
+              <option value="30">30 minutes before</option>
+              <option value="60">1 hour before</option>
+              <option value="120">2 hours before</option>
+              <option value="1440">1 day before</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="step send">
+          <h2><span class="step-num">7</span> Send it</h2>
+          <label>Their mobile number (optional)
+            <input type="tel" data-bind="toPhone" placeholder="Leave blank to choose in Messages">
+          </label>
+          <label>Text to send with the link
+            <textarea data-bind="smsText" rows="2"></textarea>
+          </label>
+          <button type="button" class="btn primary big" data-action="create">✨ Seal my invitation</button>
+          <div id="result" class="result" hidden>
+            <input id="result-url" readonly aria-label="Invitation link">
+            <div class="btn-row">
+              <a id="send-sms" class="btn primary">💬 Text it</a>
+              <button type="button" class="btn" data-action="copy">📋 Copy link</button>
+              <button type="button" class="btn" data-action="share" id="share-btn" hidden>📤 Share…</button>
+              <a id="open-link" class="btn" target="_blank" rel="noopener">👀 Open it</a>
+            </div>
+            <p id="result-note" class="hint"></p>
+          </div>
+          <button type="button" class="btn ghost small" data-action="reset">↺ Start a fresh invitation</button>
+        </section>
+      </form>
+
+      <aside class="preview-pane" id="preview-pane">
+        <div class="preview-label">
+          <span>Live preview</span>
+          <span class="seg" role="group" aria-label="Preview mode">
+            <button type="button" data-action="preview-mode" data-mode="wrapper">✉︎ Opening</button>
+            <button type="button" data-action="preview-mode" data-mode="card">Card</button>
+          </span>
+          <button type="button" class="btn ghost small close-preview" data-action="toggle-preview">✕ Close</button>
+        </div>
+        <div class="phone">
+          <div id="preview" class="invite-stage preview-stage">
+            <div class="sky" id="preview-sky" aria-hidden="true"></div>
+            <div id="preview-card"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <button type="button" class="btn primary fab" data-action="toggle-preview">👁 Preview</button>
+  </main>
+
+  <!-- ───────────── Invitation (the recipient's side) ───────────── -->
+  <main id="invite" class="invite-stage" hidden></main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
