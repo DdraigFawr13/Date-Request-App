@@ -1,5 +1,5 @@
-// The recipient's side: an envelope to open, the themed card, and RSVP
-// buttons that add the event to a calendar and text the answer back.
+// The recipient's side: an envelope (or scroll, bottle…) to open, the themed
+// card, and RSVP buttons that add the event to a calendar and text the answer back.
 
 import { resolveTheme } from './themes.js';
 import { QUESTION_BY_ID } from './modules.js';
@@ -7,6 +7,7 @@ import { decodeInvite } from './codec.js';
 import { downloadIcs, googleUrl, outlookUrl } from './calendar.js';
 import { applyTheme, esc, formatWhen, particles, renderCard } from './render.js';
 import { $, copyText, smsHref, store, toast } from './util.js';
+import { playOpening, wrapperHtml } from './wrappers.js';
 
 let inv, theme, url;
 const responseKey = () => `moonpost:rsvp:${inv.id || inv.s}`;
@@ -116,22 +117,6 @@ function showCard(root, { animate }) {
   if (saved?.r) renderPanel(saved.r, { scroll: false });
 }
 
-function showEnvelope(root) {
-  root.innerHTML = `
-    <div class="envelope-wrap">
-      <p class="envelope-to">${inv.to ? `For ${esc(inv.to)}` : 'For you'}</p>
-      <button type="button" class="envelope" data-action="open" aria-label="Open the invitation">
-        <span class="env-back"></span>
-        <span class="env-letter"><span>${esc(theme.glyph)}</span></span>
-        <span class="env-front"></span>
-        <span class="env-flap"></span>
-        <span class="env-seal">${esc(theme.seal)}</span>
-      </button>
-      <p class="envelope-hint">Tap the seal to open ✨</p>
-      ${inv.from ? `<p class="envelope-from">from ${esc(inv.from)}</p>` : ''}
-    </div>`;
-}
-
 function onClick(e) {
   const btn = e.target.closest('[data-action], [data-r]');
   if (!btn) return;
@@ -142,10 +127,7 @@ function onClick(e) {
     return;
   }
   switch (btn.dataset.action) {
-    case 'open':
-      btn.classList.add('opening');
-      setTimeout(() => showCard(root, { animate: true }), 900);
-      break;
+    case 'open': playOpening(btn, () => showCard(root, { animate: true })); break;
     case 'ics': downloadIcs(inv, url); break;
     case 'copy-reply': copyText(btn.dataset.text).then(() => toast('Reply copied 📋')); break;
   }
@@ -174,5 +156,5 @@ export async function showInvite(code) {
     showInvite.bound = true;
   }
   if (store.get(responseKey())) showCard(root, { animate: false });
-  else showEnvelope(root);
+  else root.innerHTML = wrapperHtml(inv, theme);
 }

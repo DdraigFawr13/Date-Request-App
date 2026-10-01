@@ -4,8 +4,10 @@
 
 import { THEMES, MONTH_MOONS, moonPhase, partsInTz, sabbatOn } from './themes.js';
 import { MODULES } from './modules.js';
+import { sealHtml } from './wrappers.js';
+import { esc } from './util.js';
 
-export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+export { esc };
 
 export const safeUrl = u => (/^https?:\/\//i.test(u || '') ? u : '');
 
@@ -102,5 +104,6 @@ export function renderCard(inv, theme) {
     ${linkHref ? `<a class="btn link-btn" href="${esc(linkHref)}" target="_blank" rel="noopener">🔗 ${esc(link.l || 'More info')}</a>` : ''}
     ${inv.d?.rsvpby ? `<p class="rsvp-by">⏳ Kindly reply by ${esc(formatShortDate(inv.d.rsvpby))}</p>` : ''}
     <p class="closing">${esc(inv.cl || theme.closing)}${inv.from ? `<span class="signature">${esc(inv.from)}</span>` : ''}</p>
+    ${sealHtml(inv, theme, 'card-seal')}
   </article>`;
 }

@@ -5,6 +5,7 @@ import { THEMES, resolveTheme } from './themes.js';
 import { MODULES, MODULE_BY_ID, QUESTIONS, TEMPLATES } from './modules.js';
 import { encodeInvite } from './codec.js';
 import { applyTheme, esc, particles, renderCard } from './render.js';
+import { SEAL_EMBLEMS, WAX_COLORS, WRAPPERS, playOpening, resolveWrapper, sealHtml, wrapperHtml } from './wrappers.js';
 import { $, copyText, randomId, smsHref, store, toast } from './util.js';
 
 const DRAFT_KEY = 'moonpost:draft';
@@ -18,13 +19,14 @@ function blankState() {
   return {
     id: randomId(), kind: 'custom', to: '', from: '', title: '', msg: '',
     date: isoDate(nextWeek), time: '19:00', endTime: '21:00', allDay: false, loc: '', addr: '',
-    theme: 'auto', hemi: 'N', mods: {}, asks: [], askCustom: '', custom: [],
+    theme: 'auto', hemi: 'N', wrap: 'auto', sealColor: '', sealEmblem: '', mods: {}, asks: [], askCustom: '', custom: [],
     closing: '', phone: '', remind: 60, toPhone: '', smsText: '',
   };
 }
 
 let state;
 let lastUrl = '';
+let previewMode = 'card';
 
 // Converts the form state into the compact invitation that travels in the link.
 export function toInvite(st) {
@@ -45,6 +47,7 @@ export function toInvite(st) {
     v: 1, id: st.id, k: st.kind, to: st.to.trim(), from: st.from.trim(), title: st.title.trim(), msg: st.msg.trim(),
     s: start.getTime(), e: end?.getTime(), ad: st.allDay, tz,
     loc: st.loc.trim(), addr: st.addr.trim(), th: st.theme, h: st.hemi === 'S' ? 'S' : undefined,
+    w: st.wrap === 'auto' ? undefined : st.wrap, sc: st.sealColor, se: st.sealEmblem.trim(),
     d, q: st.asks, qc: st.askCustom.trim(),
     cf: st.custom.filter(c => c.l || c.v).map(c => ({ i: c.i, l: c.l.trim(), v: c.v.trim() })),
     cl: st.closing.trim(), ph: st.phone.trim(), rm: Number(st.remind) || 0,
@@ -79,6 +82,33 @@ function renderThemes() {
     </button>
     <p class="sub">Wheel of the Year</p><div class="swatch-grid">${group('wheel')}</div>
     <p class="sub">Occasions</p><div class="swatch-grid">${group('occasion')}</div>`;
+}
+
+function renderLook() {
+  const inv = toInvite(state);
+  const theme = resolveTheme(inv);
+  const themeWrap = WRAPPERS[resolveWrapper({}, theme)];
+  const wrapBtn = (id, icon, label) => `<button type="button" class="wrap-option ${state.wrap === id ? 'on' : ''}" data-action="wrap" data-id="${id}">
+    <span class="wrap-icon">${icon}</span>${esc(label)}</button>`;
+  $('#wrappers').innerHTML = wrapBtn('auto', themeWrap.icon, `Theme’s pick (${themeWrap.label.toLowerCase()})`)
+    + Object.entries(WRAPPERS).map(([id, w]) => wrapBtn(id, w.icon, w.label)).join('');
+
+  const colorBtn = (hex, name) => `<button type="button" class="color-dot ${state.sealColor === hex ? 'on' : ''}" data-action="seal-color" data-hex="${hex}"
+    style="--dot:${hex || theme.accent}" title="${esc(name)}" aria-label="${esc(name)} wax"></button>`;
+  const custom = state.sealColor && !WAX_COLORS.some(c => c.hex === state.sealColor);
+  $('#seal-colors').innerHTML = colorBtn('', `Theme color (${theme.name})`)
+    + WAX_COLORS.map(c => colorBtn(c.hex, c.name)).join('')
+    + `<label class="color-dot custom ${custom ? 'on' : ''}" title="Any color" style="--dot:${custom ? state.sealColor : '#fff'}">
+        <input type="color" id="seal-custom" value="${custom ? state.sealColor : '#7a4fd1'}" aria-label="Pick any wax color"></label>`;
+
+  const emblemBtn = (value, label, title) => `<button type="button" class="emblem ${state.sealEmblem === value ? 'on' : ''}" data-action="emblem" data-value="${esc(value)}" title="${esc(title)}">${esc(label)}</button>`;
+  $('#seal-emblems').innerHTML = emblemBtn('', theme.seal, `Theme emblem (${theme.name})`)
+    + SEAL_EMBLEMS.map(e => emblemBtn(e.s, e.s, e.name)).join('');
+  renderSealPreview(inv, theme);
+}
+
+function renderSealPreview(inv = toInvite(state), theme = resolveTheme(inv)) {
+  $('#seal-preview').innerHTML = sealHtml(inv, theme, 'big');
 }
 
 function moduleEditor(m) {
@@ -139,6 +169,7 @@ function syncForm() {
 function renderAll() {
   renderTemplates();
   renderThemes();
+  renderLook();
   renderModules();
   renderCustom();
   renderAsks();
@@ -155,7 +186,8 @@ function refresh() {
     const theme = resolveTheme(inv);
     const stage = $('#preview');
     applyTheme(stage, theme);
-    $('#preview-card').innerHTML = renderCard(inv, theme);
+    $('#preview-card').innerHTML = previewMode === 'wrapper' ? wrapperHtml(inv, theme) : renderCard(inv, theme);
+    for (const b of document.querySelectorAll('[data-action=preview-mode]')) b.classList.toggle('on', b.dataset.mode === previewMode);
     if (lastPreviewTheme !== theme.id) {
       particles($('#preview-sky'), theme, 10);
       lastPreviewTheme = theme.id;
@@ -213,7 +245,12 @@ function onClick(e) {
   const { action, id } = btn.dataset;
   switch (action) {
     case 'template': applyTemplate(TEMPLATES.find(t => t.id === id)); break;
-    case 'theme': state.theme = id; renderThemes(); refresh(); break;
+    case 'theme': state.theme = id; renderThemes(); renderLook(); refresh(); break;
+    case 'wrap': state.wrap = id; previewMode = 'wrapper'; renderLook(); refresh(); break;
+    case 'seal-color': state.sealColor = btn.dataset.hex; previewMode = 'wrapper'; renderLook(); refresh(); break;
+    case 'emblem': state.sealEmblem = btn.dataset.value; previewMode = 'wrapper'; renderLook(); syncForm(); refresh(); break;
+    case 'preview-mode': previewMode = btn.dataset.mode; refresh(); break;
+    case 'open': playOpening(btn, () => { previewMode = 'card'; refresh(); }); break;
     case 'add-mod':
       state.mods[id] = MODULE_BY_ID[id].type === 'link' ? { l: '', u: '' } : '';
       renderModules(); refresh();
@@ -265,13 +302,23 @@ function onInput(e) {
     else state[key] = el.value;
     if (key === 'allDay') syncForm();
     if (key === 'to') $('[data-bind="smsText"]').placeholder = defaultSmsText(state);
-    if (['date', 'hemi'].includes(key)) renderThemes();
+    if (['date', 'hemi'].includes(key)) { renderThemes(); renderLook(); }
+    if (key === 'sealEmblem') {
+      previewMode = 'wrapper';
+      for (const b of document.querySelectorAll('[data-action=emblem]')) b.classList.toggle('on', b.dataset.value === el.value);
+      renderSealPreview();
+    }
   } else if (el.dataset.modInput) {
     const id = el.dataset.modInput;
     state.mods[id] = el.value;
     for (const c of el.closest('.module').querySelectorAll('.chip')) c.classList.toggle('on', c.dataset.value === el.value);
   } else if (el.dataset.modLink) {
     state.mods.link = { ...state.mods.link, [el.dataset.modLink]: el.value };
+  } else if (el.id === 'seal-custom') {
+    state.sealColor = el.value;
+    previewMode = 'wrapper';
+    if (e.type === 'change') renderLook();
+    else renderSealPreview();
   } else if (el.dataset.custom) {
     state.custom[Number(el.dataset.custom)][el.dataset.key] = el.value;
   } else {

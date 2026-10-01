@@ -85,3 +85,20 @@ test('rendered cards escape everything from the link', () => {
   assert.ok(!html.includes('javascript:'));
   assert.equal(esc('"<&>\''), '&quot;&lt;&amp;&gt;&#39;');
 });
+
+test('wrappers and wax seals fall back to the theme and reject bad input', async () => {
+  const { resolveWrapper, sealColor, sealEmblem, sealHtml, wrapperHtml } = await import('../js/wrappers.js');
+  const { THEMES } = await import('../js/themes.js');
+  const seaside = THEMES.seaside;
+  assert.equal(resolveWrapper({}, seaside), 'bottle', 'theme picks its own wrapper');
+  assert.equal(resolveWrapper({}, THEMES.samhain), 'envelope');
+  assert.equal(resolveWrapper({ w: 'scroll' }, seaside), 'scroll');
+  assert.equal(resolveWrapper({ w: 'trebuchet' }, seaside), 'bottle');
+  assert.equal(sealColor({ sc: '#c9a227' }, seaside), '#c9a227');
+  assert.equal(sealColor({ sc: 'red;background:url(x)' }, seaside), seaside.accent);
+  assert.equal(sealEmblem({}, seaside), seaside.seal);
+  assert.equal(sealEmblem({ se: '  R&S  ' }, seaside), 'R&S');
+  assert.equal(sealEmblem({ se: 'ABCDEFG' }, seaside), 'ABCD');
+  assert.ok(!sealHtml({ se: '<b>' }, seaside).includes('<b>'));
+  assert.ok(!wrapperHtml({ to: '<script>', w: 'chest' }, seaside).includes('<script>'));
+});

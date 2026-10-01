@@ -15,7 +15,9 @@ their calendar, and texts their answer back to you.
    There's no server, database or account.
 3. **Text it.** Tap **💬 Text it** to open Messages with the link ready to go,
    or copy/share it anywhere.
-4. **They open it.** They see a themed envelope, tap the seal, and read the card.
+4. **They open it.** They see your invitation arrive (an envelope, a scroll,
+   a message in a bottle, a treasure chest or a gift box), tap to break your
+   wax seal, and watch it open into the card.
 5. **They answer.** *Yes*, *Maybe — another time?*, or *Sadly, I can't*. A yes
    gets a little celebration, answers to any questions you asked, and
    **Add to calendar** buttons (Apple/iPhone, Google, Outlook, .ics).
@@ -48,6 +50,31 @@ In, Enchanted Forest, Seaside, and Night at the Show.
 
 Each theme has its own colors, fonts, floating particles, wax seal, greeting,
 "yes" button wording and sign-off.
+
+## Delivery & wax seals
+
+**Delivered as:** choose how the invitation arrives. Each one has its own
+opening animation:
+
+| | Opening |
+|---|---|
+| ✉️ Envelope | the seal pops, the flap lifts, and the letter slides out |
+| 📜 Scroll | the ribbon falls away and the parchment unrolls between its rods |
+| 🍾 Message in a bottle | the bottle bobs on the waves, the cork pops, and the note rises out |
+| 🧰 Treasure chest | the seal is the lock; the lid swings open in a golden glow |
+| 🎁 Gift box | the lid and bow fly off and the letter rises up |
+
+Leave it on **Theme's pick** and each theme chooses for you (Seaside sends a
+bottle, Wild Adventure a chest, Celebration and Yule a gift, Enchanted Forest
+and Lughnasadh a scroll, and the rest an envelope).
+
+**Wax seal:** pick the wax color (11 presets like crimson, gold, raven and
+sea glass, or any color you like) and the emblem pressed into it: a moon,
+star, heart, pentacle, fleur-de-lis, sun, crown, clover, owl, mushroom and
+more. You can also stamp it with your own initials or symbol (up to 4
+characters, emoji included). The same seal appears on the wrapper and at the
+bottom of the card. The builder's preview has an **✉︎ Opening** mode so you can
+play the animation before sending.
 
 ## Detail modules
 
@@ -110,6 +137,7 @@ js/builder.js       the sender's form, live preview and "seal & send"
 js/invite.js        the recipient's envelope, RSVP and replies
 js/render.js        renders the invitation card (shared by both views)
 js/themes.js        all themes, Wheel of the Year logic and moon phases
+js/wrappers.js      delivery styles (envelope, scroll…) and the wax seal
 js/modules.js       detail modules, questions and occasion templates
 js/calendar.js      .ics / Google / Outlook calendar links
 js/codec.js         packs the invitation into the link (compressed)
