@@ -1,0 +1,11 @@
+{
+  "name": "moonpost",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Whimsical, themed invitations you can send by text message.",
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes http-server -c-1 -p 8080 .",
+    "test": "node --test"
+  }
+}
