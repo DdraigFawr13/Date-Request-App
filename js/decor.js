@@ -146,6 +146,11 @@ const CORNERS = {
     <g fill='none' stroke-width='1' stroke-dasharray='1 4' stroke-linecap='round'><path d='M6 76 C6 36 36 6 76 6'/></g><circle cx='68' cy='22' r='1.2'/><circle cx='22' cy='68' r='1.2'/>`,
   paws: `${PAW(14, 15, 135, 1.35)}${PAW(36, 33, 135, 1.1)}${PAW(54, 55, 140, 0.85)}`,
 };
+// One corner ornament as SVG markup (for use outside the card, e.g. the scroll).
+export function cornerSvg(id, color, color2) {
+  return `<svg viewBox='0 0 80 80' aria-hidden='true'><g fill='${color}' stroke='${color}'>${(CORNERS[id] || '').replace(/var\(--c2\)/g, color2)}</g></svg>`;
+}
+
 export const CORNER_OPTIONS = [
   { id: 'look', label: 'Look’s pick' }, { id: 'none', label: 'None' },
   { id: 'filigree', label: 'Filigree' }, { id: 'gothic', label: 'Gothic' }, { id: 'floral', label: 'Floral vine' },
