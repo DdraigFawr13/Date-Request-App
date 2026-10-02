@@ -219,8 +219,8 @@ const PARTS = {
         <span class="gift-tag">${giftTag(glyph)}</span></span></span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
   book: (seal, glyph, look) => `
-    <span class="book-shadow"></span>
     <span class="book-stage">
+      <span class="book-shadow"></span>
       <span class="book-tilt">
         <span class="book-spread">
           <span class="book-back"></span>
@@ -229,6 +229,7 @@ const PARTS = {
           <span class="book-cover">
             <span class="cover-out">${bookCover()}<span class="cover-roundel"><span>${glyph}</span></span></span>
             <span class="cover-in"><span class="book-leaf l"><span class="leaf-lines"></span></span></span>
+            <span class="book-clasp"><span class="book-strap"></span><span class="seal-spot">${seal}${sparks()}</span></span>
           </span>
         </span>
       </span>
@@ -247,8 +248,7 @@ const PARTS = {
         <span class="pop-stars"><i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i></span>
       </span>
     </span>
-    <span class="book-strap"></span>
-    <span class="seal-spot">${seal}${sparks()}</span>`,
+`,
   owl: (seal, glyph, look) => `
     <span class="owl-branch">${branch()}</span>
     <span class="owl-bird">
