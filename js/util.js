@@ -4,6 +4,10 @@ export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;'
 const EMOJI = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:\uFE0F|\u200D\p{Extended_Pictographic}|\p{Emoji_Modifier})*/gu;
 export const escEmoji = s => esc(s).replace(EMOJI, m => `<span class="emo">${m}</span>`);
 
+// Looks up `key` only among an object's own entries, so names like
+// 'constructor' or '__proto__' from a hand-edited link never match.
+export const own = (obj, key) => (typeof key === 'string' && Object.hasOwn(obj, key) ? obj[key] : undefined);
+
 export const $ = (sel, root = document) => root.querySelector(sel);
 
 export function toast(text) {

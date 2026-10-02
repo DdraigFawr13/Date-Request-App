@@ -3,6 +3,7 @@
 
 import { THEMES, resolveLook, seasonOf } from './themes.js';
 import { contrast, luminance, readableOn, safeHex } from './decor.js';
+import { own } from './util.js';
 
 // Font pairings: a display face for titles and a body face for everything else.
 export const FONTS = {
@@ -141,7 +142,7 @@ export const WORDING = [
 
 // The occasion's words (seasonal ones depend on the date).
 export function occasionWords(inv) {
-  const t = TEMPLATE_BY_ID[inv.k] || TEMPLATE_BY_ID.custom;
+  const t = own(TEMPLATE_BY_ID, inv.k) || TEMPLATE_BY_ID.custom;
   const season = t.seasonal ? SABBAT_WORDS[seasonOf(inv)] : {};
   const base = TEMPLATE_BY_ID.custom;
   return {
@@ -170,7 +171,7 @@ export function wording(inv, extra = {}) {
 
 // A look merged with its lettering — everything render code needs for styling.
 export function resolveTheme(inv) {
-  const font = FONTS[inv.fn] || FONTS[occasionWords(inv).font] || FONTS.storybook;
+  const font = own(FONTS, inv.fn) || own(FONTS, occasionWords(inv).font) || FONTS.storybook;
   return { ...withPageColor(resolveLook(inv), inv), display: font.display, body: font.body, fontId: font.id };
 }
 

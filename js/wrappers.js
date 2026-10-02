@@ -2,7 +2,7 @@
 // (envelope, scroll, bottle…), dressed in the look's colors and pattern, and
 // closed with the wax seal.
 
-import { esc, escEmoji } from './util.js';
+import { esc, escEmoji, own } from './util.js';
 import { cornerSvg, patternCss } from './decor.js';
 import { breakableSealHtml, shade } from './seal.js';
 import {
@@ -19,7 +19,7 @@ export const WRAPPERS = {
 };
 
 export function resolveWrapper(inv, look) {
-  return WRAPPERS[inv.w] ? inv.w : look.wrap || 'envelope';
+  return own(WRAPPERS, inv.w) ? inv.w : look.wrap || 'envelope';
 }
 
 // Mixes two hex colors (t = share of b).

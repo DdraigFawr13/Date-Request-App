@@ -53,7 +53,59 @@ export async function decodeInvite(code) {
   let bytes = fromB64Url(code.slice(1));
   if (kind === 'z') bytes = await pipe(bytes, new DecompressionStream('deflate-raw'));
   else if (kind !== 'j') throw new Error('Unknown invitation format');
-  const invite = JSON.parse(new TextDecoder().decode(bytes));
-  if (!invite || typeof invite !== 'object' || typeof invite.s !== 'number') throw new Error('Invitation is missing its date');
-  return invite;
+  return normalizeInvite(JSON.parse(new TextDecoder().decode(bytes)));
+}
+
+// ── Cleaning a decoded invitation ─────────────────────────────────────
+// Links can be hand-edited, so every field is coerced to the type the app
+// expects. Anything unusable is dropped; a missing or impossible date
+// rejects the whole link (the recipient sees "this invitation lost its way").
+const MAX_TEXT = 2000;
+const str = v => (typeof v === 'string' ? v.slice(0, MAX_TEXT) : undefined);
+const strList = v => (Array.isArray(v) ? v.map(str).filter(x => x !== undefined) : undefined);
+const plainObject = v => (v && typeof v === 'object' && !Array.isArray(v) ? v : undefined);
+const strMap = v => {
+  const o = plainObject(v);
+  if (!o) return undefined;
+  const out = {};
+  for (const [k, val] of Object.entries(o)) if (typeof val === 'string') out[k] = val.slice(0, MAX_TEXT);
+  return out;
+};
+const DAY = 864e5;
+const validTz = tz => {
+  if (typeof tz !== 'string') return undefined;
+  try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return tz; } catch { return undefined; }
+};
+
+export function normalizeInvite(raw) {
+  if (!plainObject(raw)) throw new Error('Invitation is unreadable');
+  const s = raw.s;
+  // Dates within about 200 years of now are plausible; anything else is a broken link.
+  if (typeof s !== 'number' || !Number.isFinite(s) || Math.abs(s - Date.now()) > 73000 * DAY) throw new Error('Invitation is missing its date');
+  const inv = { s };
+  for (const k of ['v', 'rm']) if (typeof raw[k] === 'number' && Number.isFinite(raw[k])) inv[k] = raw[k];
+  if (typeof raw.e === 'number' && Number.isFinite(raw.e) && raw.e > s && raw.e - s < 31 * DAY) inv.e = raw.e;
+  if (raw.ad === true) inv.ad = true;
+  const tz = validTz(raw.tz);
+  if (tz) inv.tz = tz;
+  for (const k of ['id', 'k', 'to', 'from', 'title', 'msg', 'loc', 'addr', 'th', 'h', 'fn', 'bs', 'cc', 'gl', 'pp', 'dc', 'ds', 'dv', 'w', 'sc', 'sf', 'se', 'cl', 'ph']) {
+    const v = str(raw[k]);
+    if (v !== undefined) inv[k] = v;
+  }
+  const lists = { q: strList(raw.q), bc: strList(raw.bc) };
+  for (const [k, v] of Object.entries(lists)) if (v) inv[k] = v;
+  // Your own questions: a list now, a single string in older links.
+  const qc = typeof raw.qc === 'string' ? [raw.qc] : strList(raw.qc);
+  if (qc) inv.qc = qc.map(q => q.slice(0, MAX_TEXT));
+  for (const k of ['dl', 'tx']) { const m = strMap(raw[k]); if (m) inv[k] = m; }
+  const d = plainObject(raw.d);
+  if (d) {
+    inv.d = strMap(d);
+    const link = plainObject(d.link);
+    if (link && typeof link.u === 'string') inv.d.link = { l: str(link.l) || '', u: link.u.slice(0, MAX_TEXT) };
+  }
+  if (Array.isArray(raw.cf)) {
+    inv.cf = raw.cf.filter(plainObject).slice(0, 40).map(c => ({ i: str(c.i) || '', l: str(c.l) || '', v: str(c.v) || '' }));
+  }
+  return inv;
 }

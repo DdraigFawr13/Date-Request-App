@@ -2,7 +2,7 @@
 // stamped recess and the emblem, either pressed into the wax or filled with a
 // metallic/colored finish and lit with a bevel filter.
 
-import { esc } from './util.js';
+import { esc, own } from './util.js';
 import { BAT_PATH, safeHex, shade } from './decor.js';
 
 export const WAX_COLORS = [
@@ -143,21 +143,21 @@ export const EMBLEM_GROUPS = [
 
 // ── Resolving what to draw ───────────────────────────────────────────
 export function sealColor(inv, look) {
-  if (WAX_BY_ID[inv.sc]) return WAX_BY_ID[inv.sc].hex;
+  if (own(WAX_BY_ID, inv.sc)) return WAX_BY_ID[inv.sc].hex;
   if (safeHex(inv.sc)) return inv.sc;
   return WAX_BY_ID[look.wax]?.hex || '#8f1d1d';
 }
 
 export function sealFace(inv, look) {
   const id = inv.sf || look.waxFace || 'pressed';
-  if (FACE_BY_ID[id]) return FACE_BY_ID[id];
+  if (own(FACE_BY_ID, id)) return FACE_BY_ID[id];
   if (safeHex(id)) return { id: 'custom', stops: [shade(id, 0.45), id, shade(id, -0.45)] };
   return FACE_BY_ID.pressed;
 }
 
 export function sealEmblem(inv, look) {
   const custom = String(inv.se || '').trim();
-  if (custom.startsWith('@')) return SVG_EMBLEMS[custom.slice(1)] ? custom : look.seal;
+  if (custom.startsWith('@')) return own(SVG_EMBLEMS, custom.slice(1)) ? custom : look.seal;
   return Array.from(custom).slice(0, 4).join('') || look.seal;
 }
 
