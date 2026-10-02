@@ -60,10 +60,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .particle {
   position: absolute;
   bottom: -2rem;
-  opacity: 0.55;
+  opacity: 0.5;
   animation: float linear infinite;
   will-change: transform;
+  filter: saturate(0.8);
 }
+.particle[data-depth=near] { font-size: 2.6rem !important; filter: blur(3px) saturate(0.7); opacity: 0.35; }
+.particle[data-depth=far] { font-size: 0.75rem !important; filter: blur(0.8px) saturate(0.6); opacity: 0.32; }
 @keyframes float {
   0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
   10% { opacity: 0.6; }
@@ -410,7 +413,8 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .card {
   position: relative;
   isolation: isolate;
-  background: var(--card);
+  /* Lamp light from the upper left falls off across the sheet. */
+  background: linear-gradient(150deg, rgba(255, 250, 240, 0.14), transparent 42%, rgba(0, 0, 0, 0.07)), var(--card);
   color: var(--ink);
   border-radius: 5px;
   padding: clamp(1.8rem, 6vw, 2.8rem) clamp(1.4rem, 6vw, 2.6rem);
@@ -419,7 +423,7 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   font-size: 1.15em;
   line-height: 1.5;
   /* A sheet of paper resting just above the surface: a tight contact shadow plus a soft ambient one. */
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.22), 0 3px 6px rgba(0, 0, 0, 0.16), 0 14px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.22), 0 3px 6px rgba(0, 0, 0, 0.16), 0 14px 32px rgba(0, 0, 0, 0.3), 0 28px 26px -20px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.18), inset 0 -18px 30px -24px rgba(0, 0, 0, 0.25);
 }
 .card-body { position: relative; z-index: 2; }
 .invite-stage, .card { --muted: color-mix(in srgb, var(--ink) 76%, transparent); }
@@ -497,6 +501,21 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 }
 .card[data-dark][data-foil-title] .title { filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.6)); }
 [data-glow=on] .card[data-foil-title] .title { text-shadow: none; }
+
+/* Printed, not screen-bright: emoji in medallions take on the paper's tone,
+   and body text has the faintest ink spread. */
+.ink-emoji { display: inline-block; filter: saturate(0.6) sepia(0.25) contrast(0.95); opacity: 0.88; }
+.card:not([data-dark]) .ink-emoji { mix-blend-mode: multiply; }
+.card-body .greeting, .card-body .dear, .card-body .message, .card-body .when, .card-body .details, .card-body .closing { text-shadow: 0 0 0.4px color-mix(in srgb, var(--ink) 55%, transparent); }
+
+/* Objects rest on a surface: a soft contact shadow beneath each wrapper. */
+.wrapper.envelope::after, .wrapper.chest::after, .wrapper.gift::after, .wrapper.scroll::after {
+  content: ''; position: absolute; left: 6%; right: 6%; bottom: -16px; height: 24px; z-index: -1;
+  border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.18) 60%, transparent);
+  filter: blur(2px); transition: opacity 0.4s;
+}
+.wrapper.scroll::after { bottom: auto; top: calc(50% + var(--roll) * 1.05); height: 18px; left: 10%; right: 10%; }
+.wrapper.opening::after { opacity: 0; }
 
 /* Emoji stay upright inside italic lines. */
 .emo { font-style: normal; display: inline-block; }
@@ -696,7 +715,7 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .wrapper:focus-visible { outline: 3px dashed #fff; outline-offset: 12px; border-radius: 12px; }
 .wrapper span { position: absolute; display: block; }
 .wrapper.opening { animation: wrap-exit 0.5s var(--exit, 1.35s) ease-in forwards; }
-@keyframes bob { 50% { transform: translateY(-8px) rotate(-1deg); } }
+@keyframes bob { 50% { transform: translateY(-3px) rotate(-0.4deg); } }
 @keyframes wrap-exit { to { opacity: 0; transform: translateY(24px) scale(0.92); } }
 .wrapper:hover .seal-spot .wax { transform: scale(1.05); }
 

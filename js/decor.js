@@ -169,7 +169,19 @@ export function readableButton(look) {
   return { bg, ink };
 }
 
+// Every background gets the same physical finish on top: a fine
+// photographic grain and a soft pool of lamp light from above.
+const GRAIN = svgUrl(`<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 .55 -.18'/></filter><rect width='100%' height='100%' filter='url(#g)'/></svg>`);
 export function backdropCss(look, inv = {}) {
+  const [c1, c2] = backdropColors(look, inv);
+  const dark = (luminance(c1) + luminance(c2)) / 2 < 0.35;
+  return `${GRAIN} 0 0 / 180px 180px repeat, `
+    + `radial-gradient(90% 55% at 50% 18%, rgba(255, 236, 200, ${dark ? 0.09 : 0.16}), transparent 70%), `
+    + `radial-gradient(150% 110% at 50% 35%, transparent 52%, rgba(0, 0, 0, ${dark ? 0.32 : 0.14})), `
+    + backdropLayers(look, inv);
+}
+
+function backdropLayers(look, inv = {}) {
   const [c1, c2] = backdropColors(look, inv);
   let scene = SCENES.some(s => s.id === inv.bs) ? inv.bs : 'look';
   if (scene === 'look') scene = look.scene || 'plain';
