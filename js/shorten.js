@@ -18,17 +18,24 @@ function jsonp(url, timeout = 7000) {
   });
 }
 
+// Returns { url, error }: the short link, or the full link plus why shortening
+// failed (shown to the sender so a failure can be diagnosed).
 export async function shortenUrl(longUrl) {
-  if (cache.has(longUrl)) return cache.get(longUrl);
-  if (longUrl.length > MAX_LENGTH || !/^https:\/\//.test(longUrl)) return longUrl;
+  if (cache.has(longUrl)) return { url: cache.get(longUrl) };
+  if (longUrl.length > MAX_LENGTH) return { url: longUrl, error: `the link is too long to shorten (${longUrl.length} characters)` };
+  if (!/^https:\/\//.test(longUrl)) return { url: longUrl, error: 'short links only work from the live (https) site' };
+  const problems = [];
   for (const host of ['is.gd', 'v.gd']) {
     try {
       const res = await jsonp(`https://${host}/create.php?format=json&url=${encodeURIComponent(longUrl)}`);
       if (res && typeof res.shorturl === 'string' && /^https:\/\/(is|v)\.gd\/\w+$/.test(res.shorturl)) {
         cache.set(longUrl, res.shorturl);
-        return res.shorturl;
+        return { url: res.shorturl };
       }
-    } catch { /* try the next one */ }
+      problems.push(`${host} said “${String(res?.errormessage || 'no short link returned').slice(0, 140)}”`);
+    } catch (e) {
+      problems.push(`${host} ${e.message === 'timeout' ? 'didn’t answer' : 'couldn’t be reached (a content blocker may be blocking it)'}`);
+    }
   }
-  return longUrl;
+  return { url: longUrl, error: problems.join('; ') };
 }

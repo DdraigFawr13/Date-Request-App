@@ -86,9 +86,10 @@ export function normalizeInvite(raw) {
   for (const k of ['v', 'rm']) if (typeof raw[k] === 'number' && Number.isFinite(raw[k])) inv[k] = raw[k];
   if (typeof raw.e === 'number' && Number.isFinite(raw.e) && raw.e > s && raw.e - s < 31 * DAY) inv.e = raw.e;
   if (raw.ad === true) inv.ad = true;
+  if (raw.at === true) inv.at = true;
   const tz = validTz(raw.tz);
   if (tz) inv.tz = tz;
-  for (const k of ['id', 'k', 'to', 'from', 'title', 'msg', 'loc', 'addr', 'th', 'h', 'fn', 'bs', 'cc', 'gl', 'pp', 'dc', 'ds', 'dv', 'w', 'sc', 'sf', 'se', 'cl', 'ph']) {
+  for (const k of ['id', 'k', 'to', 'from', 'title', 'msg', 'loc', 'addr', 'th', 'h', 'fn', 'bs', 'cc', 'gl', 'pp', 'dc', 'ds', 'dv', 'w', 'sc', 'sf', 'se', 'cl', 'ph', 'af']) {
     const v = str(raw[k]);
     if (v !== undefined) inv[k] = v;
   }

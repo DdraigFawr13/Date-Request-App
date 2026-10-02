@@ -51,6 +51,9 @@ override any of them:
 
 - **Colors:** the page (card) color and the background colors can each be
   changed on their own. A custom page color keeps text and titles readable.
+- **Metallic accents:** stamp the ornaments, script lines, banner rules and
+  detail medallions in realistic gold, silver, copper or rose-gold foil, and
+  optionally the title too.
 - **Neon glow:** make the title, headings and card edge glow in hot pink,
   electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
 - **Background:** a soft glow, a moonlit sky, a haunted night, an aurora, a velvet curtain, bokeh lights,
@@ -155,7 +158,7 @@ localhost.
   it like you would the text itself.
 - Short links are made by is.gd, which stores the full link (and so can see
   the invitation). If it can't be reached, Moonpost gives you the full link
-  instead.
+  instead and says why (for example, a content blocker blocking is.gd).
 - No phone numbers are stored. RSVPs aren't collected anywhere; they arrive as
   a normal text message from your guest.
 

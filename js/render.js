@@ -5,7 +5,7 @@
 import { THEMES, MONTH_MOONS, moonPhase, partsInTz, sabbatOn } from './themes.js';
 import { wording } from './occasions.js';
 import { MODULES } from './modules.js';
-import { backdropCss, luminance, readableButton, resolveGlow, textOnBackdrop, decorHtml, resolvePaper, resolveRule, ruleHtml } from './decor.js';
+import { backdropCss, foilCss, luminance, readableButton, resolveGlow, textOnBackdrop, decorHtml, resolvePaper, resolveRule, ruleHtml } from './decor.js';
 import { sealHtml } from './seal.js';
 import { esc, escEmoji } from './util.js';
 
@@ -26,6 +26,7 @@ export function applyTheme(el, theme, inv = {}) {
   const glow = resolveGlow(inv, theme);
   vars['--glow'] = glow || 'transparent';
   el.dataset.glow = glow ? 'on' : '';
+  vars['--foil'] = theme.foil ? foilCss(theme.foil.stops) : 'none';
   for (const [k, v] of Object.entries(vars)) el.style.setProperty(k, v);
   el.dataset.theme = theme.id;
   el.dataset.font = theme.fontId || '';
@@ -97,7 +98,8 @@ const medal = inner => `<span class="detail-icon">${inner}</span>`;
 
 // The paper, ornaments and body wrapper shared by every card on the page.
 export function cardOpen(inv, theme, tag = 'article', cls = '') {
-  return `<${tag} class="card ${cls}" data-paper="${esc(resolvePaper(inv, theme))}"${theme.dark ? ' data-dark' : ''}>
+  const foil = theme.foil ? ` data-foil="${theme.foil.id}"${theme.foil.title ? ' data-foil-title' : ''}` : '';
+  return `<${tag} class="card ${cls}" data-paper="${esc(resolvePaper(inv, theme))}"${theme.dark ? ' data-dark' : ''}${foil}>
     ${decorHtml(inv, theme)}<div class="card-body">`;
 }
 

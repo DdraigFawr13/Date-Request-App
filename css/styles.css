@@ -228,6 +228,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .step label.glow-dot { display: block; position: relative; margin: 0; background: conic-gradient(#ff3fd8, #ffe62e, #7dff3a, #2ee6ff, #b14cff, #ff3fd8); }
 .step label.glow-dot.on { background: var(--dot); }
 .glow-dot input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; margin: 0; padding: 0; cursor: pointer; }
+.foil-swatch { box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(0, 0, 0, 0.35); }
+.step label.foil-title { margin: 0 0 0 0.3rem; font-size: 0.86rem; }
 .mini-swatch { display: inline-block; width: 1.1rem; height: 1.1rem; border-radius: 50%; box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.8), 0 0 0 2.5px var(--ui-line); }
 .color-pair input[type=color] { width: 1.8rem; height: 1.8rem; padding: 0; border: 2px solid #fff; border-radius: 50%; background: none; cursor: pointer; box-shadow: 0 0 0 1px var(--ui-line); }
 .color-pair input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
@@ -476,6 +478,25 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 }
 .card:not([data-dark]) .title { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 -0.5px 0 rgba(0, 0, 0, 0.18); }
 .card[data-dark] .title { text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255, 255, 255, 0.06); }
+
+/* Metallic foil accents (data-foil): every accent line and ring is stamped in foil. */
+[data-foil] .card-badge { border-image: var(--foil) 1; }
+[data-foil] .detail-icon {
+  border-color: transparent;
+  background: linear-gradient(var(--card), var(--card)) padding-box, var(--foil) border-box;
+  box-shadow: inset 0 0 0 2.5px var(--card), 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+[data-foil] .rule.fine span { background: var(--foil); height: 1.5px; }
+[data-foil] .rule.fine i, [data-foil] .divider { background: var(--foil); -webkit-background-clip: text; background-clip: text; color: transparent; }
+[data-foil] .side-frame.frame { border: 2px solid transparent; background: var(--foil) border-box; -webkit-mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0); mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0); box-shadow: none; }
+[data-foil] .side-frame.stitch { border-color: color-mix(in srgb, var(--accent2) 30%, #c9a227); }
+.card[data-foil-title] .title, .card[data-foil-title] .signature, .card[data-foil-title][data-dark] .title {
+  background: var(--foil); background-size: 100% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: none; filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.25));
+}
+.card[data-dark][data-foil-title] .title { filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.6)); }
+[data-glow=on] .card[data-foil-title] .title { text-shadow: none; }
 
 /* Emoji stay upright inside italic lines. */
 .emo { font-style: normal; display: inline-block; }
