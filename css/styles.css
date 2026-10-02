@@ -1104,95 +1104,127 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .gift.opening .gift-glow { opacity: 1; transform: scale(1.4); }
 .gift.opening .gift-letter { transform: translateY(-80%); }
 
-/* Pop-up book: a gilded leather book on the table, its clasp sealed. The cover
-   swings open and a paper-cut scene stands up out of the spread. */
-.wrapper.book { --w: min(84vw, 340px); --exit: 2.1s; --seal: calc(var(--w) * 0.15); height: calc(var(--w) * 0.86); }
-.book-tilt { left: 0; right: 0; top: 30%; bottom: 0; perspective: 1000px; perspective-origin: 50% 10%; }
+/* Pop-up book: a gilt-tooled leather hardback on the table, its clasp sealed.
+   As the cover swings open, a paper theatre rises out of the spread — sky,
+   trees, footlights — and the velvet curtains part on the letter. */
+.wrapper.book { --w: min(86vw, 350px); --exit: 2.5s; --seal: calc(var(--w) * 0.14); height: calc(var(--w) * 1.02); }
+.book-stage { inset: 0; transform-origin: 50% 70%; transition: transform 1.2s 0.4s cubic-bezier(.45, .05, .3, 1); }
+.book-tilt { left: 0; right: 0; top: 40%; bottom: 3%; perspective: 1000px; perspective-origin: 50% 0%; }
 .book-spread {
-  left: 2%; right: 2%; top: 0; bottom: 4%;
+  left: 2%; right: 2%; top: 0; bottom: 6%;
   transform-style: preserve-3d; transform-origin: 50% 100%;
-  transform: rotateX(34deg) translateX(-25%);
-  transition: transform 0.9s 0.4s cubic-bezier(.45, .05, .3, 1);
+  transform: rotateX(36deg) translateX(-25%);
+  transition: transform 0.95s 0.42s cubic-bezier(.45, .05, .3, 1);
 }
 .book-back { left: 50%; right: 0; top: 0; bottom: 0; border-radius: 2px 5px 5px 2px; background: var(--leather); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3); }
-.book-edge { left: 50%; right: 1.2%; bottom: -3%; height: 3%; border-radius: 0 0 3px 0;
-  background: repeating-linear-gradient(to bottom, #f6eedb 0 1px, #cbbd9c 1px 2px); }
-.book-leaf { background: var(--paper-grain), var(--card); overflow: hidden; }
-.book-leaf.r { left: 50%; right: 2.5%; top: 2.5%; bottom: 2.5%; border-radius: 0 3px 3px 0;
-  box-shadow: inset 16px 0 18px -10px rgba(0, 0, 0, 0.38), 1.5px 0 0 #ede2c8, 3px 0 0 #d4c5a3, 4px 0 0 #eadfc4; }
-.book-leaf.l { left: 4%; right: 0; top: 2.5%; bottom: 2.5%; border-radius: 3px 0 0 3px;
-  box-shadow: inset -16px 0 18px -10px rgba(0, 0, 0, 0.38), -1.5px 0 0 #ede2c8, -3px 0 0 #d4c5a3, -4px 0 0 #eadfc4; }
-.leaf-lines { left: 16%; right: 16%; top: 12%; bottom: 14%;
-  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--ink) 16%, transparent) 0 1.5px, transparent 1.5px 9px); opacity: 0.7; }
+.book-edge { bottom: -6%; height: 6%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.25)), repeating-linear-gradient(to bottom, #f6eedb 0 1px, #d3c5a5 1px 2px); }
+.book-edge.r { left: 50%; right: 1%; border-radius: 0 0 4px 0; }
+.book-edge.l { left: 1%; right: 50%; border-radius: 0 0 0 4px; opacity: 0; transition: opacity 0.2s 0.9s; }
+.book-side { left: 100%; width: 1.6%; top: 1.5%; bottom: -5%; border-radius: 0 3px 3px 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.2), transparent 60%), repeating-linear-gradient(90deg, #f3ead4 0 1px, #cdbf9f 1px 2px); }
+.book-leaf { background: var(--paper-grain), linear-gradient(90deg, color-mix(in srgb, var(--card) 92%, #000), var(--card) 25%, var(--card) 80%, color-mix(in srgb, var(--card) 94%, #000)); overflow: hidden; }
+.book-leaf.r { left: 50%; right: 1.5%; top: 1.5%; bottom: 1.5%; border-radius: 0 3px 3px 0; box-shadow: inset 22px 0 22px -12px rgba(60, 35, 10, 0.45); }
+.book-leaf.l { left: 3%; right: 0; top: 1.5%; bottom: 1.5%; border-radius: 3px 0 0 3px; box-shadow: inset -22px 0 22px -12px rgba(60, 35, 10, 0.45); }
+.leaf-lines { left: 16%; right: 16%; top: 62%; bottom: 10%;
+  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--ink) 16%, transparent) 0 1.5px, transparent 1.5px 8px); opacity: 0.6; }
 .book-cover { left: 50%; right: 0; top: 0; bottom: 0; transform-origin: 0 50%; transform-style: preserve-3d; z-index: 2;
-  transition: transform 1s 0.42s cubic-bezier(.45, .05, .3, 1); }
+  transition: transform 1.05s 0.45s cubic-bezier(.5, .05, .35, 1); }
 .cover-out, .cover-in { inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
-.cover-out { border-radius: 2px 5px 5px 2px; box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.35); }
+.cover-out { border-radius: 2px 5px 5px 2px; box-shadow: inset -2px -2px 3px rgba(0, 0, 0, 0.35), inset 2px 2px 2px rgba(255, 255, 255, 0.12); }
 .cover-in { transform: rotateY(180deg); border-radius: 5px 2px 2px 5px; background: var(--leather); }
 .cover-art, .pop-art, .owl-art, .owl-wing-art, .branch-art, .tw-body-art, .tw-carriage-art, .map-art, .twine-art { display: block; width: 100%; height: 100%; overflow: visible; }
 .cover-roundel { left: 39%; top: 38%; width: 32%; height: 24%; display: grid !important; place-items: center; }
 .cover-roundel span { position: static !important; font-size: calc(var(--w) * 0.085); line-height: 1; color: #e2c77f;
   filter: grayscale(1) sepia(1) saturate(1.8) brightness(1.05) drop-shadow(0 1px 0 rgba(0, 0, 0, 0.7)); }
-.book-shadow { left: 8%; right: 8%; bottom: -3%; height: 14%; border-radius: 50%; filter: blur(4px);
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.15) 70%, transparent);
-  transform: scaleX(0.55); transition: transform 0.9s 0.4s cubic-bezier(.45, .05, .3, 1); }
-.book-strap { left: 61%; width: 15%; top: 56%; height: calc(var(--w) * 0.075); z-index: 5; border-radius: 3px 0 0 3px;
+.book-ribbon { left: 58%; width: calc(var(--w) * 0.035); top: 93%; height: calc(var(--w) * 0.1); transform: rotate(8deg); transform-origin: top; z-index: 1;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.25) 40%, transparent 60%, rgba(0, 0, 0, 0.3)), var(--ribbon);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%); transition: transform 0.95s 0.42s cubic-bezier(.45, .05, .3, 1); }
+.book-shadow { left: 6%; right: 6%; bottom: -2%; height: 12%; border-radius: 50%; filter: blur(5px);
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.18) 70%, transparent);
+  transform: scaleX(0.55); transition: transform 0.95s 0.42s cubic-bezier(.45, .05, .3, 1); }
+.book-strap { left: 61%; width: 15%; top: 68%; height: calc(var(--w) * 0.07); z-index: 5; border-radius: 3px 0 0 3px;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.18), transparent 40%, rgba(0, 0, 0, 0.35)), var(--leather);
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(0, 0, 0, 0.1);
   outline: 1px dashed rgba(255, 236, 190, 0.35); outline-offset: -4px;
   transform-origin: 100% 50%; transition: transform 0.55s 0.25s ease-in, opacity 0.4s 0.4s; }
-.book .seal-spot { left: calc(63% - var(--seal) / 2); top: calc(56% + var(--w) * 0.0375 - var(--seal) / 2); }
-.book-popup { left: 10%; right: 10%; top: 2%; bottom: 40%; perspective: 600px; perspective-origin: 50% 100%; z-index: 4; pointer-events: none; }
-.pop { transform-origin: 50% 100%; transform: rotateX(88deg); opacity: 0; transition: transform 0.75s cubic-bezier(.3, 1.45, .5, 1), opacity 0.15s; }
-.pop-arch { left: 13%; right: 13%; bottom: 0; height: 94%; border-radius: 50% 50% 0 0 / 40% 40% 0 0;
-  background: var(--liner-pattern), var(--liner);
-  box-shadow: inset 0 0 0 2px #c9a24a, inset 0 0 0 4px rgba(0, 0, 0, 0.12), 0 6px 10px rgba(0, 0, 0, 0.3); }
-.pop-sky { left: 10%; right: 10%; top: 8%; bottom: 0; border-radius: 50% 50% 0 0 / 40% 40% 0 0;
-  background: var(--paper-grain), radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--card) 70%, #fff), var(--card) 55%, color-mix(in srgb, var(--card) 82%, #000));
-  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.25), 0 0 0 1.5px #c9a24a; }
-.pop-moon { left: calc(50% - 13%); top: 12%; width: 26%; aspect-ratio: 1; border-radius: 50%; display: grid !important; place-items: center;
+.book .seal-spot { left: calc(63% - var(--seal) / 2); top: calc(68% + var(--w) * 0.035 - var(--seal) / 2); }
+/* The pop-up, standing on the open spread (positions are in screen space). */
+.book-popup { left: 2%; right: 2%; top: 6%; bottom: 30%; --tree: color-mix(in srgb, var(--sprig) 40%, #4f7a3a); perspective: 700px; perspective-origin: 50% 100%; z-index: 4; pointer-events: none; }
+.pop { transform-origin: 50% 100%; transform: rotateX(89deg); opacity: 0; transition: transform 0.85s cubic-bezier(.3, 1.35, .55, 1), opacity 0.25s; }
+.pop-sky { left: 21%; right: 21%; bottom: 13%; height: 84%; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35)); }
+.pop-moon { left: 37%; top: 9%; width: 26%; aspect-ratio: 1; border-radius: 50%; display: grid !important; place-items: center;
   background: radial-gradient(circle at 50% 45%, var(--card) 55%, transparent 57%), radial-gradient(circle at 35% 30%, #fff1c4, #d8ad45 45%, #8a6514);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
-.pop-moon span { position: static !important; font-size: calc(var(--w) * 0.06); line-height: 1; color: var(--accent); }
-.pop-hills { left: 0; right: 0; bottom: 0; height: 46%; filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.25)); }
-.pop-letter { left: 35%; right: 35%; bottom: 4%; height: 56%; filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.3)); }
-.pop-front { left: -6%; right: -6%; bottom: -3%; height: 22%; filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.3)); }
+  box-shadow: 0 0 18px rgba(255, 236, 170, 0.55), 0 2px 4px rgba(0, 0, 0, 0.35); }
+.pop-moon span { position: static !important; font-size: calc(var(--w) * 0.055); line-height: 1; color: var(--accent); }
+.pop-letter { left: 37.5%; right: 37.5%; bottom: 8%; height: 42%; filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.35)); }
+.pop-glow { left: -70%; right: -70%; top: -40%; bottom: -20%; border-radius: 50%; opacity: 0; transition: opacity 0.8s 1.75s;
+  background: radial-gradient(closest-side, rgba(255, 238, 190, 0.85), rgba(255, 220, 140, 0.35) 45%, transparent); }
+.pop-theatre { left: 14%; right: 14%; bottom: 6%; height: 64%; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.4)); }
+.pop-frame { inset: 0; }
+.pop-valance { left: 12%; right: 12%; top: 13.5%; height: 13%; }
+.curtain { top: 14%; bottom: 0; width: 38%; transition: transform 0.75s 1.6s cubic-bezier(.5, 0, .3, 1); }
+.curtain.l { left: 12%; transform-origin: 0 0; }
+.curtain.r { right: 12%; transform-origin: 100% 0; }
+.curtain.r svg { transform: scaleX(-1); }
+.pop-trees { bottom: 0; width: 28%; height: 40%; filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.35)); }
+.pop-trees.l { left: 0; }
+.pop-trees.r { right: 0; }
+.pop-trees.r svg { transform: scaleX(-1); }
+.pop-front { left: 2%; right: 2%; bottom: -5%; height: 15%; filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.3)); }
+.footlights { left: 33%; right: 33%; bottom: 14%; height: 18%; display: flex !important; justify-content: space-around; align-items: center; }
+.footlights i { position: relative; width: calc(var(--w) * 0.014); aspect-ratio: 1; border-radius: 50%; background: #fff6d0;
+  box-shadow: 0 0 4px 2px rgba(255, 220, 140, 0.9), 0 -6px 12px 4px rgba(255, 220, 140, 0.35); opacity: 0.3; transition: opacity 0.4s 1.55s; }
 .pop-stars { inset: 0; }
-.pop-stars i { position: absolute; font-style: normal; font-size: calc(var(--w) * 0.06); color: #e7c66a; text-shadow: 0 1px 0 #8a6514, 0 2px 3px rgba(0, 0, 0, 0.3);
-  opacity: 0; transform: translateY(40px) scale(0.2); transition: transform 0.6s cubic-bezier(.3, 1.9, .5, 1), opacity 0.2s; }
-.pop-stars i::before { content: ''; position: absolute; left: 50%; top: 70%; width: 1px; height: 60px; background: linear-gradient(rgba(120, 90, 40, 0.6), transparent); }
-.pop-stars i:nth-child(1) { left: 4%; top: 24%; }
-.pop-stars i:nth-child(2) { right: 4%; top: 14%; font-size: calc(var(--w) * 0.045); }
-.pop-stars i:nth-child(3) { left: 18%; top: 0; font-size: calc(var(--w) * 0.04); }
-.pop-stars i:nth-child(4) { right: 18%; top: 34%; }
-.book.opening .book-spread { transform: rotateX(34deg) translateX(0); }
+.book-popup::before { content: ''; position: absolute; left: 6%; right: 6%; bottom: -8%; height: 16%; border-radius: 50%; opacity: 0; transition: opacity 0.6s 1s;
+  background: radial-gradient(closest-side, rgba(40, 20, 5, 0.45), transparent); filter: blur(3px); }
+.book.opening .book-popup::before { opacity: 1; }
+.pop-stars i { position: absolute; font-style: normal; font-size: calc(var(--w) * 0.055); color: #e7c66a; text-shadow: 0 1px 0 #8a6514, 0 2px 3px rgba(0, 0, 0, 0.3);
+  opacity: 0; transform: translateY(50px) scale(0.2); transition: transform 0.7s cubic-bezier(.3, 1.9, .5, 1), opacity 0.2s; }
+.pop-stars i::before { content: ''; position: absolute; left: 50%; top: 75%; width: 1px; height: calc(var(--w) * 0.22); background: linear-gradient(rgba(150, 120, 60, 0.8), rgba(150, 120, 60, 0)); }
+.pop-stars i:nth-child(1) { left: 12%; top: 14%; }
+.pop-stars i:nth-child(2) { right: 11%; top: 8%; font-size: calc(var(--w) * 0.042); }
+.pop-stars i:nth-child(3) { left: 4%; top: 36%; font-size: calc(var(--w) * 0.038); }
+.pop-stars i:nth-child(4) { right: 4%; top: 30%; }
+.pop-stars i:nth-child(5) { left: 47%; top: -9%; font-size: calc(var(--w) * 0.045); }
+.book.opening .book-stage { transform: scale(1.06); }
+.book.opening .book-spread { transform: rotateX(36deg) translateX(0); }
 .book.opening .book-cover { transform: rotateY(-180deg); }
+.book.opening .book-edge.l { opacity: 1; }
 .book.opening .book-shadow { transform: none; }
+.book.opening .book-ribbon { transform: translateX(-30%) rotate(-4deg); }
 .book.opening .book-strap { transform: translate(18%, 70%) rotate(-40deg); opacity: 0; }
 .book.opening .pop { transform: none; opacity: 1; }
-.book.opening .pop-arch { transition-delay: 1s; }
-.book.opening .pop-hills { transition-delay: 1.12s; }
-.book.opening .pop-letter { transition-delay: 1.24s; }
-.book.opening .pop-front { transition-delay: 1.34s; }
-.book.opening .pop-stars i { opacity: 1; transform: none; }
-.book.opening .pop-stars i:nth-child(1) { transition-delay: 1.4s; }
-.book.opening .pop-stars i:nth-child(2) { transition-delay: 1.5s; }
-.book.opening .pop-stars i:nth-child(3) { transition-delay: 1.56s; }
-.book.opening .pop-stars i:nth-child(4) { transition-delay: 1.62s; }
+.book.opening .pop-sky { transition-delay: 0.8s; }
+.book.opening .pop-letter { transition-delay: 0.9s; }
+.book.opening .pop-theatre { transition-delay: 0.95s; }
+.book.opening .pop-trees { transition-delay: 1.08s; }
+.book.opening .pop-front { transition-delay: 1.18s; }
+.book.opening .pop-glow { opacity: 1; }
+.book.opening .curtain.l { transform: scaleX(0.34) skewY(-3deg); }
+.book.opening .curtain.r { transform: scaleX(0.34) skewY(3deg); }
+.book.opening .footlights i { opacity: 1; }
+.book.opening .pop-stars i { opacity: 1; transform: none; animation: star-bob 1.6s 2.1s ease-in-out infinite; }
+.book.opening .pop-stars i:nth-child(1) { transition-delay: 1.25s; }
+.book.opening .pop-stars i:nth-child(2) { transition-delay: 1.35s; animation-delay: 2.3s; }
+.book.opening .pop-stars i:nth-child(3) { transition-delay: 1.42s; animation-delay: 2.2s; }
+.book.opening .pop-stars i:nth-child(4) { transition-delay: 1.48s; animation-delay: 2.4s; }
+.book.opening .pop-stars i:nth-child(5) { transition-delay: 1.55s; animation-delay: 2.25s; }
+@keyframes star-bob { 50% { transform: translateY(-4px) rotate(8deg); } }
 
 /* Owl post: a tawny owl on a branch with a sealed letter in its beak. It
    takes off, drops the letter, and the letter slides out of its envelope. */
-.wrapper.owl { --exit: 1.95s; --seal: calc(var(--w) * 0.12); height: calc(var(--w) * 0.92); }
+.wrapper.owl { --exit: 1.95s; --seal: calc(var(--w) * 0.105); height: calc(var(--w) * 0.92); }
 .owl-branch { left: -10%; right: -10%; top: calc(var(--w) * 0.72); height: calc(var(--w) * 0.11); z-index: 1; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.35)); }
 .owl-bird { left: 15%; width: 70%; top: 0; height: calc(var(--w) * 0.805); z-index: 2; transform-origin: 50% 90%; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.3)); }
-.owl-body { inset: 0; }
+.owl-body { inset: 0; z-index: 2; }
 .owl-lid { transform-box: fill-box; transform-origin: 50% 0; transform: scaleY(0); animation: owl-blink 5.5s 1.5s infinite; }
 @keyframes owl-blink { 0%, 94%, 100% { transform: scaleY(0); } 96.5% { transform: scaleY(1); } }
-.owl-wing { top: 37%; width: 27%; height: 56%; }
-.owl-wing.l { left: 13%; transform-origin: 73% 2%; }
-.owl-wing.r { right: 13%; transform-origin: 27% 2%; }
+.owl-wing { top: 33%; width: 27%; height: 62%; z-index: 1; filter: brightness(0.85); }
+.owl-wing.l { left: 11%; transform-origin: 75% 3%; }
+.owl-wing.r { right: 11%; transform-origin: 25% 3%; }
 .owl-wing.r svg { transform: scaleX(-1); }
-.owl-mail { left: 25%; width: 50%; top: calc(var(--w) * 0.4); height: calc(var(--w) * 0.33); z-index: 3; transform: rotate(-5deg); transform-origin: 50% 0;
+.owl-mail { left: 31%; width: 38%; top: calc(var(--w) * 0.41); height: calc(var(--w) * 0.25); z-index: 3; transform: rotate(-7deg); transform-origin: 50% 0;
   perspective: 900px; transition: transform 0.65s 0.4s cubic-bezier(.4, 0, .3, 1); }
 .owl-mail .env-back { box-shadow: 0 10px 18px rgba(0, 0, 0, 0.4); }
 .owl-mail .seal-spot { left: calc(50% - var(--seal) / 2); top: calc(60% - var(--seal) * 0.62); }
@@ -1208,11 +1240,11 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   75% { opacity: 1; }
   100% { transform: translate(20%, -165%) scale(0.45) rotate(-8deg); opacity: 0; }
 }
-.owl.opening .owl-wing.l { animation: flap-l 0.2s 0.34s 7 alternate ease-in-out both; }
-.owl.opening .owl-wing.r { animation: flap-r 0.2s 0.34s 7 alternate ease-in-out both; }
-@keyframes flap-l { from { transform: rotate(25deg); } to { transform: rotate(120deg); } }
-@keyframes flap-r { from { transform: rotate(-25deg); } to { transform: rotate(-120deg); } }
-.owl.opening .owl-mail { transform: translateY(calc(var(--w) * 0.22)) rotate(0deg) scale(1.15); }
+.owl.opening .owl-wing.l { animation: flap-l 0.2s 0.34s 7 alternate ease-in-out forwards; }
+.owl.opening .owl-wing.r { animation: flap-r 0.2s 0.34s 7 alternate ease-in-out forwards; }
+@keyframes flap-l { from { transform: rotate(8deg); filter: brightness(0.85); } to { transform: rotate(122deg) scale(1.4); filter: brightness(1); } }
+@keyframes flap-r { from { transform: rotate(-8deg); filter: brightness(0.85); } to { transform: rotate(-122deg) scale(1.4); filter: brightness(1); } }
+.owl.opening .owl-mail { transform: translateY(calc(var(--w) * 0.2)) rotate(0deg) scale(1.3); }
 .owl.opening .env-flap { transform: rotateX(178deg); z-index: 0; transition: transform 0.6s 1.05s cubic-bezier(.45, .05, .3, 1), z-index 0s 1.35s; }
 .owl.opening .env-letter { transform: translateY(-58%) scale(1.04); transition-delay: 1.45s; }
 .owl.opening .owl-feathers i { animation: feather-fall 1.4s 0.45s ease-out forwards; }
@@ -1225,76 +1257,93 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   100% { opacity: 0; transform: translate(10px, 90px) rotate(-20deg); }
 }
 
-/* Telegram: a vintage typewriter. Breaking the seal sets it typing — the
-   carriage slides and dings — then the paper is pulled out. */
-.wrapper.telegram { --w: min(82vw, 330px); --exit: 2.3s; --seal: calc(var(--w) * 0.12); height: calc(var(--w) * 1.02); }
+/* Telegram: a vintage typewriter. Breaking the seal sets it typing, one
+   struck character at a time: the carriage steps left as it types, returns
+   with a ding, the paper feeds up a line, and finally the sheet is pulled out. */
+.wrapper.telegram { --w: min(82vw, 330px); --exit: 2.5s; --seal: calc(var(--w) * 0.12); height: calc(var(--w) * 1.02); }
 .tw-carriage { left: 2%; right: 2%; top: 0; height: calc(var(--w) * 0.5); z-index: 1; }
-.tw-paper { left: 19%; right: 19%; top: 0; bottom: calc(var(--w) * 0.05); container-type: inline-size; overflow: hidden;
+.tw-move, .tw-feed { inset: 0; }
+.tw-plate { left: 16%; right: 16%; top: 22%; bottom: calc(var(--w) * 0.06); border-radius: 4px 4px 0 0;
+  background: linear-gradient(90deg, #4a5056, #c9d0d6 18%, #eef1f3 30%, #8f989f 55%, #d3d9de 78%, #4a5056); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
+.tw-paper { left: 20%; right: 20%; top: 0; bottom: calc(var(--w) * 0.05); container-type: inline-size; overflow: hidden;
   background: var(--paper-grain), linear-gradient(#f7eed6, #efe2c0); border-radius: 2px 2px 0 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 -18px 16px -12px rgba(0, 0, 0, 0.25); }
-.tw-head { left: 8%; right: 8%; top: 9cqw; padding-bottom: 2.5cqw; text-align: center; font-family: var(--font-display); font-size: 7.5cqw; letter-spacing: 0.18em; text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 -22px 18px -14px rgba(0, 0, 0, 0.3), inset 1px 0 0 rgba(255, 255, 255, 0.6); }
+.tw-feed { font-size: 6cqw; }
+.tw-head { left: 8%; right: 8%; top: 22cqw; padding-bottom: 2.5cqw; text-align: center; font-family: var(--font-display); font-size: 7.5cqw; letter-spacing: 0.18em; text-transform: uppercase;
   color: color-mix(in srgb, var(--accent) 75%, #000); border-bottom: 3px double color-mix(in srgb, var(--accent) 55%, transparent); }
-.tw-text { left: 9%; right: 6%; top: 30cqw; font-family: 'Courier New', Courier, monospace; font-weight: 700; font-size: 6cqw; line-height: 1.7; color: #26221e;
-  text-shadow: 0 0 0.5px rgba(38, 34, 30, 0.8); text-align: left; }
+.tw-text { left: 10%; right: 4%; top: calc(100% - 3.4em); font-family: 'Courier New', Courier, monospace; font-weight: 700; font-size: 1em; line-height: 1.7; color: #221e1a; text-align: left; }
 .tw-text span { position: static !important; }
-.tw-line { display: block !important; height: 1.7em; }
-.tw-line span { display: inline-block !important; width: 0; overflow: hidden; white-space: nowrap; vertical-align: top; }
+.tw-line { display: block !important; height: 1.7em; white-space: pre; }
+.tw-line i { font-style: normal; opacity: 0; display: inline-block; transform: translateY(var(--j)); text-shadow: 0 0 0.6px rgba(34, 30, 26, 0.9), 0.4px 0 0 rgba(34, 30, 26, 0.25); }
 .tw-platen { left: 0; right: 0; bottom: 0; height: calc(var(--w) * 0.12); filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.4)); }
 .tw-body { left: 0; right: 0; bottom: 0; height: calc(var(--w) * 0.57); z-index: 2; }
 .tw-key { transform-box: fill-box; transform-origin: 50% 50%; }
 .tw-bar { opacity: 0; }
-.tw-bell { right: -4%; top: 24%; width: auto !important; font-family: var(--font-display); font-style: italic; font-size: 1rem; color: var(--on-bg, #fff); opacity: 0; z-index: 3; }
-.tw-bell::after { content: 'ding!'; }
+.tw-ding { right: -5%; top: 26%; width: auto !important; font-family: var(--font-display); font-style: italic; font-size: 0.95rem; color: var(--on-bg, #fff); opacity: 0; z-index: 3; }
+.tw-ding::after { content: 'ding!'; }
 .telegram .seal-spot { left: calc(50% - var(--seal) / 2); top: calc(var(--w) * 1.02 - var(--w) * 0.57 + var(--w) * 0.57 * 63 / 170 - var(--seal) / 2); }
-.telegram.opening .tw-line span { animation: type 0.42s calc(0.5s + var(--l) * 0.55s) steps(var(--n), end) forwards; }
-@keyframes type { to { width: calc(var(--n) * 1ch); } }
-.telegram.opening .tw-carriage { animation: carriage 1.65s 0.5s linear forwards; }
-@keyframes carriage {
-  0% { transform: none; } 3% { transform: translateX(5%); } 25.5% { transform: translateX(-5%); }
-  33.3% { transform: translateX(5%); } 58.8% { transform: translateX(-5%); }
-  66.6% { transform: translateX(5%); } 92% { transform: translateX(-5%); } 100% { transform: none; }
-}
+.telegram.opening .tw-carriage { animation: tw-start 0.25s 0.25s ease-out forwards; }
+@keyframes tw-start { to { transform: translateX(8%); } }
+.telegram.opening .tw-move { animation: tw-carry var(--t) linear var(--s) forwards, tw-return 0.16s cubic-bezier(.3, 0, .2, 1) calc(var(--s) + var(--t)) forwards; }
+@keyframes tw-carry { from { transform: none; } to { transform: translateX(calc(-1 * var(--dx))); } }
+@keyframes tw-return { from { transform: translateX(calc(-1 * var(--dx))); } to { transform: none; } }
+.telegram.opening .tw-feed { animation: tw-feed 0.14s ease-out var(--f) forwards; }
+@keyframes tw-feed { to { transform: translateY(-1.7em); } }
+.telegram.opening .tw-line i { animation: tw-strike 0.06s var(--d) forwards; }
+@keyframes tw-strike { from { opacity: 0; transform: translateY(var(--j)) scale(1.25); } to { opacity: var(--o); transform: translateY(var(--j)); } }
 .telegram.opening .tw-key { animation: key 0.28s ease-in-out 6; }
-.telegram.opening .tw-key.k0 { animation-delay: 0.5s; } .telegram.opening .tw-key.k1 { animation-delay: 0.55s; }
-.telegram.opening .tw-key.k2 { animation-delay: 0.6s; } .telegram.opening .tw-key.k3 { animation-delay: 0.64s; }
-.telegram.opening .tw-key.k4 { animation-delay: 0.69s; } .telegram.opening .tw-key.k5 { animation-delay: 0.74s; }
+.telegram.opening .tw-key.k0 { animation-delay: 0.55s; } .telegram.opening .tw-key.k1 { animation-delay: 0.6s; }
+.telegram.opening .tw-key.k2 { animation-delay: 0.65s; } .telegram.opening .tw-key.k3 { animation-delay: 0.69s; }
+.telegram.opening .tw-key.k4 { animation-delay: 0.74s; } .telegram.opening .tw-key.k5 { animation-delay: 0.79s; }
 @keyframes key { 0%, 30%, 100% { transform: none; } 12% { transform: translateY(1.8px) scale(0.92); } }
-.telegram.opening .tw-bar { animation: bar 0.09s 0.5s 18 steps(1, end); }
-@keyframes bar { 50% { opacity: 1; } }
-.telegram.opening .tw-bell { animation: ding 0.55s 0.92s 3 ease-out; }
+.telegram.opening .tw-bar { animation: bar var(--step) 0.55s var(--count) steps(1, end); }
+@keyframes bar { 0% { opacity: 1; } 50% { opacity: 0; } }
+.telegram.opening .tw-ding { animation: ding 0.55s var(--f) ease-out; }
 @keyframes ding { 0% { opacity: 0; transform: translateY(6px) rotate(-6deg); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-14px) rotate(4deg); } }
-.telegram.opening .tw-paper { transform: translateY(-32%); transition: transform 0.55s 2.15s ease-in; }
+.telegram.opening .tw-paper { transform: translateY(-34%); transition: transform 0.5s 2.3s cubic-bezier(.5, 0, .7, .4); }
 
-/* Treasure map: a parchment map folded in three, tied with twine. It unfolds
-   panel by panel, the trail inks itself in, and X marks the spot. */
-.wrapper.map { --w: min(92vw, 380px); --exit: 2.3s; --seal: calc(var(--w) * 0.14); height: calc(var(--w) * 0.64); }
+/* Treasure map: a torn, foxed parchment map folded in three and tied with
+   twine. It unfolds panel by panel (keeping a little of its fold), the trail
+   inks itself in, and the X is drawn and circled. */
+.wrapper.map { --w: min(92vw, 380px); --exit: 2.55s; --seal: calc(var(--w) * 0.13); height: calc(var(--w) * 0.64); }
 .map-panel { top: 0; bottom: 0; width: calc(100% / 3); transform-style: preserve-3d; }
 .map-panel.c { left: calc(100% / 3); z-index: 1; }
-.map-panel.l { left: 0; z-index: 3; transform-origin: 100% 50%; transform: perspective(900px) rotateY(179.9deg); transition: transform 0.65s 0.32s cubic-bezier(.45, .05, .3, 1); }
-.map-panel.r { left: calc(200% / 3); z-index: 2; transform-origin: 0 50%; transform: perspective(900px) rotateY(-179.9deg); transition: transform 0.65s 0.72s cubic-bezier(.45, .05, .3, 1); }
-.map-face { inset: 0; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.32); }
+.map-panel.l { left: 0; z-index: 3; transform-origin: 100% 50%; transform: perspective(900px) rotateY(179.9deg); transition: transform 0.7s 0.32s cubic-bezier(.4, .1, .3, 1.15); }
+.map-panel.r { left: calc(200% / 3); z-index: 2; transform-origin: 0 50%; transform: perspective(900px) rotateY(-179.9deg); transition: transform 0.7s 0.74s cubic-bezier(.4, .1, .3, 1.15); }
+.map-face { inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.35)); }
 .map-face.back { transform: rotateY(180deg); }
+.map-paper { inset: 0; overflow: hidden; box-shadow: inset 0 0 14px rgba(90, 50, 10, 0.45); }
 .map-third { top: 0; bottom: 0; width: 300%; }
 .map-panel.c .map-third { left: -100%; }
 .map-panel.r .map-third { left: -200%; }
-.map-face.front::after { content: ''; position: absolute; inset: 0; pointer-events: none; }
-.map-panel.l .map-face.front::after { background: linear-gradient(90deg, transparent 80%, rgba(60, 35, 10, 0.25)); }
-.map-panel.c .map-face.front::after { background: linear-gradient(90deg, rgba(255, 245, 220, 0.25), transparent 12%, transparent 88%, rgba(60, 35, 10, 0.18)); }
-.map-panel.r .map-face.front::after { background: linear-gradient(90deg, rgba(255, 245, 220, 0.3), transparent 15%); }
-.map-twine { left: calc(50% - var(--w) * 0.03); width: calc(var(--w) * 0.06); top: -4%; bottom: -4%; z-index: 5; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
-  transition: transform 0.5s 0.2s ease-in, opacity 0.35s 0.3s; }
+.map-paper::before, .map-paper::after { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.map-panel.l .front .map-paper::after { background: linear-gradient(90deg, rgba(255, 245, 220, 0.12), transparent 40%, transparent 82%, rgba(60, 35, 10, 0.3)); }
+.map-panel.c .front .map-paper::after { background: linear-gradient(90deg, rgba(255, 245, 220, 0.3), transparent 10%, transparent 90%, rgba(60, 35, 10, 0.22)); }
+.map-panel.r .front .map-paper::after { background: linear-gradient(90deg, rgba(255, 245, 220, 0.35), transparent 14%, transparent 70%, rgba(60, 35, 10, 0.15)); }
+.map-paper::before { background: rgba(50, 25, 5, 0.5); opacity: 0; }
+.map.opening .map-panel.l .map-paper::before { animation: fold-shade 0.7s 0.32s ease-in-out; }
+.map.opening .map-panel.r .map-paper::before { animation: fold-shade 0.7s 0.74s ease-in-out; }
+@keyframes fold-shade { 50% { opacity: 1; } }
+.map-twine { z-index: 5; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35)); transition: transform 0.5s 0.2s ease-in, opacity 0.35s 0.3s; }
+.map-twine.v { left: calc(50% - var(--w) * 0.03); width: calc(var(--w) * 0.06); top: -4%; bottom: -4%; }
+.map-twine.h { left: calc(50% - var(--w) * 0.03); width: calc(var(--w) * 0.06); top: calc(50% - var(--w) * 0.19); height: calc(var(--w) * 0.38); transform: rotate(90deg); }
 .wrapper.map::after { left: 30%; right: 30%; }
-/* The wider wrappers keep their twinkles on screen at phone widths. */
-.wrapper.book .twinkles, .wrapper.telegram .twinkles, .wrapper.map .twinkles { left: -3%; right: -3%; }
 .map .seal-spot { left: calc(50% - var(--seal) / 2); top: calc(50% - var(--seal) / 2); }
 .map-dash { opacity: 0; }
-.map-x { opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; }
-.map.opening .map-panel { transform: perspective(900px) rotateY(0deg); }
-.map.opening .map-twine { transform: translateY(40%) rotate(10deg); opacity: 0; }
-.map.opening .map-dash { animation: dash-in 0.1s calc(1.3s + var(--i) * 22ms) forwards; }
+.map-x1, .map-x2, .map-ring { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.map.opening .map-panel.l { transform: perspective(900px) rotateY(7deg); }
+.map.opening .map-panel.r { transform: perspective(900px) rotateY(-7deg); }
+.map.opening .map-twine.v { transform: translateY(40%) rotate(10deg); opacity: 0; }
+.map.opening .map-twine.h { transform: rotate(90deg) translateY(-50%); opacity: 0; }
+.map.opening .map-dash { animation: dash-in 0.1s calc(1.25s + var(--i) * 22ms) forwards; }
 @keyframes dash-in { to { opacity: 1; } }
-.map.opening .map-x { animation: x-pop 0.45s 1.95s cubic-bezier(.3, 1.6, .5, 1) forwards; }
-@keyframes x-pop { 0% { opacity: 0; transform: scale(2.4) rotate(-20deg); } 100% { opacity: 1; transform: none; } }
+.map.opening .map-x1 { animation: ink-draw 0.18s 1.9s ease-out forwards; }
+.map.opening .map-x2 { animation: ink-draw 0.18s 2.08s ease-out forwards; }
+.map.opening .map-ring { animation: ink-draw 0.4s 2.22s ease-in-out forwards; }
+@keyframes ink-draw { to { stroke-dashoffset: 0; } }
+
+/* The wider wrappers keep their twinkles on screen at phone widths. */
+.wrapper.book .twinkles, .wrapper.telegram .twinkles, .wrapper.map .twinkles { left: -3%; right: -3%; }
 
 /* Celebration burst */
 .burst { position: fixed; left: 50%; top: 45%; z-index: 50; pointer-events: none; }

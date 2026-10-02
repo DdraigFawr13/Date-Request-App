@@ -94,10 +94,10 @@ sparks when tapped:
 | 🍾 Message in a bottle | sea glass with sand, a starfish and twine on the neck, bobbing on foamy waves; the cork pops and the ribboned note rises out |
 | 🧰 Treasure chest | planked wood with gilded straps, brackets and a jewelled lid; the seal is the lock, and the lid tips back to reveal velvet, gold coins and gems |
 | 🎁 Gift box | patterned wrap, stitched satin ribbons, a full bow and a gift tag; the bow unties, the lid tumbles off, and the letter rises from tissue paper |
-| 📖 Pop-up book | a gilt-tooled leather book with a sealed clasp; the cover swings open and a paper-cut scene (arch, moon, hills, flowers, stars on wires) stands up with the letter |
-| 🦉 Owl post | a tawny owl on a mossy branch holding the sealed letter in its beak; it blinks, takes off with beating wings, drops the letter, and the letter slides out |
-| ⌨️ Telegram | a vintage typewriter in the look's enamel; breaking the seal sets it typing who it's for and the title, the carriage slides and dings, then the paper is pulled out |
-| 🗺️ Treasure map | aged parchment folded in three and tied with twine; it unfolds panel by panel, the dotted trail inks itself in, and X marks the spot |
+| 📖 Pop-up book | a gilt-tooled leather hardback with page edges, a ribbon marker and a sealed clasp; as the cover swings open a paper theatre rises out of the spread — a starry sky with the moon, a patterned stage with velvet curtains, paper trees, flowers, footlights and stars on wires — and the curtains part on the letter in a spotlight |
+| 🦉 Owl post | a feathered eagle-owl (mottled plumage, streaked breast, amber eyes that blink, ear tufts, talons) on a mossy branch with the sealed letter in its beak; its folded wings open from behind it and beat as it takes off, feathers drift down, and the letter slides out |
+| ⌨️ Telegram | a vintage typewriter in the look's enamel with chrome keys; breaking the seal sets it typing who it's for and the title one struck character at a time (uneven ink), the carriage steps along and returns with a ding, the paper feeds up a line, then the sheet is pulled out |
+| 🗺️ Treasure map | torn, foxed parchment folded in three and tied with twine both ways; it unfolds panel by panel (keeping a little of its fold) to show compass lines, coastlines, mountains, a river, a ship and a sea serpent; the dotted trail inks itself in and the X is drawn and circled |
 
 **Wax seal:** an SVG seal lit like real matte wax: an irregular poured
 puddle with fine grain, a raised rim, and an emblem either pressed into the

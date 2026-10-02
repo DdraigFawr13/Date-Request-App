@@ -307,129 +307,182 @@ export function tissue() {
 }
 
 // ── Owl post ─────────────────────────────────────────────────────────
-// A tawny owl on a branch, a letter in its beak. The wings are separate so
-// they can unfold and beat as it takes off.
+// A Eurasian eagle-owl on a branch, a letter in its beak. The folded wings sit
+// behind its flanks (only their edges show) so they can open out and beat as
+// it takes off.
+const OWL_BODY = 'M100 30 C131 30 153 41 160 64 C166 84 163 104 165 124 C168 152 160 180 146 197 C134 211 118 218 100 218 C82 218 66 211 54 197 C40 180 32 152 35 124 C37 104 34 84 40 64 C47 41 69 30 100 30Z';
+const OWL_DISC = 'M100 68 C93 54 70 50 56 61 C42 73 44 101 58 112 C70 121 89 119 100 109 C111 119 130 121 142 112 C156 101 158 73 144 61 C130 50 107 54 100 68Z';
+
+// Seeded noise so every owl is drawn the same.
+const rnd = seed => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+
 export function owlBody() {
-  const b = nextId('ob'), br = nextId('obr'), sh = nextId('osh'), fd = nextId('ofd'), ir = nextId('oir'), bk = nextId('obk'),
-    cl = nextId('ocl'), dc = nextId('odc'), sc = nextId('osc'), tx = nextId('otx');
-  const BODY = 'M100 22 C134 22 156 46 158 80 C162 120 166 160 150 190 C138 210 120 218 100 218 C80 218 62 210 50 190 C34 160 38 120 42 80 C44 46 66 22 100 22Z';
-  const DISC = 'M100 66 C92 52 70 50 56 62 C44 74 46 100 60 110 C72 119 90 116 100 108 C110 116 128 119 140 110 C154 100 156 74 144 62 C130 50 108 52 100 66Z';
+  const id = nextId('ow'), r = rnd(7);
+  const ref = s => `url(#${id}${s})`;
+  // Breast: long dark shaft streaks with fine wavy cross-barring.
   const streaks = [];
-  for (let r = 0; r < 8; r++) {
-    for (let c = -3; c <= 3; c++) {
-      const x = 100 + c * 11 + (r % 2 ? 5.5 : 0), y = 116 + r * 12;
-      streaks.push(`<path d="M${x} ${y} c-1.8 3.5 -1.8 7 0 9.5 c1.8 -2.5 1.8 -6 0 -9.5Z"/><path d="M${x - 3.5} ${y + 6.5} q3.5 1.6 7 0" fill="none" stroke="#7a5230" stroke-width=".6" opacity=".6"/>`);
+  for (let row = 0; row < 9; row++) {
+    for (let c = -4; c <= 4; c++) {
+      const x = 100 + c * 9.5 + (row % 2 ? 4.7 : 0) + (r() - 0.5) * 3, y = 112 + row * 11 + (r() - 0.5) * 3, len = 6 + r() * 6;
+      streaks.push(`<path d="M${x.toFixed(1)} ${y.toFixed(1)} c-.8 ${(len * 0.4).toFixed(1)} -.9 ${(len * 0.8).toFixed(1)} 0 ${len.toFixed(1)} c.7 -${(len * 0.2).toFixed(1)} .8 -${(len * 0.6).toFixed(1)} 0 -${len.toFixed(1)}Z"/>`);
     }
   }
-  const rays = cx => Array.from({ length: 16 }, (_, i) => {
-    const a = (i / 16) * Math.PI * 2;
-    return `M${(cx + Math.cos(a) * 17).toFixed(1)} ${(84 + Math.sin(a) * 17).toFixed(1)} L${(cx + Math.cos(a) * 31).toFixed(1)} ${(84 + Math.sin(a) * 31).toFixed(1)}`;
+  const bars = Array.from({ length: 22 }, (_, i) => {
+    const y = 108 + i * 4.8;
+    return `M50 ${y.toFixed(1)} q6 1.6 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0`;
   }).join(' ');
-  const eye = x => `<g transform="translate(${x} 84)">
-      <circle r="15.5" fill="#24150b"/>
-      <circle r="12.6" fill="url(#${ir})"/>
-      <circle r="12.6" fill="none" stroke="#6b3a06" stroke-width=".8" opacity=".6"/>
-      <circle r="6.4" fill="#0a0604"/>
-      <circle cx="-4" cy="-4.4" r="2.7" fill="#fff" opacity=".92"/><circle cx="3.8" cy="3.4" r="1.1" fill="#fff" opacity=".5"/>
-      <path d="M-15.5 -1 Q0 -19 15.5 -1 Q0 -12 -15.5 -1Z" fill="#3a2312" opacity=".85"/>
-      <circle class="owl-lid" r="16" fill="#8a6038"/>
+  // Head: fine, mottled streaks fanning back from the brow.
+  const crown = Array.from({ length: 60 }, () => {
+    const x = 48 + r() * 104, y = 32 + r() * 30, l = 2 + r() * 3.5, a = (x - 100) * 0.014;
+    return `M${x.toFixed(1)} ${y.toFixed(1)} q${(Math.sin(a) * l + 0.8).toFixed(1)} ${(l * 0.5).toFixed(1)} ${(Math.sin(a) * l).toFixed(1)} ${(Math.cos(a) * l).toFixed(1)}`;
+  }).join(' ');
+  // Feather tips breaking up the silhouette along the lower flanks.
+  const fringe = side => Array.from({ length: 11 }, (_, i) => {
+    const t = i / 10, y = 120 + t * 82, x = side < 0 ? 36 + t * t * 24 : 164 - t * t * 24;
+    return `M${(x - side * 3).toFixed(1)} ${(y - 6).toFixed(1)} q${side * 3} 3 ${side * 2.4} 7`;
+  }).join(' ');
+  const rays = cx => Array.from({ length: 22 }, (_, i) => {
+    const a = (i / 22) * Math.PI * 2;
+    return `M${(cx + Math.cos(a) * 16).toFixed(1)} ${(86 + Math.sin(a) * 16).toFixed(1)} L${(cx + Math.cos(a) * 34).toFixed(1)} ${(86 + Math.sin(a) * 34).toFixed(1)}`;
+  }).join(' ');
+  const fibres = Array.from({ length: 24 }, (_, i) => {
+    const a = (i / 24) * Math.PI * 2;
+    return `M${(Math.cos(a) * 7).toFixed(1)} ${(Math.sin(a) * 7).toFixed(1)} L${(Math.cos(a) * 12.6).toFixed(1)} ${(Math.sin(a) * 12.6).toFixed(1)}`;
+  }).join(' ');
+  const eye = x => `<g transform="translate(${x} 86)">
+      <circle r="16.2" fill="#1a0e06"/>
+      <circle r="13.4" fill="${ref('i')}"/>
+      <path d="${fibres}" stroke="#8a3c02" stroke-width=".5" opacity=".45"/>
+      <circle r="13.4" fill="none" stroke="#5a2400" stroke-width="1.1" opacity=".75"/>
+      <circle r="6.6" fill="#050302"/>
+      <ellipse cx="-3" cy="-5" rx="8.5" ry="5" fill="${ref('c')}"/>
+      <circle cx="-4.4" cy="-4.6" r="2.3" fill="#fff" opacity=".95"/><circle cx="4.6" cy="4" r=".9" fill="#fff" opacity=".55"/>
+      <path d="M-16.5 -2.5 Q0 -21 16.5 -2.5 Q0 -13.5 -16.5 -2.5Z" fill="#24140a"/>
+      <circle class="owl-lid" r="16.4" fill="#9b6b40"/>
     </g>`;
-  const foot = x => `<g transform="translate(${x} 206)">
-      <ellipse rx="11" ry="7" fill="#d9c294"/>
-      <path d="M-8 2 C-10 8 -9 12 -7 15 M-3 3 C-3 9 -2 13 0 16 M3 3 C4 9 4 12 3 15 M8 2 C10 7 10 10 8 13" stroke="#cfb47a" stroke-width="4.4" stroke-linecap="round" fill="none"/>
-      <path d="M-8 2 C-10 8 -9 12 -7 15 M-3 3 C-3 9 -2 13 0 16 M3 3 C4 9 4 12 3 15 M8 2 C10 7 10 10 8 13" stroke="#8a6f3c" stroke-width=".6" stroke-dasharray="1.2 1.4" fill="none" opacity=".7"/>
-      <path d="M-7 15 q1.5 3.5 -1.8 5 M0 16 q1.5 3.5 -1.8 5 M3 15 q2 3 0 5 M8 13 q2.2 3 .2 5" stroke="#1d140c" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+  const tuft = (x, s) => `<g transform="translate(${x} 52) scale(${s} 1)">
+      <path d="M-6 8 C-10 -4 -16 -18 -24 -32 C-14 -28 -6 -20 -2 -10 C-2 -20 -4 -30 -6 -40 C2 -30 8 -16 10 -2 C12 -8 14 -14 14 -20 C18 -10 18 0 14 8Z" fill="#7a5130"/>
+      <path d="M-4 6 C-8 -6 -14 -18 -20 -28 M0 2 C0 -12 -2 -26 -5 -36 M8 0 C10 -6 12 -12 13 -17" stroke="#24140a" stroke-width=".9" fill="none" opacity=".75"/>
+      <path d="M-2 6 C-5 -6 -10 -16 -15 -24 M3 2 C3 -10 1 -22 -2 -32" stroke="#e0b880" stroke-width=".6" fill="none" opacity=".45"/>
+    </g>`;
+  // Feathered feet; the toes curl over the branch, with dark hooked talons.
+  const foot = x => `<g transform="translate(${x} 205)">
+      <ellipse rx="13" ry="8" fill="${ref('f')}"/>
+      <path d="M-11 -2 q3 -4 6 0 q3 -4 6 0 q3 -4 6 0 q3 -4 6 0" stroke="#a5824e" stroke-width=".6" fill="none" opacity=".7"/>
+      ${[-7.5, 0, 7.5].map(dx => `<path d="M${dx} 3 C${dx * 1.1} 8 ${dx * 1.05} 11 ${dx * 0.92} 13.5" stroke="${ref('f')}" stroke-width="6.2" stroke-linecap="round" fill="none"/>
+      <path d="M${dx - 2} 5 q2 1.5 4 0 M${dx - 2} 8.5 q2 1.5 4 0" stroke="#a5824e" stroke-width=".5" fill="none" opacity=".7"/>`).join('')}
+      <path d="M-6.9 14 q-.2 4.4 -3.6 6 M0 14.5 q.6 4.4 -2.6 6.4 M6.9 14 q1.6 3.8 -.6 6.2" stroke="#120d09" stroke-width="2.1" stroke-linecap="round" fill="none"/>
+      <path d="M-7.2 15 q-.3 2.6 -2 3.8 M-.3 15.5 q.2 2.6 -1.4 4" stroke="#8d8378" stroke-width=".5" fill="none"/>
     </g>`;
   return svg('0 0 200 232', `
     <defs>
-      <radialGradient id="${b}" cx="50%" cy="34%" r="70%"><stop offset="0" stop-color="#b98a5c"/><stop offset=".55" stop-color="#8d6139"/><stop offset="1" stop-color="#583821"/></radialGradient>
-      <radialGradient id="${br}" cx="50%" cy="30%" r="75%"><stop offset="0" stop-color="#f3e3c2"/><stop offset=".7" stop-color="#dcbf8f"/><stop offset="1" stop-color="#b8915e"/></radialGradient>
-      <linearGradient id="${sh}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1e1208" stop-opacity=".55"/><stop offset=".22" stop-color="#1e1208" stop-opacity="0"/><stop offset=".62" stop-color="#fff" stop-opacity=".06"/><stop offset=".8" stop-color="#1e1208" stop-opacity="0"/><stop offset="1" stop-color="#1e1208" stop-opacity=".6"/></linearGradient>
-      <radialGradient id="${fd}" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#f4e6c8"/><stop offset=".65" stop-color="#e2c79a"/><stop offset="1" stop-color="#b48a58"/></radialGradient>
-      <radialGradient id="${ir}" cx="45%" cy="40%" r="60%"><stop offset="0" stop-color="#ffe07a"/><stop offset=".55" stop-color="#f4a015"/><stop offset="1" stop-color="#a95205"/></radialGradient>
-      <linearGradient id="${bk}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5c5248"/><stop offset=".45" stop-color="#9a8f80"/><stop offset="1" stop-color="#2e2822"/></linearGradient>
-      <clipPath id="${cl}"><ellipse cx="100" cy="160" rx="43" ry="56"/></clipPath>
-      <clipPath id="${dc}"><path d="${DISC}"/></clipPath>
-      <pattern id="${sc}" width="9" height="8" patternUnits="userSpaceOnUse">
-        <path d="M0 8 Q4.5 1 9 8" fill="none" stroke="#f0d3a2" stroke-width=".8" opacity=".5"/>
-        <path d="M-4.5 4 Q0 -3 4.5 4 M4.5 4 Q9 -3 13.5 4" fill="none" stroke="#2f1b0c" stroke-width=".7" opacity=".4"/></pattern>
-      <filter id="${tx}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9 .5" numOctaves="2" seed="7"/>
-        <feColorMatrix values="0 0 0 0 .2  0 0 0 0 .12  0 0 0 0 .05  0 0 0 1.2 -.45"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+      <radialGradient id="${id}b" cx="50%" cy="32%" r="72%"><stop offset="0" stop-color="#c4915a"/><stop offset=".5" stop-color="#9b6b40"/><stop offset="1" stop-color="#5a3a20"/></radialGradient>
+      <radialGradient id="${id}r" cx="50%" cy="26%" r="80%"><stop offset="0" stop-color="#f0d7a6"/><stop offset=".6" stop-color="#d4a86c"/><stop offset="1" stop-color="#a77a48"/></radialGradient>
+      <linearGradient id="${id}s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#160c04" stop-opacity=".7"/><stop offset=".2" stop-color="#160c04" stop-opacity=".1"/><stop offset=".42" stop-color="#fff3d8" stop-opacity=".1"/><stop offset=".6" stop-color="#160c04" stop-opacity="0"/><stop offset=".82" stop-color="#160c04" stop-opacity=".15"/><stop offset="1" stop-color="#160c04" stop-opacity=".75"/></linearGradient>
+      <linearGradient id="${id}v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".12"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset=".8" stop-color="#000" stop-opacity=".1"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></linearGradient>
+      <radialGradient id="${id}d" cx="50%" cy="48%" r="58%"><stop offset="0" stop-color="#e7c995"/><stop offset=".6" stop-color="#c99a62"/><stop offset="1" stop-color="#8e6236"/></radialGradient>
+      <radialGradient id="${id}i" cx="45%" cy="42%" r="62%"><stop offset="0" stop-color="#ffd04a"/><stop offset=".45" stop-color="#ff9d12"/><stop offset=".85" stop-color="#d9620a"/><stop offset="1" stop-color="#8a3402"/></radialGradient>
+      <radialGradient id="${id}c" cx="40%" cy="35%" r="60%"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <linearGradient id="${id}k" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a342e"/><stop offset=".4" stop-color="#6e655b"/><stop offset="1" stop-color="#16120e"/></linearGradient>
+      <linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3c792"/><stop offset="1" stop-color="#b8935a"/></linearGradient>
+      <clipPath id="${id}cb"><path d="${OWL_BODY}"/></clipPath>
+      <clipPath id="${id}cr"><path d="M100 104 C128 104 146 124 148 156 C150 190 128 214 100 214 C72 214 50 190 52 156 C54 124 72 104 100 104Z"/></clipPath>
+      <clipPath id="${id}cd"><path d="${OWL_DISC}"/></clipPath>
+      <filter id="${id}m" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".07 .32" numOctaves="3" seed="21"/>
+        <feColorMatrix values="0 0 0 0 .13  0 0 0 0 .07  0 0 0 0 .02  0 0 0 3.2 -1.55"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+      <filter id="${id}l" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".14 .4" numOctaves="2" seed="5"/>
+        <feColorMatrix values="0 0 0 0 .96  0 0 0 0 .84  0 0 0 0 .62  0 0 0 3 -1.75"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+      <filter id="${id}g" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3"/>
+        <feColorMatrix values="0 0 0 0 .1  0 0 0 0 .06  0 0 0 0 .02  0 0 0 1 -.4"/><feComposite in2="SourceGraphic" operator="in"/></filter>
     </defs>
-    <path d="M84 196 L78 230 L90 228 L100 232 L110 228 L122 230 L116 196Z" fill="#6b4728"/>
-    <path d="M86 206 H114 M84 216 H116 M82 225 H118" stroke="#d8b483" stroke-width="2.4" opacity=".55"/>
-    <path d="M58 48 C52 32 49 16 44 6 C60 13 72 26 80 38Z" fill="#7a5232"/>
-    <path d="M142 48 C148 32 151 16 156 6 C140 13 128 26 120 38Z" fill="#7a5232"/>
-    <path d="M56 40 C52 28 50 18 47 10 M144 40 C148 28 150 18 153 10" stroke="#2f1b0c" stroke-width=".9" opacity=".6" fill="none"/>
-    <path d="${BODY}" fill="url(#${b})"/>
-    <path d="${BODY}" fill="url(#${sc})"/>
-    <g clip-path="url(#${cl})">
-      <ellipse cx="100" cy="160" rx="43" ry="56" fill="url(#${br})"/>
-      <g fill="#5e3b1f" opacity=".72">${streaks.join('')}</g>
+    <path d="M86 192 L80 228 L92 226 L100 230 L108 226 L120 228 L114 192Z" fill="#5e3d22"/>
+    <path d="M85 202 H115 M83 212 H117 M82 221 H118" stroke="#c8975e" stroke-width="2.2" opacity=".5"/>
+    ${tuft(62, 1)}${tuft(138, -1)}
+    <path d="${OWL_BODY}" fill="${ref('b')}"/>
+    <g clip-path="${ref('cb')}">
+      <rect width="200" height="232" filter="${ref('m')}"/>
+      <rect width="200" height="232" filter="${ref('l')}" opacity=".7"/>
+      <path d="${crown}" stroke="#24140a" stroke-width=".7" stroke-linecap="round" fill="none" opacity=".4"/>
+      <path d="${crown}" stroke="#f0d3a0" stroke-width=".5" stroke-linecap="round" fill="none" opacity=".3" transform="translate(1.4 .6)"/>
+      <g clip-path="${ref('cr')}">
+        <path d="M100 104 C128 104 146 124 148 156 C150 190 128 214 100 214 C72 214 50 190 52 156 C54 124 72 104 100 104Z" fill="${ref('r')}"/>
+        <path d="${bars}" fill="none" stroke="#6a4424" stroke-width=".45" opacity=".3"/>
+        <g fill="#2e1a0b" opacity=".62">${streaks.join('')}</g>
+        <path d="M100 104 C128 104 146 124 148 156 C150 190 128 214 100 214 C72 214 50 190 52 156 C54 124 72 104 100 104Z" fill="none" stroke="#5a3a20" stroke-width="8" opacity=".35" style="filter:blur(3px)"/>
+      </g>
+      <path d="M84 112 C90 120 110 120 116 112 C112 128 88 128 84 112Z" fill="#f4ead8" opacity=".85"/>
+      <path d="${fringe(-1)} ${fringe(1)}" stroke="#3a2412" stroke-width="1" fill="none" opacity=".55"/>
+      <rect width="200" height="232" fill="${ref('s')}"/>
+      <rect width="200" height="232" fill="${ref('v')}"/>
     </g>
-    <path d="${BODY}" fill="url(#${sh})"/>
-    <path d="${DISC}" fill="url(#${fd})"/>
-    <g clip-path="url(#${dc})"><path d="${rays(78)} ${rays(122)}" stroke="#8a6238" stroke-width=".7" opacity=".45"/></g>
-    <path d="${DISC}" fill="none" stroke="#4a2c14" stroke-width="2.6" stroke-linejoin="round"/>
-    <path d="${DISC}" fill="none" stroke="#f5e4c0" stroke-width=".8" opacity=".6" transform="translate(0 1.5)"/>
-    <path d="M100 108 C94 92 90 76 86 66 Q100 58 114 66 C110 76 106 92 100 108Z" fill="#f6ead2" opacity=".85"/>
-    ${eye(78)}${eye(122)}
-    <path d="M100 96 C94.5 96 92.6 102 94.6 109 C96.6 115 100 121 100 121 C100 121 103.4 115 105.4 109 C107.4 102 105.5 96 100 96Z" fill="url(#${bk})"/>
-    <path d="M97.5 99 C96.5 104 97.5 110 99.5 115" fill="none" stroke="#d8cdbd" stroke-width=".9" opacity=".6"/>
-    ${foot(82)}${foot(118)}
-    <path d="${BODY}" filter="url(#${tx})" opacity=".55"/>`, 'owl-art', 'xMidYMid meet');
+    <path d="${fringe(-1)} ${fringe(1)}" stroke="#7a5230" stroke-width="1.6" stroke-linecap="round" fill="none" transform="translate(0 2)"/>
+    <path d="${OWL_DISC}" fill="${ref('d')}"/>
+    <g clip-path="${ref('cd')}">
+      <path d="${rays(76)} ${rays(124)}" stroke="#6e4422" stroke-width=".45" opacity=".3"/>
+      <rect width="200" height="232" filter="${ref('g')}" opacity=".6"/>
+    </g>
+    <path d="${OWL_DISC}" fill="none" stroke="#2a170a" stroke-width="4.5" stroke-linejoin="round" opacity=".55" style="filter:blur(1.2px)"/>
+    <path d="${OWL_DISC}" fill="none" stroke="#24140a" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="1.4 .9"/>
+    <path d="M100 110 C95 96 90 80 82 70 C78 64 70 64 64 68 C72 60 92 60 100 74 C108 60 128 60 136 68 C130 64 122 64 118 70 C110 80 105 96 100 110Z" fill="#ead6b0" opacity=".9"/>
+    <path d="M98 76 C94 72 86 70 80 72 M102 76 C106 72 114 70 120 72" stroke="#a07a4c" stroke-width=".6" fill="none" opacity=".8"/>
+    ${eye(76)}${eye(124)}
+    <path d="M100 96 C95.6 96 94 101 95.5 107 C97 112.5 100 118 100 118 C100 118 103 112.5 104.5 107 C106 101 104.4 96 100 96Z" fill="${ref('k')}"/>
+    <path d="M98 99 C97.4 103 98 108 99.4 112" fill="none" stroke="#b9b0a5" stroke-width=".8" opacity=".55"/>
+    <path d="M100 92 l-6 9 M100 92 l6 9 M100 93 l-3 10 M100 93 l3 10" stroke="#efe6d6" stroke-width=".7" opacity=".7"/>
+    ${foot(84)}${foot(116)}`, 'owl-art', 'xMidYMid meet');
 }
 
-const WING = 'M44 2 C22 8 8 36 6 74 C4 102 12 124 28 138 C34 118 46 92 54 62 C59 40 58 14 44 2Z';
+// A folded wing. It sits behind the owl's flank; opened, it shows the barred
+// flight feathers.
+const WING = 'M42 2 C24 8 10 34 8 70 C6 98 12 122 26 140 C34 120 46 92 52 62 C56 40 54 14 42 2Z';
 export function owlWing() {
-  const g = nextId('owg'), c = nextId('owc');
-  const primaries = [[48, 58, 30, 137], [47, 56, 23, 131], [46, 54, 16, 121], [45, 52, 10, 106], [44, 50, 7, 90]];
+  const id = nextId('owg'), r = rnd(11);
+  const primaries = [[46, 56, 28, 139], [45, 54, 22, 133], [44, 52, 16, 123], [43, 50, 11, 109], [42, 48, 8, 93], [41, 46, 7, 78]];
   const feather = ([x1, y1, x2, y2]) => {
-    const d = `M${x1} ${y1} Q${(x1 + x2) / 2 + 4} ${(y1 + y2) / 2} ${x2} ${y2}`;
-    return `<path d="${d}" stroke="#4e321b" stroke-width="10" stroke-linecap="round" fill="none"/>
-      <path d="${d}" stroke="#8d6239" stroke-width="8" stroke-linecap="round" fill="none"/>
-      <path d="${d}" stroke="#dcb987" stroke-width="7.4" stroke-dasharray="3 5.5" fill="none" opacity=".7"/>
-      <path d="${d}" stroke="#2e1d10" stroke-width=".6" fill="none" opacity=".55"/>`;
+    const d = `M${x1} ${y1} Q${(x1 + x2) / 2 + 5} ${(y1 + y2) / 2} ${x2} ${y2}`;
+    return `<path d="${d}" stroke="#2c1a0c" stroke-width="10.5" stroke-linecap="round" fill="none"/>
+      <path d="${d}" stroke="#7e5531" stroke-width="8.6" stroke-linecap="round" fill="none"/>
+      <path d="${d}" stroke="#d6ad74" stroke-width="8" stroke-dasharray="2.6 5.4" fill="none" opacity=".75"/>
+      <path d="${d}" stroke="#1e1208" stroke-width=".5" fill="none" opacity=".6"/>`;
   };
-  const coverts = [];
-  for (let r = 0; r < 7; r++) for (let c2 = 0; c2 < 6; c2++) {
-    const x = 8 + c2 * 8.5 + (r % 2 ? 4 : 0), y = 14 + r * 6.5;
-    coverts.push(`M${x} ${y} q4.2 5.5 8.5 0`);
-  }
-  return svg('0 0 60 140', `
+  const spots = Array.from({ length: 40 }, () => `<ellipse cx="${(8 + r() * 46).toFixed(1)}" cy="${(8 + r() * 52).toFixed(1)}" rx="${(1 + r() * 1.4).toFixed(1)}" ry="${(0.7 + r()).toFixed(1)}"/>`).join('');
+  return svg('0 0 60 142', `
     <defs>
-      <linearGradient id="${g}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a0724a"/><stop offset=".5" stop-color="#7a5331"/><stop offset="1" stop-color="#4a301b"/></linearGradient>
-      <clipPath id="${c}"><path d="${WING}"/></clipPath>
+      <linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9d6d42"/><stop offset=".5" stop-color="#76502e"/><stop offset="1" stop-color="#3f2814"/></linearGradient>
+      <clipPath id="${id}c"><path d="${WING}"/></clipPath>
     </defs>
-    <path d="${WING}" fill="url(#${g})"/>
-    <g clip-path="url(#${c})">
+    <path d="${WING}" fill="url(#${id}g)"/>
+    <g clip-path="url(#${id}c)">
       ${primaries.slice().reverse().map(feather).join('')}
-      <path d="M2 0 H60 V58 C40 64 20 58 2 66Z" fill="url(#${g})"/>
-      <path d="${coverts.join(' ')}" fill="none" stroke="#e2c08e" stroke-width=".8" opacity=".55"/>
-      <path d="${coverts.join(' ')}" fill="none" stroke="#2a1809" stroke-width=".7" opacity=".35" transform="translate(0 1.4)"/>
-      <path d="M2 66 C20 58 40 64 60 58" fill="none" stroke="#2a1809" stroke-width="1.2" opacity=".5"/>
-      <path d="M60 0 V140 H44 C50 100 56 60 50 0Z" fill="#000" opacity=".22"/>
+      <path d="M0 0 H60 V56 C40 62 20 56 0 66Z" fill="url(#${id}g)"/>
+      <g fill="#e2bf88" opacity=".55">${spots}</g>
+      <path d="M0 66 C20 56 40 62 60 56" fill="none" stroke="#1e1208" stroke-width="1.4" opacity=".45"/>
+      <path d="M60 0 V142 H44 C50 100 56 60 50 0Z" fill="#000" opacity=".25"/>
     </g>
-    <path d="${WING}" fill="none" stroke="#2e1d10" stroke-opacity=".55" stroke-width=".8"/>`, 'owl-wing-art');
+    <path d="${WING}" fill="none" stroke="#1e1208" stroke-opacity=".6" stroke-width=".8"/>`, 'owl-wing-art');
 }
 
-// A mossy branch for the owl to perch on.
+// A gnarled, mossy branch for the owl to perch on.
 export function branch() {
-  const w = nextId('brw'), g = nextId('brg');
-  const leaf = (x, y, r, s = 1) => `<path transform="translate(${x} ${y}) rotate(${r}) scale(${s})" d="M0 0 C6 -7 18 -7 26 0 C18 7 6 7 0 0Z"/>`;
+  const w = nextId('brw'), g = nextId('brg'), m = nextId('brm');
+  const BR = 'M0 22 C40 16 80 20 120 17 C170 13 220 17 260 15 C290 14 316 18 340 14 V31 C316 33 290 30 260 32 C220 34 170 33 120 34 C80 35 40 33 0 38Z';
+  const leaf = (x, y, rot, s = 1) => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><path d="M0 0 C6 -7 18 -7 26 0 C18 7 6 7 0 0Z"/><path d="M1 0 H24" stroke="#000" stroke-opacity=".25" stroke-width=".6"/></g>`;
   return svg('0 0 340 46', `
     <defs>
-      <linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a6a4a"/><stop offset=".35" stop-color="#6a4c32"/><stop offset="1" stop-color="#2f2014"/></linearGradient>
+      <linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#93765a"/><stop offset=".3" stop-color="#6b5038"/><stop offset=".7" stop-color="#433020"/><stop offset="1" stop-color="#20160d"/></linearGradient>
       ${WOOD_GRAIN(w)}
+      <filter id="${m}" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".18 .5" numOctaves="2" seed="8"/>
+        <feColorMatrix values="0 0 0 0 .38  0 0 0 0 .5  0 0 0 0 .22  0 0 0 3.4 -1.9"/><feComposite in2="SourceGraphic" operator="in"/></filter>
     </defs>
-    <path d="M0 22 C60 14 120 18 180 16 C240 14 290 20 340 14 V30 C290 34 240 30 180 32 C120 34 60 32 0 38Z" fill="url(#${g})"/>
-    <path d="M0 22 C60 14 120 18 180 16 C240 14 290 20 340 14 V30 C290 34 240 30 180 32 C120 34 60 32 0 38Z" fill="#000" filter="url(#${w})" opacity=".8"/>
-    <path d="M250 18 C266 8 278 4 292 2 M270 9 C276 4 278 0 278 0" stroke="#5a4029" stroke-width="3.2" stroke-linecap="round" fill="none"/>
-    <path d="M60 32 C52 38 48 42 40 46" stroke="#4e3824" stroke-width="2.6" stroke-linecap="round" fill="none"/>
-    <path d="M30 22 C70 15 110 19 150 17" stroke="#d8c3a4" stroke-width="1" opacity=".35" fill="none"/>
-    <g fill="#6f8b4a" opacity=".85"><ellipse cx="128" cy="18" rx="9" ry="2.2"/><ellipse cx="214" cy="16" rx="7" ry="2"/></g>
-    <g style="fill:var(--sprig)" stroke="#000" stroke-opacity=".2" stroke-width=".5">
-      ${leaf(292, 2, -20, 0.8)}${leaf(276, 6, -150, 0.7)}${leaf(42, 44, 150, 0.7)}${leaf(300, 16, 10, 0.75)}</g>`, 'branch-art');
+    <path d="M250 18 C266 8 278 4 292 2 M270 9 C276 4 278 0 278 0" stroke="#4e3824" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+    <path d="M60 32 C52 38 48 42 40 46" stroke="#3e2c1c" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+    <path d="${BR}" fill="url(#${g})"/>
+    <path d="${BR}" fill="#000" filter="url(#${w})" opacity=".85"/>
+    <path d="M0 22 C40 16 80 20 120 17 C170 13 220 17 260 15 C290 14 316 18 340 14 V22 C300 22 260 21 200 22 C140 23 60 24 0 28Z" filter="url(#${m})"/>
+    <ellipse cx="176" cy="25" rx="5" ry="3" fill="#2a1d12"/><ellipse cx="176" cy="24.4" rx="3" ry="1.6" fill="#7a5c40"/>
+    <path d="M24 21 C64 15 104 19 144 16" stroke="#e6d4b8" stroke-width=".9" opacity=".3" fill="none"/>
+    <g fill="#c9c3a0" opacity=".55"><circle cx="40" cy="26" r="2"/><circle cx="44" cy="27.5" r="1.3"/><circle cx="232" cy="22" r="1.8"/><circle cx="300" cy="22" r="1.4"/></g>
+    <g style="fill:var(--sprig)">${leaf(292, 2, -20, 0.8)}${leaf(276, 6, -150, 0.7)}${leaf(42, 44, 150, 0.7)}${leaf(300, 16, 10, 0.75)}</g>`, 'branch-art');
 }
 
 // ── Pop-up book ──────────────────────────────────────────────────────
@@ -461,26 +514,103 @@ export function bookCover() {
     <rect x=".5" y=".5" width="149" height="199" rx="4" fill="none" stroke="#000" stroke-opacity=".35"/>`, 'cover-art');
 }
 
-// Paper-cut scenery that stands up out of the book.
-export function popHills() {
-  const tree = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-1.5" y="-4" width="3" height="10" fill="#6a4c32"/>
-    <circle cy="-12" r="10" style="fill:color-mix(in srgb, var(--sprig) 62%, #000)" stroke="#fff" stroke-opacity=".55" stroke-width="1"/>
-    <path d="M-5 -16 a6 6 0 0 1 7 -3" stroke="#fff" stroke-opacity=".35" stroke-width="1.4" fill="none"/></g>`;
-  const pine = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 -30 L10 -10 H5 L13 4 H-13 L-5 -10 H-10Z" style="fill:color-mix(in srgb, var(--sprig) 55%, #000)" stroke="#fff" stroke-opacity=".55" stroke-width="1"/><rect x="-1.5" y="4" width="3" height="6" fill="#6a4c32"/></g>`;
-  return svg('0 0 200 90', `
-    <path d="M0 90 V52 C30 30 60 34 82 50 C104 30 140 22 166 44 C182 36 194 38 200 42 V90Z" style="fill:color-mix(in srgb, var(--sprig) 72%, #000)" stroke="#fff" stroke-opacity=".5" stroke-width="1"/>
-    ${pine(24, 46, 0.8)}${pine(178, 42, 0.9)}${tree(150, 40, 0.8)}
-    <path d="M0 90 V66 C24 52 52 56 70 66 C96 52 126 52 150 66 C170 58 188 60 200 64 V90Z" style="fill:var(--sprig)" stroke="#fff" stroke-opacity=".6" stroke-width="1"/>
-    <path d="M0 90 V66 C24 52 52 56 70 66 C96 52 126 52 150 66 C170 58 188 60 200 64 V90Z" fill="#fff" opacity=".12"/>
-    ${tree(40, 66, 0.9)}${tree(168, 66, 1)}${pine(58, 70, 0.7)}`, 'pop-art', 'xMidYMax meet');
+// Paper-cut scenery that stands up out of the book: a little paper theatre.
+// The backdrop: a night (or day) sky with punched-through stars and clouds.
+export function popSky() {
+  const id = nextId('ps'), r = rnd(5);
+  const ARCH = 'M4 220 V70 C4 30 46 4 100 4 C154 4 196 30 196 70 V220Z';
+  const stars = Array.from({ length: 22 }, () => {
+    const x = 20 + r() * 160, y = 16 + r() * 120, s = 0.6 + r() * 1.3;
+    return `<path transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s.toFixed(2)})" d="M0 -3 L.8 -.8 L3 0 L.8 .8 L0 3 L-.8 .8 L-3 0 L-.8 -.8Z"/>`;
+  }).join('');
+  const cloud = (y, fill, shift) => `<path transform="translate(${shift} 0)" d="M-10 220 V${y} C10 ${y - 14} 26 ${y - 12} 36 ${y - 4} C44 ${y - 18} 66 ${y - 18} 74 ${y - 6} C86 ${y - 16} 104 ${y - 14} 110 ${y - 2} C122 ${y - 14} 144 ${y - 14} 152 ${y - 4} C162 ${y - 12} 184 ${y - 10} 210 ${y} V220Z" style="fill:${fill}" stroke="#fff" stroke-opacity=".7" stroke-width="1"/>`;
+  return svg('0 0 200 220', `
+    <defs>
+      <linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb, var(--bg1) 85%, #000)"/><stop offset=".7" style="stop-color:color-mix(in srgb, var(--bg2) 80%, var(--accent))"/><stop offset="1" style="stop-color:color-mix(in srgb, var(--bg2) 60%, #fff)"/></linearGradient>
+      ${goldGrad(`${id}g`)}
+      <filter id="${id}b"><feGaussianBlur stdDeviation="1.2"/></filter>
+    </defs>
+    <path d="${ARCH}" fill="url(#${id}s)"/>
+    <g fill="#fff4cf" filter="url(#${id}b)" opacity=".9">${stars}</g>
+    <g fill="#fffaf0">${stars}</g>
+    ${cloud(186, 'color-mix(in srgb, var(--card) 75%, var(--bg2))', -6)}
+    ${cloud(200, 'color-mix(in srgb, var(--card) 92%, var(--bg2))', 14)}
+    <path d="${ARCH}" fill="none" stroke="url(#${id}g)" stroke-width="3"/>
+    <path d="${ARCH}" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="1" transform="translate(0 1.5)"/>`, 'pop-art', 'none');
 }
 
+// The theatre's front: a patterned, gilt-edged frame with an arched opening.
+export function popFrame() {
+  const id = nextId('pf');
+  const OUT = 'M0 160 V40 C0 14 30 0 100 0 C170 0 200 14 200 40 V160Z';
+  const IN = 'M24 160 V58 C24 34 52 22 100 22 C148 22 176 34 176 58 V160Z';
+  return svg('0 0 200 160', `
+    <defs>${goldGrad(`${id}g`)}
+      <pattern id="${id}p" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M7 2 l2 5 l-2 5 l-2 -5z" style="fill:var(--sprig)" opacity=".55"/><circle cx="0" cy="0" r="1.2" style="fill:var(--sprig)" opacity=".5"/><circle cx="14" cy="14" r="1.2" style="fill:var(--sprig)" opacity=".5"/></pattern>
+      <linearGradient id="${id}l" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".25"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></linearGradient>
+    </defs>
+    <path d="${OUT} ${IN}" fill-rule="evenodd" style="fill:var(--liner)"/>
+    <path d="${OUT} ${IN}" fill-rule="evenodd" fill="url(#${id}p)"/>
+    <path d="${OUT} ${IN}" fill-rule="evenodd" fill="url(#${id}l)"/>
+    <path d="${IN}" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="5" style="filter:blur(2px)"/>
+    <g fill="none" stroke="url(#${id}g)"><path d="${OUT}" stroke-width="3"/><path d="${IN}" stroke-width="2.4"/>
+      <path d="M8 160 V42 C8 20 36 8 100 8 C164 8 192 20 192 42 V160" stroke-width=".8"/></g>
+    <g transform="translate(100 11)"><circle r="8" fill="url(#${id}g)"/><circle r="5.6" style="fill:var(--liner)"/></g>
+    <g fill="url(#${id}g)">${[[12, 150], [188, 150]].map(([x, y]) => `<rect x="${x - 6}" y="${y - 2}" width="12" height="12" rx="1"/><rect x="${x - 4}" y="${y - 70}" width="8" height="68" rx="1" opacity=".55"/>`).join('')}</g>`, 'pop-art', 'none');
+}
+
+// A scalloped velvet valance with gold fringe, hung inside the arch.
+export function popValance() {
+  const id = nextId('pv');
+  const scallops = Array.from({ length: 6 }, (_, i) => `Q${12 + i * 25} 34 ${25 + i * 25} 18`).join(' ');
+  return svg('0 0 150 36', `
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb, var(--ribbon) 55%, #000)"/><stop offset=".6" style="stop-color:var(--ribbon)"/><stop offset="1" style="stop-color:color-mix(in srgb, var(--ribbon) 70%, #000)"/></linearGradient>${goldGrad(`${id}g`)}</defs>
+    <path d="M0 0 H150 V18 ${Array.from({ length: 6 }, (_, i) => `Q${138 - i * 25} 34 ${125 - i * 25} 18`).join(' ')} Z" fill="url(#${id})"/>
+    <path d="M0 18 ${scallops}" fill="none" stroke="url(#${id}g)" stroke-width="2"/>
+    <path d="M0 18 ${scallops}" fill="none" stroke="#e8c76a" stroke-width="3" stroke-dasharray=".6 1.4" transform="translate(0 2.4)"/>
+    ${Array.from({ length: 7 }, (_, i) => `<path d="M${i * 25} 18 v8" stroke="url(#${id}g)" stroke-width="1.2"/><ellipse cx="${i * 25}" cy="28" rx="1.8" ry="3" fill="url(#${id}g)"/>`).join('')}`, 'pop-art', 'none');
+}
+
+// One velvet curtain (the right one is mirrored in CSS).
+export function popCurtain() {
+  const id = nextId('pc');
+  return svg('0 0 60 160', `
+    <defs>
+      <pattern id="${id}p" width="10" height="160" patternUnits="userSpaceOnUse">
+        <rect width="10" height="160" style="fill:var(--ribbon)"/>
+        <rect width="10" height="160" fill="url(#${id}f)"/></pattern>
+      <linearGradient id="${id}f" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".5"/><stop offset=".35" stop-color="#fff" stop-opacity=".18"/><stop offset=".55" stop-color="#fff" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></linearGradient>
+      <linearGradient id="${id}v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".35"/><stop offset=".3" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
+      ${goldGrad(`${id}g`)}
+    </defs>
+    <path d="M0 0 H60 C58 50 60 110 58 152 Q44 158 30 154 Q14 158 0 154Z" fill="url(#${id}p)"/>
+    <path d="M0 0 H60 C58 50 60 110 58 152 Q44 158 30 154 Q14 158 0 154Z" fill="url(#${id}v)"/>
+    <path d="M0 154 Q14 158 30 154 Q44 158 58 152" fill="none" stroke="url(#${id}g)" stroke-width="2.4"/>
+    <path d="M0 156 Q14 160 30 156 Q44 160 58 154" fill="none" stroke="#e8c76a" stroke-width="3" stroke-dasharray=".6 1.2"/>`, 'pop-art', 'none');
+}
+
+// A stand of paper trees for one side of the spread.
+export function popTrees() {
+  const leafy = (x, y, s, shade) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-2" y="-6" width="4" height="16" fill="#6a4c32"/>
+    <path d="M0 -40 C12 -40 20 -30 18 -20 C24 -14 22 -2 12 0 C8 4 -8 4 -12 0 C-22 -2 -24 -14 -18 -20 C-20 -30 -12 -40 0 -40Z" style="fill:color-mix(in srgb, var(--tree) ${shade}%, #000)" stroke="#fff" stroke-opacity=".6" stroke-width="1"/>
+    <path d="M-10 -26 C-6 -32 2 -34 6 -32" stroke="#fff" stroke-opacity=".35" stroke-width="1.6" fill="none"/></g>`;
+  const pine = (x, y, s, shade) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-2" y="2" width="4" height="8" fill="#6a4c32"/>
+    <path d="M0 -44 L12 -24 H6 L16 -8 H8 L20 6 H-20 L-8 -8 H-16 L-6 -24 H-12Z" style="fill:color-mix(in srgb, var(--tree) ${shade}%, #000)" stroke="#fff" stroke-opacity=".6" stroke-width="1"/></g>`;
+  return svg('0 0 100 90', `
+    <path d="M0 90 V70 C20 60 50 62 70 70 C84 66 96 68 100 72 V90Z" style="fill:color-mix(in srgb, var(--tree) 60%, #000)" stroke="#fff" stroke-opacity=".5" stroke-width="1"/>
+    ${pine(24, 70, 1.15, 50)}${leafy(62, 74, 1, 64)}${pine(86, 80, 0.8, 58)}
+    <path d="M0 90 V80 C20 74 44 76 60 82 C74 78 90 80 100 84 V90Z" style="fill:var(--tree)" stroke="#fff" stroke-opacity=".6" stroke-width="1"/>`, 'pop-art', 'xMidYMax meet');
+}
+
+// Flowers and grass along the front edge, with footlights between.
 export function popFront() {
   const flower = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0 V-14" stroke="#4d6b36" stroke-width="1.6"/>
     <g style="fill:var(--gem)" stroke="#fff" stroke-opacity=".6" stroke-width=".6">${[0, 72, 144, 216, 288].map(r => `<ellipse transform="rotate(${r} 0 -18)" cy="-22" rx="3" ry="4.4"/>`).join('')}</g>
     <circle cy="-18" r="2.4" fill="#f2c84b"/></g>`;
   return svg('0 0 200 40', `
-    <path d="M0 40 V30 C10 22 20 26 30 30 C44 22 56 24 66 32 V40Z M134 40 V32 C146 22 160 24 172 30 C182 24 192 24 200 30 V40Z" fill="#5d7d3e" stroke="#fff" stroke-opacity=".55" stroke-width="1"/>
+    <path d="M0 40 V30 C10 22 20 26 30 30 C44 22 56 24 66 32 V40Z M134 40 V32 C146 22 160 24 172 30 C182 24 192 24 200 30 V40Z" style="fill:var(--tree)" stroke="#fff" stroke-opacity=".55" stroke-width="1"/>
+    <rect x="62" y="31" width="76" height="9" rx="1.5" style="fill:color-mix(in srgb, var(--liner) 70%, #000)"/>
+    <rect x="62" y="31" width="76" height="2" fill="#e8c76a"/>
     ${flower(18, 30, 0.9)}${flower(40, 32, 0.75)}${flower(160, 31, 0.85)}${flower(184, 30, 0.7)}`, 'pop-art', 'xMidYMax meet');
 }
 
@@ -513,6 +643,10 @@ export function typewriterBody() {
     <path d="M40 8 H260 C270 8 274 14 276 22 L296 140 C298 152 292 160 280 160 H20 C8 160 2 152 4 140 L24 22 C26 14 30 8 40 8Z" fill="url(#${e})"/>
     <path d="M40 8 H260 C270 8 274 14 276 22 L296 140 C298 152 292 160 280 160 H20 C8 160 2 152 4 140 L24 22 C26 14 30 8 40 8Z" fill="url(#${sh})"/>
     <path d="M40 8 H260 C270 8 274 14 276 22 L296 140 C298 152 292 160 280 160 H20 C8 160 2 152 4 140 L24 22 C26 14 30 8 40 8Z" fill="#000" filter="url(#${gr})" opacity=".35"/>
+    <path d="M40 8 H260 C270 8 274 14 276 22 L281.5 52 H18.5 L24 22 C26 14 30 8 40 8Z" fill="#fff" opacity=".07"/>
+    <path d="M19 52.5 H281" stroke="#fff" stroke-opacity=".28" stroke-width="1"/><path d="M19 54 H281" stroke="#000" stroke-opacity=".35" stroke-width="1.4"/>
+    <path d="M60 160 L120 8 H150 L90 160Z" fill="#fff" opacity=".05"/><path d="M98 160 L158 8 H166 L106 160Z" fill="#fff" opacity=".06"/>
+    <rect x="14" y="157" width="34" height="7" rx="3" fill="#111"/><rect x="252" y="157" width="34" height="7" rx="3" fill="#111"/>
     <path d="M44 12 H256 C264 12 268 17 270 24 L289 138 C290 148 286 154 278 154 H22 C14 154 10 148 11 138 L30 24 C32 17 36 12 44 12Z" fill="none" stroke="url(#${gd})" stroke-width=".8" opacity=".85"/>
     <path d="M104 8 A46 40 0 0 0 196 8Z" fill="#0f0b09"/>
     <path d="${bars}" stroke="url(#${c})" stroke-width="1.3" stroke-linecap="round"/>
@@ -574,66 +708,110 @@ function parchment(id, w, h) {
   top: `<rect width="${w}" height="${h}" filter="url(#${s})" opacity=".45"/><rect width="${w}" height="${h}" fill="url(#${v})"/>` };
 }
 
-export function mapArt() {
-  const id = nextId('ma'), p = parchment(id, 300, 200), land = `${id}l`;
+// Foxing (age spots) and a coffee-ring stain, scattered the same way each time.
+function foxing(w, h, seed) {
+  const r = rnd(seed);
+  const spots = Array.from({ length: Math.round(w * h / 1500) }, () =>
+    `<circle cx="${(r() * w).toFixed(1)}" cy="${(r() * h).toFixed(1)}" r="${(0.4 + r() * 1.6).toFixed(1)}" opacity="${(0.08 + r() * 0.18).toFixed(2)}"/>`).join('');
+  return `<g fill="#6b3d12">${spots}</g>`;
+}
+
+export function mapArt(glyph = '✦') {
+  const id = nextId('ma'), p = parchment(id, 300, 200), land = `${id}l`, isl = `${id}i`, r = rnd(13);
   const ISLAND = 'M44 120 C40 96 58 78 82 74 C96 52 126 40 150 48 C176 38 214 48 226 70 C250 80 258 108 244 128 C246 152 222 170 196 164 C176 180 140 178 120 166 C96 176 62 166 56 146 C44 142 40 130 44 120Z';
   const ISLE = 'M252 150 C256 140 272 138 280 146 C288 154 280 166 268 166 C256 168 248 160 252 150Z';
-  const ISLE2 = 'M18 40 C22 30 38 28 44 36 C50 44 42 54 30 52 C20 52 15 48 18 40Z';
+  const ISLE2 = 'M16 64 C20 56 34 54 40 60 C46 67 40 76 29 76 C19 76 13 71 16 64Z';
+  const about = (s, cx, cy) => `transform="translate(${cx} ${cy}) scale(${s}) translate(${-cx} ${-cy})"`;
+  const waterlines = [[1.05, 0.5, '2 1.6'], [1.1, 0.32, '1.5 2.2'], [1.16, 0.2, '1 3']].map(([s, o, d]) =>
+    `<use href="#${isl}" ${about(s, 150, 110)} fill="none" stroke="${INK}" stroke-width=".7" stroke-dasharray="${d}" opacity="${o}"/>`).join('');
+  const rhumbs = Array.from({ length: 16 }, (_, i) => {
+    const a = (i / 16) * Math.PI * 2;
+    return `M262 44 L${(262 + Math.cos(a) * 420).toFixed(0)} ${(44 + Math.sin(a) * 420).toFixed(0)}`;
+  }).join(' ');
   const tree = (x, y) => `<path d="M${x} ${y} l-3.5 0 l3.5 -8 l3.5 8z M${x} ${y} v2.5"/>`;
-  const trees = [[96, 128], [104, 134], [88, 136], [112, 126], [180, 146], [188, 140], [196, 148], [172, 152], [214, 92], [222, 98]].map(([x, y]) => tree(x, y)).join('');
-  const waves = [[24, 80], [270, 100], [140, 22], [90, 190], [236, 186], [12, 130], [200, 26]].map(([x, y]) => `<path d="M${x} ${y} q3 -3 6 0 t6 0"/>`).join('');
+  const trees = [[96, 128], [104, 134], [88, 136], [112, 126], [100, 122], [180, 146], [188, 140], [196, 148], [172, 152], [204, 144],
+    [214, 92], [222, 98], [206, 86], [70, 104], [78, 98], [62, 110]].map(([x, y]) => tree(x + (r() - 0.5) * 2, y)).join('');
+  const peaks = [[112, 86, 10, 16], [124, 84, 12, 22], [138, 86, 13, 26], [154, 86, 11, 20], [166, 88, 9, 14], [130, 96, 8, 12], [148, 97, 8, 12]];
+  const mountains = peaks.map(([x, y, w, h]) => `<path d="M${x - w} ${y} L${x} ${y - h} L${x + w} ${y}" fill="#efdfb2" stroke="${INK}" stroke-width="1.1" stroke-linejoin="round"/>
+      <path d="${Array.from({ length: 4 }, (_, k) => `M${(x + 1 + k * w / 5).toFixed(1)} ${(y - h + 3 + k * h / 5).toFixed(1)} l${(w / 6).toFixed(1)} ${(h / 2.4).toFixed(1)}`).join(' ')}" stroke="${INK}" stroke-width=".5" opacity=".75"/>`).join('');
+  const houses = [[82, 150], [90, 154], [76, 156]].map(([x, y]) => `<path d="M${x - 3} ${y} v-4 l3 -3 l3 3 v4z" fill="#f3e4bd" stroke="${INK}" stroke-width=".6"/>`).join('');
+  const waves = [[24, 128], [270, 100], [140, 22], [90, 192], [236, 186], [12, 150], [200, 26], [110, 14], [290, 128], [60, 30]].map(([x, y]) => `<path d="M${x} ${y} q3 -3 6 0 t6 0"/>`).join('');
   const dashes = trail().map(([x, y, a], i) => `<rect class="map-dash" style="--i:${i}" x="-2.6" y="-.9" width="5.2" height="1.8" rx=".9" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${a.toFixed(0)})"/>`).join('');
-  const star = Array.from({ length: 8 }, (_, i) => {
-    const a = (i / 8) * Math.PI * 2 - Math.PI / 2, r = i % 2 ? 9 : 17, b1 = a - 0.32, b2 = a + 0.32;
-    return `<path d="M0 0 L${(Math.cos(b1) * 4).toFixed(1)} ${(Math.sin(b1) * 4).toFixed(1)} L${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)} Z" fill="${INK}"/>
-      <path d="M0 0 L${(Math.cos(b2) * 4).toFixed(1)} ${(Math.sin(b2) * 4).toFixed(1)} L${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)} Z" fill="#f3e4bd" stroke="${INK}" stroke-width=".5"/>`;
+  const star = Array.from({ length: 16 }, (_, i) => {
+    const a = (i / 16) * Math.PI * 2 - Math.PI / 2, rr = i % 4 === 0 ? 18 : i % 2 ? 7 : 11, b1 = a - 0.26, b2 = a + 0.26, k = i % 2 ? 2.4 : 3.6;
+    return `<path d="M0 0 L${(Math.cos(b1) * k).toFixed(1)} ${(Math.sin(b1) * k).toFixed(1)} L${(Math.cos(a) * rr).toFixed(1)} ${(Math.sin(a) * rr).toFixed(1)} Z" fill="${INK}"/>
+      <path d="M0 0 L${(Math.cos(b2) * k).toFixed(1)} ${(Math.sin(b2) * k).toFixed(1)} L${(Math.cos(a) * rr).toFixed(1)} ${(Math.sin(a) * rr).toFixed(1)} Z" fill="#f3e4bd" stroke="${INK}" stroke-width=".45"/>`;
   }).join('');
   return svg('0 0 300 200', `
     <defs>${p.defs}
-      <radialGradient id="${land}" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#efdfb2"/><stop offset="1" stop-color="#ddc690"/></radialGradient></defs>
+      <radialGradient id="${land}" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#f1e2b6"/><stop offset=".8" stop-color="#e2cb94"/><stop offset="1" stop-color="#d2b77c"/></radialGradient>
+      <path id="${isl}" d="${ISLAND}"/>
+    </defs>
     ${p.base}
-    <g fill="none" stroke="${INK}">
-      <path d="${ISLAND}" stroke-width="14" opacity=".06"/><path d="${ISLAND}" stroke-width="7" opacity=".1"/>
-      <path d="${ISLE}" stroke-width="7" opacity=".1"/><path d="${ISLE2}" stroke-width="7" opacity=".1"/>
+    <path d="${rhumbs}" stroke="${INK}" stroke-width=".35" opacity=".22"/>
+    <g fill="none" stroke="${INK}">${waterlines}
+      <path d="${ISLE}" stroke-width="5" opacity=".08"/><path d="${ISLE2}" stroke-width="5" opacity=".08"/>
+      <path d="${ISLE}" ${about(1.12, 268, 153)} stroke-width=".6" stroke-dasharray="1.6 1.8" opacity=".35"/>
+      <path d="${ISLE2}" ${about(1.14, 29, 66)} stroke-width=".6" stroke-dasharray="1.6 1.8" opacity=".35"/>
     </g>
-    <path d="${ISLAND}" fill="url(#${land})" stroke="${INK}" stroke-width="1.4"/>
+    <use href="#${isl}" fill="url(#${land})" stroke="${INK}" stroke-width="1.5"/>
+    <use href="#${isl}" fill="none" stroke="#fff6dc" stroke-width=".8" opacity=".55" ${about(0.97, 150, 110)}/>
     <path d="${ISLE}" fill="url(#${land})" stroke="${INK}" stroke-width="1.2"/>
     <path d="${ISLE2}" fill="url(#${land})" stroke="${INK}" stroke-width="1.2"/>
+    ${mountains}
     <g fill="none" stroke="${INK}" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M118 88 L130 68 L142 88 M134 88 L148 60 L162 88 M156 88 L166 74 L176 88" stroke-width="1.2"/>
-      <path d="M132 76 l4 8 M136 72 l5 12 M151 68 l5 14 M155 66 l6 18 M169 79 l3 7" stroke-width=".5" opacity=".7"/>
-      <ellipse cx="200" cy="72" rx="9" ry="4.5" stroke-width=".9"/><path d="M195 72 h4 M201 74 h4" stroke-width=".5"/>
-      <path d="M70 100 C80 104 86 100 92 108" stroke-width=".8" stroke-dasharray="1 2"/>
+      <path d="M150 98 C156 110 146 118 158 128 S180 144 188 165" stroke-width="1.1"/><path d="M152 100 C158 112 148 120 160 130 S182 146 190 164" stroke-width=".4" opacity=".7"/>
+      <ellipse cx="200" cy="70" rx="9" ry="4.5" stroke-width=".9"/><path d="M195 70 h4 M201 72 h4" stroke-width=".5"/>
       <g stroke-width=".7" opacity=".8">${waves}</g>
-      <path d="M14 182 q6 -10 12 0 q6 -10 12 0 q6 -10 12 0" stroke-width="1.2"/>
-      <path d="M50 182 q4 -12 10 -10 q4 2 2 6" stroke-width="1.2"/>
+      <path d="M14 186 q6 -11 12 0 q6 -11 12 0 q6 -11 12 0" stroke-width="1.3"/>
+      <path d="M17 183 l1 -2 M29 183 l1 -2 M41 183 l1 -2" stroke-width=".6"/>
+      <path d="M50 186 q3 -13 10 -12 q5 1 3 6 l-4 -1" stroke-width="1.3"/>
+      <path d="M56 176 l-2 -4 l3 1" stroke-width=".8"/>
     </g>
+    <circle cx="59.6" cy="177" r=".8" fill="${INK}"/>
     <g fill="#f3e4bd" stroke="${INK}" stroke-width=".8">${trees}</g>
-    <circle cx="58" cy="168" r=".9" fill="${INK}"/>
-    <g transform="translate(36 108)" stroke="${INK}" stroke-width=".8" stroke-linejoin="round">
-      <path d="M-10 0 H10 L7 5 H-7Z" fill="#a8824a"/><path d="M-1 0 V-15" fill="none"/>
-      <path d="M-1 -14 C5 -12 6 -6 2 -2 H-1Z M-2 -13 C-7 -10 -8 -5 -5 -2 H-2Z" fill="#f3e4bd"/></g>
-    <g transform="translate(262 44)">
-      <circle r="21" fill="none" stroke="${INK}" stroke-width=".6"/><circle r="18.5" fill="none" stroke="${INK}" stroke-width=".4" stroke-dasharray="1 1.6"/>
-      ${star}<circle r="1.6" fill="#f3e4bd" stroke="${INK}" stroke-width=".5"/>
-      <text y="-23.5" text-anchor="middle" font-size="7" font-family="Georgia, serif" font-weight="700" fill="${INK}">N</text>
+    ${houses}
+    <g transform="translate(228 104)" fill="none" stroke="${INK}" stroke-linecap="round">
+      <path d="M0 10 C1 4 0 -2 -2 -6" stroke-width="1.2"/>
+      <path d="M-2 -6 C-8 -9 -12 -6 -14 -2 M-2 -6 C-6 -12 -2 -16 3 -15 M-2 -6 C4 -10 9 -8 10 -3 M-2 -6 C-3 -12 -8 -14 -11 -12" stroke-width="1"/>
     </g>
-    <text x="70" y="192" font-size="6.4" font-family="Georgia, serif" font-style="italic" fill="${INK}" opacity=".85">Here be dragons</text>
+    <g transform="translate(36 112)" stroke="${INK}" stroke-width=".8" stroke-linejoin="round">
+      <path d="M-13 0 H13 C11 4 8 6 5 6 H-6 C-9 6 -12 4 -13 0Z" fill="#a8824a"/>
+      <path d="M-4 0 V-19 M5 0 V-15" fill="none"/>
+      <path d="M-4 -18 C1 -16 2 -9 -1 -5 H-4Z M-5 -17 C-10 -14 -10 -8 -7 -5 H-5Z M5 -14 C9 -12 10 -7 7 -4 H5Z" fill="#f3e4bd"/>
+      <path d="M-4 -19 l5 1.5 l-5 1.5Z" fill="#9b2316" stroke="none"/>
+      <path d="M-18 7 q4 -2 8 0 t8 0 t8 0 t8 0" fill="none" stroke-width=".6"/>
+    </g>
+    <g transform="translate(262 44)">
+      <circle r="22" fill="#f3e4bd" fill-opacity=".5" stroke="${INK}" stroke-width=".7"/><circle r="19.5" fill="none" stroke="${INK}" stroke-width=".4" stroke-dasharray="1 1.6"/>
+      ${star}<circle r="1.6" fill="#f3e4bd" stroke="${INK}" stroke-width=".5"/>
+      <path d="M0 -31 C-2 -28 -3 -26 0 -24 C3 -26 2 -28 0 -31Z M-3 -27 C-6 -28 -6 -25 -3 -25 M3 -27 C6 -28 6 -25 3 -25" fill="${INK}" stroke="${INK}" stroke-width=".4"/>
+    </g>
+    <g transform="translate(46 22)">
+      <path d="M-36 -10 H36 C40 -10 42 -6 40 -2 C38 2 40 6 44 6 C40 12 36 12 36 10 H-36 C-36 12 -40 12 -44 6 C-40 6 -38 2 -40 -2 C-42 -6 -40 -10 -36 -10Z" fill="#f6ead0" stroke="${INK}" stroke-width=".9"/>
+      <path d="M-32 -7 H32 M-32 7 H32" stroke="${INK}" stroke-width=".4" opacity=".6"/>
+      <text y="3.2" text-anchor="middle" font-size="10" style="fill:var(--accent);font-family:var(--font-display)">${glyph}</text>
+      <path d="M-26 0 H-12 M12 0 H26" stroke="${INK}" stroke-width=".6"/><circle cx="-10" r=".9" fill="${INK}"/><circle cx="10" r=".9" fill="${INK}"/>
+    </g>
+    <text x="70" y="196" font-size="6.4" font-family="Georgia, serif" font-style="italic" fill="${INK}" opacity=".85">Here be dragons</text>
     <g fill="${INK}" opacity=".85">${dashes}</g>
-    <g transform="translate(214 116)"><g class="map-x">
-      <circle class="map-ring" r="11" fill="none" stroke="#9b2316" stroke-width="1" stroke-dasharray="2 2.4"/>
-      <path d="M-6 -6 L6 6 M6 -6 L-6 6" stroke="#9b2316" stroke-width="3.2" stroke-linecap="round"/>
-      <path d="M-6 -6 L6 6 M6 -6 L-6 6" stroke="#d2563f" stroke-width="1" stroke-linecap="round" opacity=".6"/>
-    </g></g>
+    <g transform="translate(214 116)" fill="none" stroke-linecap="round">
+      <circle class="map-ring" pathLength="1" r="11" stroke="#9b2316" stroke-width="1" transform="rotate(-100)"/>
+      <path class="map-x1" pathLength="1" d="M-6 -6 L6 6" stroke="#9b2316" stroke-width="3.2"/>
+      <path class="map-x2" pathLength="1" d="M6 -6 L-6 6" stroke="#9b2316" stroke-width="3.2"/>
+    </g>
+    ${foxing(300, 200, 3)}
+    <circle cx="94" cy="58" r="14" fill="none" stroke="#7a4a1a" stroke-width="2.2" opacity=".1"/>
     ${p.top}`, 'map-art');
 }
 
-// The back of a folded panel: plain old parchment with a faint stain.
+// The back of a folded panel: plain old parchment, foxed and stained.
 export function mapBack() {
   const id = nextId('mb'), p = parchment(id, 100, 200);
   return svg('0 0 100 200', `<defs>${p.defs}</defs>${p.base}
     <circle cx="70" cy="150" r="18" fill="none" stroke="#7a4a1a" stroke-width="2.5" opacity=".14"/>
     <path d="M30 40 C40 34 60 36 70 44" fill="none" stroke="${INK}" stroke-width=".6" opacity=".12"/>
+    ${foxing(100, 200, 9)}
     ${p.top}`, 'map-art');
 }
 
