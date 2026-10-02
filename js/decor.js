@@ -16,6 +16,27 @@ export function luminance(hex) {
   return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2];
 }
 
+// Lightens (amt > 0) or darkens (amt < 0) a hex color.
+export function shade(hex, amt) {
+  const n = parseInt(safeHex(hex, '#888888').slice(1), 16);
+  const t = amt < 0 ? 0 : 255, p = Math.abs(amt);
+  const c = [n >> 16, (n >> 8) & 255, n & 255].map(v => Math.round(v + (t - v) * p));
+  return `#${c.map(v => v.toString(16).padStart(2, '0')).join('')}`;
+}
+
+export const contrast = (a, b) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+
+// Nudges `color` lighter or darker until it reads against `bg` (WCAG ratio `min`).
+export function readableOn(color, bg, min) {
+  const away = luminance(bg) > 0.35 ? -1 : 1;
+  let c = color;
+  for (let i = 1; i <= 8 && contrast(c, bg) < min; i++) c = shade(color, away * i * 0.12);
+  return c;
+}
+
 const svgUrl = svg => `url("data:image/svg+xml,${encodeURIComponent(svg.replace(/\s+/g, ' '))}")`;
 const svgTile = (w, h, body) => `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'>${body}</svg>`;
 
@@ -41,6 +62,10 @@ const MARTINI = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate($
 const COUPE = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})' fill='none' stroke-width='1.4' stroke-linecap='round'><path d='M-8 -6 C-8 2 8 2 8 -6Z M0 -2 V9 M-5 9 H5'/></g>`;
 const NOTE = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><ellipse cx='-3' cy='6' rx='3.6' ry='2.6' transform='rotate(-20 -3 6)'/><path d='M0 6 V-9 C3 -7 7 -6 8 -2' fill='none' stroke-width='1.5'/></g>`;
 
+const BAT = (x, y, r, s = 1) => `<path transform='translate(${x} ${y}) rotate(${r}) scale(${s})' d='M0 -2 C1.5 -4 3 -4 3.5 -2 C6 -5 10 -5 13 -2 C10 -1.5 9 1 9 3 C7 1 5 1.5 4 3.5 C2.5 1.5 1 1.5 0 3 C-1 1.5 -2.5 1.5 -4 3.5 C-5 1.5 -7 1 -9 3 C-9 1 -10 -1.5 -13 -2 C-10 -5 -6 -5 -3.5 -2 C-3 -4 -1.5 -4 0 -2Z'/>`;
+const WEB = (x, y, s = 1) => `<g transform='translate(${x} ${y}) scale(${s})' fill='none' stroke-width='0.8'>${[0, 45, 90, 135].map(a => `<path transform='rotate(${a})' d='M-14 0 H14'/>`).join('')}
+  ${[5, 9.5, 14].map(r => `<path d='${Array.from({ length: 9 }, (_, i) => { const a = i * Math.PI / 4; return `${i ? 'Q0 0 ' : 'M'}${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`; }).join(' ').replace(/Q0 0 /g, (m, off) => 'L')}'/>`).join('')}</g>`;
+
 export const PATTERNS = {
   damask: { label: 'Damask', size: [56, 64], draw: () => DAMASK(28, 18, 1) + DAMASK(0, 50, 0.8) + DAMASK(56, 50, 0.8) },
   stars: { label: 'Stars', size: [90, 90], draw: () => SPARKLE(20, 22, 0.9) + SPARKLE(66, 60, 0.6) + SPARKLE(70, 14, 0.35)
@@ -61,6 +86,11 @@ export const PATTERNS = {
   checker: { label: 'Checkerboard', size: [40, 40], draw: () => `<rect width='20' height='20' fill-opacity='.55'/><rect x='20' y='20' width='20' height='20' fill-opacity='.55'/>` },
   disco: { label: 'Disco tiles', size: [36, 36], draw: () => `<rect x='1' y='1' width='16' height='16' fill-opacity='.5'/><rect x='19' y='1' width='16' height='16' fill-opacity='.2'/><rect x='1' y='19' width='16' height='16' fill-opacity='.25'/><rect x='19' y='19' width='16' height='16' fill-opacity='.6'/>${SPARKLE(27, 27, 0.5)}` },
   notes: { label: 'Music notes', size: [80, 80], draw: () => NOTE(20, 24, -10) + NOTE(58, 58, 12, 0.85) + `<circle cx='60' cy='18' r='1.2'/><circle cx='20' cy='62' r='1'/>` },
+  lace: { label: 'Lace', size: [40, 40], draw: () => `<g fill='none' stroke-width='1'><circle cx='20' cy='20' r='9'/><circle cx='20' cy='20' r='5'/><circle cx='0' cy='0' r='9'/><circle cx='40' cy='0' r='9'/><circle cx='0' cy='40' r='9'/><circle cx='40' cy='40' r='9'/></g>
+    <circle cx='20' cy='20' r='1.6'/><circle cx='20' cy='6' r='1.1'/><circle cx='20' cy='34' r='1.1'/><circle cx='6' cy='20' r='1.1'/><circle cx='34' cy='20' r='1.1'/>` },
+  bats: { label: 'Bats', size: [110, 100], draw: () => BAT(30, 26, -8, 1.9) + BAT(80, 70, 10, 1.45) + `<circle cx='88' cy='20' r='1.4'/><circle cx='20' cy='78' r='1.2'/>` },
+  webs: { label: 'Spiderwebs', size: [80, 80], draw: () => WEB(22, 22, 1) + WEB(62, 60, 0.75) },
+  stripes: { label: 'Stripes', size: [28, 28], draw: () => `<path d='M-7 7 L7 -7 M0 28 L28 0 M21 35 L35 21' stroke-width='6' stroke-linecap='square' fill='none'/>` },
   confetti: { label: 'Confetti', size: [70, 70], draw: () => `<rect x='10' y='12' width='8' height='3' rx='1' transform='rotate(30 14 13)'/><circle cx='50' cy='16' r='2.5' style='fill:var(--c2)'/>
     <rect x='40' y='48' width='8' height='3' rx='1' transform='rotate(-40 44 49)' style='fill:var(--c2)'/><circle cx='18' cy='52' r='2'/><path d='M60 34 l3 5 l-6 0z'/>` },
 };
@@ -172,6 +202,9 @@ const CORNERS = {
   celestial: `<path d='M24 8 A16 16 0 1 0 40 30 A12 12 0 1 1 24 8Z' transform='translate(-6 -2)'/>
     ${SPARKLE(52, 12, 0.8)}${SPARKLE(12, 52, 0.8)}${SPARKLE(40, 38, 0.5)}
     <g fill='none' stroke-width='1' stroke-dasharray='1 4' stroke-linecap='round'><path d='M6 76 C6 36 36 6 76 6'/></g><circle cx='68' cy='22' r='1.2'/><circle cx='22' cy='68' r='1.2'/>`,
+  web: `<g fill='none' stroke-width='0.9'><path d='M2 2 L78 6 M2 2 L60 40 M2 2 L40 60 M2 2 L6 78'/>
+    <path d='M22 3 Q20 12 18 12 Q14 14 12 18 Q12 20 3 22'/><path d='M44 4 Q38 20 34 24 Q26 30 22 36 Q20 40 4 44'/><path d='M66 5 Q56 28 50 34 Q40 44 34 50 Q28 58 5 66'/></g>
+    <path d='M44 52 v10' stroke-width='0.8' fill='none'/><circle cx='44' cy='64' r='2.6'/><circle cx='44' cy='60.5' r='1.7'/>`,
   paws: `${PAW(14, 15, 135, 1.35)}${PAW(36, 33, 135, 1.1)}${PAW(54, 55, 140, 0.85)}`,
 };
 // One corner ornament as SVG markup (for use outside the card, e.g. the scroll).
@@ -182,17 +215,18 @@ export function cornerSvg(id, color, color2) {
 export const CORNER_OPTIONS = [
   { id: 'look', label: 'Look’s pick' }, { id: 'none', label: 'None' },
   { id: 'filigree', label: 'Filigree' }, { id: 'gothic', label: 'Gothic' }, { id: 'floral', label: 'Floral vine' },
-  { id: 'deco', label: 'Art deco' }, { id: 'celestial', label: 'Celestial' }, { id: 'paws', label: 'Paw prints' },
+  { id: 'deco', label: 'Art deco' }, { id: 'celestial', label: 'Celestial' }, { id: 'web', label: 'Spiderweb' }, { id: 'paws', label: 'Paw prints' },
 ];
 
 // ── Side borders ─────────────────────────────────────────────────────
 export const SIDE_OPTIONS = [
   { id: 'look', label: 'Look’s pick' }, { id: 'none', label: 'None' }, { id: 'frame', label: 'Double frame' },
-  { id: 'vine', label: 'Climbing vine' }, { id: 'pearls', label: 'Pearls' }, { id: 'stitch', label: 'Stitching' }, { id: 'paws', label: 'Paw trail' },
+  { id: 'vine', label: 'Climbing vine' }, { id: 'pearls', label: 'Pearls' }, { id: 'lace', label: 'Lace' }, { id: 'stitch', label: 'Stitching' }, { id: 'paws', label: 'Paw trail' },
 ];
 const SIDE_TILES = {
   vine: [24, 60, `<g fill='none' stroke-width='1.2'><path d='M12 0 C4 15 20 30 12 45 C8 52 10 56 12 60'/></g>${LEAF(17, 14, 50, 0.6)}${LEAF(7, 40, -50, 0.6)}<circle cx='12' cy='30' r='1.4'/>`],
   pearls: [12, 16, `<circle cx='6' cy='8' r='2.6'/>`],
+  lace: [20, 18, `<path d='M2 0 Q20 9 2 18' fill='none' stroke-width='1.2'/><path d='M2 3 Q13 9 2 15' fill='none' stroke-width='0.7'/><circle cx='5' cy='9' r='1.5'/><circle cx='14' cy='9' r='1'/>`],
   paws: [24, 64, `${PAW(9, 16, -8, 0.55)}${PAW(15, 46, 8, 0.55)}`],
 };
 

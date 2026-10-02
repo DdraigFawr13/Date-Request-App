@@ -3,7 +3,7 @@
 // metallic/colored finish and lit with a bevel filter.
 
 import { esc } from './util.js';
-import { safeHex } from './decor.js';
+import { safeHex, shade } from './decor.js';
 
 export const WAX_COLORS = [
   { id: 'scarlet', name: 'Classic red', hex: '#8f1d1d' },
@@ -67,6 +67,9 @@ export const SVG_EMBLEMS = {
   catface: `<path d='M28 42 L30 22 L44 33 C48 32 52 32 56 33 L70 22 L72 42 C76 48 76 58 71 64 C64 73 36 73 29 64 C24 58 24 48 28 42Z'/>
     <g fill='#000'><ellipse cx='40' cy='49' rx='3.6' ry='5'/><ellipse cx='60' cy='49' rx='3.6' ry='5'/><path d='M46.5 57 H53.5 L50 61Z'/>
     <path d='M50 61 C49 64 45 65 43 63 M50 61 C51 64 55 65 57 63' stroke='#000' stroke-width='1.6' fill='none' stroke-linecap='round'/></g>`,
+  bat: `<path transform='translate(50 54) scale(2.9)' d='M0 -2 C1.5 -4 3 -4 3.5 -2 C6 -5 10 -5 13 -2 C10 -1.5 9 1 9 3 C7 1 5 1.5 4 3.5 C2.5 1.5 1 1.5 0 3 C-1 1.5 -2.5 1.5 -4 3.5 C-5 1.5 -7 1 -9 3 C-9 1 -10 -1.5 -13 -2 C-10 -5 -6 -5 -3.5 -2 C-3 -4 -1.5 -4 0 -2Z'/>`,
+  brokenheart: `<path d='M50 76 C30 62 22 52 22 41 C22 32 29 26 37 26 C43 26 47 29 50 33 L46 42 L53 49 L48 58 L54 66Z'/>
+    <path d='M52 76 L58 66 L52 58 L57 49 L50 42 L53 33 C56 29 60 26 64 26 C72 26 78 32 78 41 C78 52 70 62 52 76Z' transform='translate(2 0)'/>`,
   die: `<g transform='rotate(-10 50 52)'><rect x='28' y='30' width='44' height='44' rx='10'/>
     <g fill='#000'><circle cx='39' cy='41' r='4.2'/><circle cx='61' cy='41' r='4.2'/><circle cx='50' cy='52' r='4.2'/><circle cx='39' cy='63' r='4.2'/><circle cx='61' cy='63' r='4.2'/></g></g>`,
   paw: `<g transform='translate(50 52) scale(2.6)'><ellipse cx='0' cy='4' rx='5.2' ry='4.4'/><ellipse cx='-6' cy='-3' rx='2.1' ry='2.7' transform='rotate(-20 -6 -3)'/>
@@ -98,6 +101,11 @@ export const EMBLEM_GROUPS = [
     { s: '🪩', name: 'Disco ball' }, { s: '🎂', name: 'Cake' }, { s: '🎈', name: 'Balloon' }, { s: '★', name: 'Star' },
     { s: '♠︎', name: 'Spade' }, { s: '🌺', name: 'Hibiscus' },
   ] },
+  { id: 'dark', label: 'Dark', items: [
+    { s: '@bat', name: 'Bat' }, { s: '@brokenheart', name: 'Broken heart' }, { s: '☠︎', name: 'Skull' }, { s: '🥀', name: 'Wilted rose' },
+    { s: '🕷️', name: 'Spider' }, { s: '🎃', name: 'Pumpkin' }, { s: '💋', name: 'Kiss' }, { s: '⛓️', name: 'Chain' },
+    { s: '🔥', name: 'Flame' }, { s: '✝︎', name: 'Cross' },
+  ] },
   { id: 'cats', label: 'Cats', items: [
     { s: '@cat', name: 'Sitting cat' }, { s: '@catface', name: 'Cat face' }, { s: '@paw', name: 'Paw print' },
     { s: '🐈‍⬛', name: 'Prowling cat' }, { s: '🧶', name: 'Yarn' }, { s: '🐟', name: 'Fish' },
@@ -124,13 +132,7 @@ export function sealEmblem(inv, look) {
   return Array.from(custom).slice(0, 4).join('') || look.seal;
 }
 
-// Lightens (amt > 0) or darkens (amt < 0) a hex color.
-export function shade(hex, amt) {
-  const n = parseInt(safeHex(hex, '#888888').slice(1), 16);
-  const t = amt < 0 ? 0 : 255, p = Math.abs(amt);
-  const c = [n >> 16, (n >> 8) & 255, n & 255].map(v => Math.round(v + (t - v) * p));
-  return `#${c.map(v => v.toString(16).padStart(2, '0')).join('')}`;
-}
+export { shade };
 
 let uidCounter = 0;
 

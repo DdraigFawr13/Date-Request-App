@@ -160,3 +160,23 @@ test('every look and occasion only references things that exist', async () => {
   for (const c of LOOK_CATEGORIES) assert.ok(Object.values(THEMES).some(t => t.cat === c.id), `empty tab ${c.id}`);
   for (const t of TEMPLATES) assert.ok(FONTS[t.font], `${t.id}: font ${t.font}`);
 });
+
+test('page color is independent of the background and stays readable', async () => {
+  const { contrast, backdropCss } = await import('../js/decor.js');
+  const { THEMES } = await import('../js/themes.js');
+  const base = { ...sample, th: 'candlelit' };
+  const dark = resolveTheme({ ...base, cc: '#141018' });
+  assert.equal(dark.card, '#141018');
+  assert.equal(dark.dark, true);
+  assert.ok(contrast(dark.ink, dark.card) >= 4.5, 'body text reads on a dark page');
+  assert.ok(contrast(dark.accent, dark.card) >= 3, 'title reads on a dark page');
+  assert.deepEqual(dark.bg, THEMES.candlelit.bg, 'background keeps the look’s colors');
+  const pale = resolveTheme({ ...base, th: 'neon', cc: '#fff7e8' });
+  assert.ok(contrast(pale.ink, pale.card) >= 4.5, 'body text reads on a pale page');
+  assert.ok(contrast(pale.accent, pale.card) >= 3, 'title reads on a pale page');
+  assert.equal(resolveTheme({ ...base, cc: 'red;x' }).card, THEMES.candlelit.card, 'bad colors are ignored');
+  // And the background can change without touching the page.
+  const both = { ...base, cc: '#141018', bc: ['#112233', '#445566'] };
+  assert.equal(resolveTheme(both).card, '#141018');
+  assert.match(backdropCss(resolveTheme(both), both), /#112233/);
+});

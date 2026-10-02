@@ -9,6 +9,7 @@ export const LOOK_CATEGORIES = [
   { id: 'medieval', label: 'Medieval', icon: '🏰' },
   { id: 'cats', label: 'Cats', icon: '🐈‍⬛' },
   { id: 'party', label: 'Parties', icon: '🎉' },
+  { id: 'dark', label: 'Dark side', icon: '🖤' },
   { id: 'night', label: 'Night & glam', icon: '✨' },
 ];
 
@@ -193,6 +194,32 @@ export const THEMES = {
     bg: ['#ff8a4c', '#1f9e90'], card: '#fff8ec', ink: '#3b2414', accent: '#d9502b', accent2: '#1f8a6e', onAccent: '#ffffff',
     particles: ['🍹', '🌺', '🌴', '🍍', '🥥'], seal: '🌺', divider: '🌺 ✦ 🌺', wrap: 'bottle',
     pattern: 'leaves', scene: 'sunburst', wax: 'teal', waxFace: 'pearl', paper: 'linen', corners: 'floral', rule: 'vine',
+  },
+
+  // ── Dark side ────────────────────────────────────────────────────────
+  gothic: {
+    name: 'Gothic', cat: 'dark', tagline: 'Black lace & blood-red roses', glyph: '✝',
+    bg: ['#08060a', '#2a0a12'], card: '#16101a', ink: '#efe6ea', accent: '#c1203a', accent2: '#a89aa8', onAccent: '#ffffff', dark: true,
+    particles: ['🥀', '🦇', '🕯️', '✦', '🖤'], seal: '🥀', divider: '✦ ✝ ✦', wrap: 'scroll',
+    pattern: 'lace', scene: 'lace', wax: 'black', waxFace: 'silver', paper: 'parchment', corners: 'gothic', sides: 'lace', rule: 'flourish',
+  },
+  emo: {
+    name: 'Emo', cat: 'dark', tagline: 'Black, hot pink & eyeliner', glyph: '♥',
+    bg: ['#0b0b0e', '#1d1022'], card: '#151318', ink: '#f2eef3', accent: '#ff2e88', accent2: '#8a8a96', onAccent: '#ffffff', dark: true,
+    particles: ['🖤', '💔', '⛓️', '🎸', '✖️'], seal: '@brokenheart', divider: '✖ 🖤 ✖', wrap: 'envelope',
+    pattern: 'stripes', scene: 'stripes', wax: 'black', waxFace: 'rosegold', paper: 'smooth', corners: 'none', sides: 'stitch', rule: 'rule',
+  },
+  halloween: {
+    name: 'Halloween', cat: 'dark', tagline: 'Pumpkins, bats & cobwebs', glyph: '🎃',
+    bg: ['#120a1c', '#3a1650'], card: '#fff4e2', ink: '#2a1430', accent: '#e8650f', accent2: '#6a3d8a', onAccent: '#ffffff',
+    particles: ['🎃', '🦇', '👻', '🕷️', '🍬'], seal: '@bat', divider: '🦇 🎃 🦇', wrap: 'chest',
+    pattern: 'bats', scene: 'bats', wax: 'copper', waxFace: 'black', paper: 'parchment', corners: 'web', rule: 'swash',
+  },
+  kinky: {
+    name: 'Kinky', cat: 'dark', tagline: 'Lace, leather & a little danger', glyph: '❦',
+    bg: ['#050305', '#2b0610'], card: '#120a0e', ink: '#f5e9ec', accent: '#d9264a', accent2: '#c39a4b', onAccent: '#ffffff', dark: true,
+    particles: ['💋', '🍒', '🔥', '🗝️', '🖤'], seal: '💋', divider: '✦ ❦ ✦', wrap: 'envelope',
+    pattern: 'lace', scene: 'velvet', wax: 'scarlet', waxFace: 'gold', paper: 'smooth', corners: 'filigree', sides: 'lace', rule: 'flourish',
   },
 
   // ── Night & glam ─────────────────────────────────────────────────────
