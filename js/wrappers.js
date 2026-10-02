@@ -213,6 +213,7 @@ const PARTS = {
     <span class="seal-spot">${seal}${sparks()}</span>`,
   bottle: seal => `
     <span class="bottle-waves back"></span>
+    <span class="bottle-ripples"><i></i><i></i><i></i></span>
     <span class="bottle-body">
       <span class="bottle-glass">${bottleBack()}</span>
       <span class="bottle-note">${rolledNote()}</span>
