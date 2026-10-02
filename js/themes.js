@@ -37,7 +37,7 @@ export const THEMES = {
     name: 'Midnight Velvet', cat: 'romantic', tagline: 'Plum, rose & candle-glow', glyph: '❧',
     bg: ['#1a0d24', '#4a1942'], card: '#2a1530', ink: '#f6e6ee', accent: '#e58fb0', accent2: '#d6b25e', onAccent: '#2a1530', dark: true,
     particles: ['🌹', '✦', '🕯️', '✧', '🍷'], seal: '@rose', divider: '✦ ❧ ✦',
-    pattern: 'damask', wax: 'burgundy', waxFace: 'gold', paper: 'smooth', corners: 'filigree', rule: 'flourish', scene: 'candles', sides: 'rope', wrap: 'book',
+    pattern: 'damask', wax: 'burgundy', waxFace: 'gold', paper: 'smooth', corners: 'filigree', rule: 'flourish', scene: 'candles', sides: 'rope', wrap: 'envelope',
   },
 
   // ── Seasonal: the Wheel of the Year ──────────────────────────────────
@@ -45,7 +45,7 @@ export const THEMES = {
     name: 'Samhain', cat: 'seasonal', tagline: 'The veil grows thin', glyph: '☾',
     bg: ['#140a18', '#3b1a2e'], card: '#221320', ink: '#f3e6d0', accent: '#e8742a', accent2: '#b48cf2', onAccent: '#1a0f1f', dark: true,
     particles: ['🦇', '🍂', '🕯️', '✦', '🌙'], seal: '@crescent', divider: '✦ ☾ ✦',
-    pattern: 'stars', wax: 'black', waxFace: 'copper', paper: 'parchment', corners: 'celestial', rule: 'flourish', scene: 'stones', sides: 'thorns', wrap: 'owl',
+    pattern: 'stars', wax: 'black', waxFace: 'copper', paper: 'parchment', corners: 'celestial', rule: 'flourish', scene: 'stones', sides: 'thorns', wrap: 'envelope',
   },
   yule: {
     name: 'Yule', cat: 'seasonal', tagline: 'Return of the sun', glyph: '❄',
@@ -63,37 +63,37 @@ export const THEMES = {
     name: 'Ostara', cat: 'seasonal', tagline: 'Balance & bloom', glyph: '✿',
     bg: ['#fde7f1', '#e3f5e8'], card: '#fffdf7', ink: '#4a3b52', accent: '#d9649a', accent2: '#6fbf8a', onAccent: '#ffffff',
     particles: ['🌷', '🥚', '🐇', '🌼', '🦋'], seal: '@egg', divider: '✿ 🐇 ✿',
-    pattern: 'blossoms', wax: 'lavender', waxFace: 'pearl', paper: 'watercolor', corners: 'floral', rule: 'vine', scene: 'garden', sides: 'vine', wrap: 'gift',
+    pattern: 'blossoms', wax: 'lavender', waxFace: 'pearl', paper: 'watercolor', corners: 'floral', rule: 'vine', scene: 'garden', sides: 'vine', wrap: 'envelope',
   },
   beltane: {
     name: 'Beltane', cat: 'seasonal', tagline: 'Fire & flowers', glyph: '❀',
     bg: ['#ffd6e4', '#ffc999'], card: '#fff8f2', ink: '#5a1e3a', accent: '#d81b60', accent2: '#2e8b57', onAccent: '#ffffff',
     particles: ['🌸', '🔥', '🌺', '✿', '🎀'], seal: '@flame', divider: '✿ 🔥 ✿',
-    pattern: 'blossoms', wax: 'rose', waxFace: 'gold', paper: 'watercolor', corners: 'floral', rule: 'vine', scene: 'garden', sides: 'vine', wrap: 'scroll',
+    pattern: 'blossoms', wax: 'rose', waxFace: 'gold', paper: 'watercolor', corners: 'floral', rule: 'vine', scene: 'garden', sides: 'vine', wrap: 'envelope',
   },
   litha: {
     name: 'Litha', cat: 'seasonal', tagline: 'Midsummer’s golden light', glyph: '☀',
     bg: ['#fff1b8', '#ffc94a'], card: '#fffdf2', ink: '#5b3a00', accent: '#d97a00', accent2: '#1fa595', onAccent: '#ffffff',
     particles: ['☀️', '🌻', '🐝', '✦', '🌼'], seal: '@sun', divider: '✦ ☀ ✦',
-    pattern: 'blossoms', wax: 'gold', waxFace: 'pressed', paper: 'linen', corners: 'deco', rule: 'swash', scene: 'stones', sides: 'frame', wrap: 'bottle',
+    pattern: 'blossoms', wax: 'gold', waxFace: 'pressed', paper: 'linen', corners: 'deco', rule: 'swash', scene: 'stones', sides: 'frame', wrap: 'envelope',
   },
   lughnasadh: {
     name: 'Lughnasadh', cat: 'seasonal', tagline: 'The first harvest', glyph: '🌾',
     bg: ['#f4e3c1', '#d9a95b'], card: '#fff8ea', ink: '#4a2e12', accent: '#a85a1b', accent2: '#5f7f1f', onAccent: '#fff8ea',
-    particles: ['🌾', '🍞', '🌻', '✦', '🍯'], seal: '@wheat', wrap: 'scroll', divider: '🌾 ✦ 🌾',
+    particles: ['🌾', '🍞', '🌻', '✦', '🍯'], seal: '@wheat', wrap: 'envelope', divider: '🌾 ✦ 🌾',
     pattern: 'leaves', wax: 'bronze', waxFace: 'pressed', paper: 'parchment', corners: 'floral', rule: 'vine', scene: 'harvest', sides: 'vine',
   },
   mabon: {
     name: 'Mabon', cat: 'seasonal', tagline: 'Gratitude & golden leaves', glyph: '🍁',
     bg: ['#3d1f0f', '#8a3b12'], card: '#fbf1e1', ink: '#3d1f0f', accent: '#b8461a', accent2: '#7a1f2b', onAccent: '#fff6ea',
     particles: ['🍁', '🍂', '🍎', '🍇', '✦'], seal: '@mapleleaf', divider: '🍂 ✦ 🍂',
-    pattern: 'leaves', wax: 'copper', waxFace: 'gold', paper: 'parchment', corners: 'floral', rule: 'flourish', scene: 'harvest', sides: 'vine', wrap: 'chest',
+    pattern: 'leaves', wax: 'copper', waxFace: 'gold', paper: 'parchment', corners: 'floral', rule: 'flourish', scene: 'harvest', sides: 'vine', wrap: 'envelope',
   },
 
   halloween: {
     name: 'Halloween', cat: 'seasonal', tagline: 'Jack-o’-lanterns & haunted moons', glyph: '🎃',
     bg: ['#0d0716', '#2b1240'], card: '#161019', ink: '#f6e9d8', accent: '#ff7a1a', accent2: '#a07ad6', onAccent: '#1a0d05', dark: true,
-    particles: ['🎃', '🦇', '👻', '🕸️', '🍬', '🌕'], seal: '@pumpkin', divider: '🦇 🎃 🦇', wrap: 'chest', glow: '#ff7a1a',
+    particles: ['🎃', '🦇', '👻', '🕸️', '🍬', '🌕'], seal: '@pumpkin', divider: '🦇 🎃 🦇', wrap: 'envelope', glow: '#ff7a1a',
     pattern: 'bats', scene: 'haunted', wax: 'black', waxFace: 'copper', paper: 'speckled', corners: 'web', rule: 'swash', sides: 'thorns',
   },
 
@@ -102,7 +102,7 @@ export const THEMES = {
     name: 'Garden Picnic', cat: 'nature', tagline: 'Sunshine & strawberries', glyph: '🧺',
     bg: ['#e4f6d9', '#fff3d6'], card: '#fffef8', ink: '#2f4a2a', accent: '#d94f3d', accent2: '#6aa84f', onAccent: '#ffffff',
     particles: ['🌼', '🍓', '🐞', '🦋', '🌿'], seal: '@strawberry', divider: '🌼 ✿ 🌼',
-    pattern: 'gingham', wax: 'scarlet', waxFace: 'pearl', paper: 'linen', corners: 'floral', rule: 'vine', scene: 'garden', sides: 'stitch', wrap: 'gift',
+    pattern: 'gingham', wax: 'scarlet', waxFace: 'pearl', paper: 'linen', corners: 'floral', rule: 'vine', scene: 'garden', sides: 'stitch', wrap: 'envelope',
   },
   adventure: {
     name: 'Wild Adventure', cat: 'nature', tagline: 'Into the wild', glyph: '🧭',
@@ -133,7 +133,7 @@ export const THEMES = {
   castle: {
     name: 'Castle Keep', cat: 'medieval', tagline: 'Stone, steel & banners', glyph: '♜',
     bg: ['#1f2630', '#4a5568'], card: '#ece6d8', ink: '#22262e', accent: '#2f4b8a', accent2: '#8a7a55', onAccent: '#ffffff',
-    particles: ['🛡️', '⚔️', '🏰', '✦', '🐉'], seal: '@shield', wrap: 'chest', divider: '⚔ ✦ ⚔',
+    particles: ['🛡️', '⚔️', '🏰', '✦', '🐉'], seal: '@shield', wrap: 'envelope', divider: '⚔ ✦ ⚔',
     pattern: 'stone', scene: 'stone', wax: 'navy', waxFace: 'silver', paper: 'parchment', corners: 'gothic', rule: 'rule', sides: 'frame',
   },
   manuscript: {
@@ -148,19 +148,19 @@ export const THEMES = {
     name: 'Black Cat', cat: 'cats', tagline: 'Moonlight & golden eyes', glyph: '🐈‍⬛',
     bg: ['#120d1e', '#33244d'], card: '#1d1630', ink: '#f2ecff', accent: '#f0c64a', accent2: '#a98be0', onAccent: '#1d1630', dark: true,
     particles: ['🐈‍⬛', '🌙', '✦', '🐾', '✧'], seal: '@cat', divider: '✦ 🐾 ✦',
-    pattern: 'paws', wax: 'black', waxFace: 'gold', paper: 'smooth', corners: 'celestial', rule: 'swash', scene: 'rooftops', sides: 'paws', wrap: 'owl',
+    pattern: 'paws', wax: 'black', waxFace: 'gold', paper: 'smooth', corners: 'celestial', rule: 'swash', scene: 'rooftops', sides: 'paws', wrap: 'envelope',
   },
   calico: {
     name: 'Calico', cat: 'cats', tagline: 'Ginger, cream & cocoa', glyph: '🐈',
     bg: ['#f7e7d2', '#e8b98a'], card: '#fffaf2', ink: '#4a2f1c', accent: '#c8642a', accent2: '#6b4a32', onAccent: '#ffffff',
     particles: ['🐈', '🧶', '🐾', '🐟', '✦'], seal: '@paw', divider: '🐾 ✦ 🐾',
-    pattern: 'paws', scene: 'paws', wax: 'copper', waxFace: 'pearl', paper: 'linen', corners: 'paws', rule: 'swash', sides: 'paws', wrap: 'gift',
+    pattern: 'paws', scene: 'paws', wax: 'copper', waxFace: 'pearl', paper: 'linen', corners: 'paws', rule: 'swash', sides: 'paws', wrap: 'envelope',
   },
   kitten: {
     name: 'Kitten Pastel', cat: 'cats', tagline: 'Pink noses & yarn', glyph: '🐱',
     bg: ['#fde4ef', '#e6dcff'], card: '#fffbfe', ink: '#4b3660', accent: '#d36a9e', accent2: '#8f7ad6', onAccent: '#ffffff',
     particles: ['🐱', '🧶', '💗', '🐾', '✧'], seal: '@catface', divider: '✧ 🐾 ✧',
-    pattern: 'paws', scene: 'paws', wax: 'rose', waxFace: 'pearl', paper: 'watercolor', corners: 'paws', rule: 'swash', sides: 'paws', wrap: 'gift',
+    pattern: 'paws', scene: 'paws', wax: 'rose', waxFace: 'pearl', paper: 'watercolor', corners: 'paws', rule: 'swash', sides: 'paws', wrap: 'envelope',
   },
   catcafe: {
     name: 'Cat Café', cat: 'cats', tagline: 'Lattes & lap cats', glyph: '☕',
@@ -185,7 +185,7 @@ export const THEMES = {
   woodland: {
     name: 'Woodland Tea', cat: 'storybook', tagline: 'Acorns, mushrooms & a pot of tea', glyph: '🍄',
     bg: ['#e9dcc0', '#b9c79a'], card: '#fffaf0', ink: '#3a2c1c', accent: '#a04a2a', accent2: '#5d7a3a', onAccent: '#ffffff',
-    particles: ['🍄', '🌰', '🦔', '🦊', '🍃', '🫖'], seal: '@teacup', divider: '🌰 🍄 🌰', wrap: 'gift',
+    particles: ['🍄', '🌰', '🦔', '🦊', '🍃', '🫖'], seal: '@teacup', divider: '🌰 🍄 🌰', wrap: 'envelope',
     pattern: 'woodland', scene: 'woodland', wax: 'sage', waxFace: 'bronze', paper: 'linen', corners: 'branch', rule: 'vine', sides: 'vine',
   },
 
@@ -206,7 +206,7 @@ export const THEMES = {
   aurora: {
     name: 'Aurora', cat: 'sky', tagline: 'Northern lights over the pines', glyph: '❄',
     bg: ['#04121c', '#0f2a3a'], card: '#0b1d27', ink: '#e8fbf6', accent: '#5ff2c2', accent2: '#b59cff', onAccent: '#04121c', dark: true,
-    particles: ['✦', '❄', '✧', '🌲', '💫'], seal: '@snowflake', divider: '✧ ❄ ✧', wrap: 'bottle', glow: '#5ff2c2',
+    particles: ['✦', '❄', '✧', '🌲', '💫'], seal: '@snowflake', divider: '✧ ❄ ✧', wrap: 'envelope', glow: '#5ff2c2',
     pattern: 'snow', scene: 'aurora', wax: 'teal', waxFace: 'silver', paper: 'smooth', corners: 'celestial', rule: 'swash', sides: 'frame',
   },
 
@@ -214,7 +214,7 @@ export const THEMES = {
   midsummer: {
     name: 'A Midsummer Night’s Dream', cat: 'stage', tagline: 'A moonlit wood, fairies & mischief', glyph: '☾',
     bg: ['#0a1630', '#2b2a5e'], card: '#f6f0e2', ink: '#24233f', accent: '#6b4aa8', accent2: '#b89a4a', onAccent: '#ffffff',
-    particles: ['🧚', '✨', '🌙', '🌸', '🦋', '🍃'], seal: '@donkey', divider: '✧ ☾ ✧', wrap: 'scroll',
+    particles: ['🧚', '✨', '🌙', '🌸', '🦋', '🍃'], seal: '@donkey', divider: '✧ ☾ ✧', wrap: 'envelope',
     pattern: 'midsummer', scene: 'moonwood', wax: 'lavender', waxFace: 'gold', paper: 'vellum', corners: 'floral', sides: 'vine', rule: 'vine',
   },
   theatre: {
@@ -226,7 +226,7 @@ export const THEMES = {
   musical: {
     name: 'Broadway Musical', cat: 'stage', tagline: 'Marquee lights & a showstopper', glyph: '♪',
     bg: ['#0c0814', '#2a1238'], card: '#1a1026', ink: '#fff4dc', accent: '#f4c24c', accent2: '#ff5d8f', onAccent: '#1a1026', dark: true,
-    particles: ['🎶', '🎵', '⭐', '🎤', '✨', '💃'], seal: '@note', divider: '♪ ★ ♪', wrap: 'gift', glow: '#ffcf6a',
+    particles: ['🎶', '🎵', '⭐', '🎤', '✨', '💃'], seal: '@note', divider: '♪ ★ ♪', wrap: 'envelope', glow: '#ffcf6a',
     pattern: 'notes', scene: 'marquee', wax: 'gold', waxFace: 'black', paper: 'silk', corners: 'deco', rule: 'swash', sides: 'bulbs',
   },
 
@@ -247,19 +247,19 @@ export const THEMES = {
   neon: {
     name: 'Neon Club', cat: 'party', tagline: 'Hot pink & electric blue', glyph: '★',
     bg: ['#07040f', '#1a0533'], card: '#120a24', ink: '#f4ecff', accent: '#ff3fd8', accent2: '#2ee6ff', onAccent: '#120a24', dark: true,
-    particles: ['💃', '🪩', '✨', '🎧', '💜'], seal: '@star', divider: '✦ ★ ✦', wrap: 'gift', glow: '#ff3fd8',
+    particles: ['💃', '🪩', '✨', '🎧', '💜'], seal: '@star', divider: '✦ ★ ✦', wrap: 'envelope', glow: '#ff3fd8',
     pattern: 'disco', scene: 'neon', wax: 'black', waxFace: 'silver', paper: 'smooth', corners: 'deco', rule: 'swash', sides: 'rhinestones',
   },
   disco: {
     name: 'Disco Fever', cat: 'party', tagline: 'Mirror balls & sequins', glyph: '✧',
     bg: ['#2a0a4a', '#7a1fa2'], card: '#fdf7ff', ink: '#3a1450', accent: '#c2187a', accent2: '#8d95ab', onAccent: '#ffffff',
-    particles: ['🪩', '✨', '💃', '🕺', '⭐'], seal: '@discoball', divider: '✧ 🪩 ✧', wrap: 'gift',
+    particles: ['🪩', '✨', '💃', '🕺', '⭐'], seal: '@discoball', divider: '✧ 🪩 ✧', wrap: 'envelope',
     pattern: 'disco', scene: 'bokeh', wax: 'silver', waxFace: 'pressed', paper: 'smooth', corners: 'deco', rule: 'swash', sides: 'rhinestones',
   },
   gamenight: {
     name: 'Game Night', cat: 'party', tagline: 'Dice, cards & snacks', glyph: '♟',
     bg: ['#13233f', '#24467a'], card: '#fffaf0', ink: '#1d2a44', accent: '#d23f2e', accent2: '#e0a91c', onAccent: '#ffffff',
-    particles: ['🎲', '♟️', '🃏', '🧩', '⭐'], seal: '@die', divider: '♠ ♥ ♣ ♦', wrap: 'chest',
+    particles: ['🎲', '♟️', '🃏', '🧩', '⭐'], seal: '@die', divider: '♠ ♥ ♣ ♦', wrap: 'envelope',
     pattern: 'dice', scene: 'dice', wax: 'royal', waxFace: 'gold', paper: 'smooth', corners: 'none', sides: 'frame', rule: 'rule',
   },
   birthday: {
@@ -271,7 +271,7 @@ export const THEMES = {
   tiki: {
     name: 'Tiki Bar', cat: 'party', tagline: 'Rum, hibiscus & palms', glyph: '🌺',
     bg: ['#ff8a4c', '#1f9e90'], card: '#fff8ec', ink: '#3b2414', accent: '#d9502b', accent2: '#1f8a6e', onAccent: '#ffffff',
-    particles: ['🍹', '🌺', '🌴', '🍍', '🥥'], seal: '@hibiscus', divider: '🌺 ✦ 🌺', wrap: 'bottle',
+    particles: ['🍹', '🌺', '🌴', '🍍', '🥥'], seal: '@hibiscus', divider: '🌺 ✦ 🌺', wrap: 'envelope',
     pattern: 'leaves', scene: 'tropics', wax: 'teal', waxFace: 'pearl', paper: 'linen', corners: 'floral', rule: 'vine', sides: 'rope',
   },
 
@@ -279,7 +279,7 @@ export const THEMES = {
   gothic: {
     name: 'Gothic', cat: 'dark', tagline: 'Black lace & blood-red roses', glyph: '✝',
     bg: ['#08060a', '#2a0a12'], card: '#16101a', ink: '#efe6ea', accent: '#c1203a', accent2: '#a89aa8', onAccent: '#ffffff', dark: true,
-    particles: ['🥀', '🦇', '🕯️', '✦', '🖤'], seal: '@rose', divider: '✦ ✝ ✦', wrap: 'scroll',
+    particles: ['🥀', '🦇', '🕯️', '✦', '🖤'], seal: '@rose', divider: '✦ ✝ ✦', wrap: 'envelope',
     pattern: 'lace', scene: 'lace', wax: 'black', waxFace: 'silver', paper: 'parchment', corners: 'gothic', sides: 'lace', rule: 'flourish',
   },
   emo: {
@@ -303,7 +303,7 @@ export const THEMES = {
   masquerade: {
     name: 'Masquerade', cat: 'afterdark', tagline: 'Black velvet, gold & secrets', glyph: '❖',
     bg: ['#07060a', '#2a1f12'], card: '#0f0c09', ink: '#f6ead2', accent: '#d4af37', accent2: '#b0283c', onAccent: '#0f0c09', dark: true,
-    particles: ['🎭', '🪶', '🥂', '✨', '🕯️'], seal: '@mask', divider: '❖ ✦ ❖', wrap: 'book',
+    particles: ['🎭', '🪶', '🥂', '✨', '🕯️'], seal: '@mask', divider: '❖ ✦ ❖', wrap: 'envelope',
     pattern: 'damask', scene: 'bokeh', wax: 'black', waxFace: 'gold', paper: 'smooth', corners: 'baroque', sides: 'beads', rule: 'swash',
   },
   noir: {
@@ -318,7 +318,7 @@ export const THEMES = {
     name: 'Starlit Night', cat: 'sky', tagline: 'Wish upon it', glyph: '✦',
     bg: ['#050a24', '#1b1f5c'], card: '#0f1545', ink: '#e7e9ff', accent: '#ffd66b', accent2: '#9aa5ff', onAccent: '#0f1545', dark: true,
     particles: ['✦', '✧', '⋆', '🌙', '☄️'], seal: '@moonstar', divider: '⋆ ☾ ⋆',
-    pattern: 'stars', scene: 'moonlit', wax: 'navy', waxFace: 'gold', paper: 'smooth', corners: 'celestial', rule: 'swash', sides: 'frame', wrap: 'bottle',
+    pattern: 'stars', scene: 'moonlit', wax: 'navy', waxFace: 'gold', paper: 'smooth', corners: 'celestial', rule: 'swash', sides: 'frame', wrap: 'envelope',
   },
   cyberpunk: {
     name: 'Cyberpunk', cat: 'night', tagline: 'Neon city, chrome & static', glyph: '◈',
@@ -330,12 +330,12 @@ export const THEMES = {
     name: 'Night at the Show', cat: 'night', tagline: 'Curtain up', glyph: '🎭',
     bg: ['#0d0b1a', '#3a0ca3'], card: '#17122d', ink: '#f5f3ff', accent: '#f72585', accent2: '#4cc9f0', onAccent: '#ffffff', dark: true,
     particles: ['🎶', '🎭', '✨', '🎟️', '🎸'], seal: '@star', divider: '♪ ✦ ♪',
-    pattern: 'stars', scene: 'curtain', wax: 'black', waxFace: 'silver', paper: 'smooth', corners: 'deco', rule: 'rule', sides: 'bulbs', wrap: 'telegram',
+    pattern: 'stars', scene: 'curtain', wax: 'black', waxFace: 'silver', paper: 'smooth', corners: 'deco', rule: 'rule', sides: 'bulbs', wrap: 'envelope',
   },
   party: {
     name: 'Celebration', cat: 'party', tagline: 'Let’s make some noise', glyph: '🎉',
     bg: ['#2b1055', '#d53369'], card: '#ffffff', ink: '#2b1055', accent: '#e93d82', accent2: '#e0a800', onAccent: '#ffffff',
-    particles: ['🎉', '✨', '🎈', '🥂', '🎊'], seal: '@star', wrap: 'gift', divider: '✨ 🎉 ✨',
+    particles: ['🎉', '✨', '🎈', '🥂', '🎊'], seal: '@star', wrap: 'envelope', divider: '✨ 🎉 ✨',
     pattern: 'confetti', scene: 'confetti', wax: 'gold', waxFace: 'pressed', paper: 'smooth', corners: 'deco', rule: 'swash', sides: 'beads',
   },
   cozy: {

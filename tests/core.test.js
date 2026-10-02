@@ -356,3 +356,21 @@ test('every occasion has its own wording for each answer', async () => {
     }
   }
 });
+
+test('looks open as an envelope unless the opening is the point of the look', async () => {
+  const { THEMES } = await import('../js/themes.js');
+  // Each special opening is kept for the looks where that object is the story.
+  const SPECIAL = {
+    dragon: 'chest',                       // a dragon's hoard
+    adventure: 'map', fellowship: 'map',   // a quest
+    seaside: 'bottle',                     // washed up on the shore
+    royal: 'scroll', manuscript: 'scroll', // a decree, an illuminated page
+    wizard: 'owl',                         // owl post
+    enchanted: 'book', theatre: 'book', nocturne: 'book', // a storybook, a paper theatre
+    birthday: 'gift', yule: 'gift',        // presents
+    noir: 'telegram', speakeasy: 'telegram', // a typewriter, a 1920s wire
+  };
+  for (const [id, t] of Object.entries(THEMES)) {
+    assert.equal(t.wrap, SPECIAL[id] || 'envelope', `${id}: opens as ${t.wrap} (add it to SPECIAL with a reason, or use the envelope)`);
+  }
+});
