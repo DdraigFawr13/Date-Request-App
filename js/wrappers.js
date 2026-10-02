@@ -6,8 +6,8 @@ import { esc, escEmoji, own } from './util.js';
 import { cornerSvg, patternCss } from './decor.js';
 import { breakableSealHtml, shade } from './seal.js';
 import {
-  bookCover, bottleBack, bottleFront, bowHalf, bowKnot, branch, chestBase, chestLid, chestLining, chestPlate, corkArt,
-  envelopeFlap, envelopeFront, giftTag, mapArt, mapBack, owlBody, owlWing, pageHtml, popFront, popHills, rolledNote,
+  bookCover, bottleBack, popCurtain, popFrame, popSky, popTrees, popValance, bottleFront, bowHalf, bowKnot, branch, chestBase, chestLid, chestLining, chestPlate, corkArt,
+  envelopeFlap, envelopeFront, giftTag, mapArt, mapBack, owlBody, owlWing, pageHtml, popFront, rolledNote,
   sprig, tissue, treasure, twine, typewriterBody, typewriterCarriage,
 } from './wrapper-art.js';
 
@@ -17,10 +17,10 @@ export const WRAPPERS = {
   bottle: { label: 'Message in a bottle', icon: '🍾', openMs: 1900 },
   chest: { label: 'Treasure chest', icon: '🧰', openMs: 1900 },
   gift: { label: 'Gift box', icon: '🎁', openMs: 1850 },
-  book: { label: 'Pop-up book', icon: '📖', openMs: 2500 },
+  book: { label: 'Pop-up book', icon: '📖', openMs: 2950 },
   owl: { label: 'Owl post', icon: '🦉', openMs: 2400 },
-  telegram: { label: 'Telegram', icon: '⌨️', openMs: 2700 },
-  map: { label: 'Treasure map', icon: '🗺️', openMs: 2500 },
+  telegram: { label: 'Telegram', icon: '⌨️', openMs: 2950 },
+  map: { label: 'Treasure map', icon: '🗺️', openMs: 3000 },
 };
 
 export function resolveWrapper(inv, look) {
@@ -126,20 +126,51 @@ const miniEnvelope = (seal, glyph, look) => `
     <span class="env-flap"><span class="flap-out">${envelopeFlap()}</span><span class="flap-in"></span></span>
     <span class="seal-spot">${seal}${sparks()}</span>`;
 
-// The lines the typewriter taps out: who it's for, the title, then STOP.
-function telegramLines(inv, words) {
+// The lines the typewriter taps out (who it's for, the title, then STOP), and
+// when each character strikes. Typing fits a fixed window so the opening
+// always ends on time.
+function telegram(inv, words) {
   const lines = [words.for, inv.title || 'A little bit of magic'].map(t => String(t || '').trim().toUpperCase()).filter(Boolean);
   lines.push('STOP');
-  return lines.slice(0, 3).map((t, i) => {
+  const texts = lines.slice(0, 3).map(t => {
     const chars = [...t];
-    let text = chars.join('');
-    if (chars.length > 22) {
-      const cut = chars.slice(0, 22).join('');
-      text = cut.lastIndexOf(' ') > 8 ? cut.slice(0, cut.lastIndexOf(' ')) : cut;
-    }
-    return `<span class="tw-line" style="--n:${[...text].length};--l:${i}"><span>${esc(text)}</span></span>`;
-  }).join('');
+    if (chars.length <= 22) return chars;
+    const cut = chars.slice(0, 22).join('');
+    return [...(cut.lastIndexOf(' ') > 8 ? cut.slice(0, cut.lastIndexOf(' ')) : cut)];
+  });
+  const total = texts.reduce((n, c) => n + c.length, 0);
+  const step = Math.min(0.055, 1.15 / total), cr = 0.18;
+  let t = 0.55, seed = 7;
+  const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const sched = texts.map(chars => {
+    const line = { chars, start: t, dur: chars.length * step };
+    t += line.dur + cr;
+    return line;
+  });
+  const text = sched.map(({ chars, start }) => `<span class="tw-line">${chars.map((ch, k) =>
+    `<i style="--d:${(start + k * step).toFixed(3)}s;--o:${(0.72 + rand() * 0.28).toFixed(2)};--j:${((rand() - 0.5) * 0.08).toFixed(3)}em">${ch === ' ' ? '&nbsp;' : esc(ch)}</i>`).join('')}</span>`).join('');
+  // Nested wrappers: each line slides the carriage left as it types and
+  // returns it; each return feeds the paper up a line.
+  const open = (cls, style) => `<span class="${cls}" style="${style}">`;
+  const moves = sched.map(({ chars, start, dur }) => open('tw-move', `--s:${start.toFixed(3)}s;--t:${dur.toFixed(3)}s;--dx:${(chars.length / 22 * 15).toFixed(1)}%`)).join('');
+  const feeds = sched.slice(0, -1).map(({ start, dur }) => open('tw-feed', `--f:${(start + dur + 0.05).toFixed(3)}s`)).join('');
+  const dings = sched.map(({ start, dur }) => `<span class="tw-ding" style="--f:${(start + dur).toFixed(3)}s"></span>`).join('');
+  return { text, moves, feeds, dings, close: n => '</span>'.repeat(n), lines: sched.length,
+    strike: `--step:${step.toFixed(3)}s;--count:${total}` };
 }
+
+// Deckled, torn edges for a map panel (folds stay straight), as clip-path
+// points in percent. Mirrored for the panel's back face.
+function tornEdges(seed, { left = false, right = false }) {
+  const rand = () => ((seed = (seed * 16807 + 11) % 2147483647) / 2147483647);
+  const pts = [], steps = 14;
+  for (let i = 0; i <= steps; i++) pts.push([i / steps * 100, rand() * 1.8]);
+  if (right) for (let i = 1; i < steps; i++) pts.push([100 - rand() * 3, i / steps * 100]);
+  for (let i = steps; i >= 0; i--) pts.push([i / steps * 100, 100 - rand() * 1.8]);
+  if (left) for (let i = steps - 1; i > 0; i--) pts.push([rand() * 3, i / steps * 100]);
+  return pts;
+}
+const polygon = (pts, mirror = false) => `polygon(${pts.map(([x, y]) => `${(mirror ? 100 - x : x).toFixed(1)}% ${y.toFixed(1)}%`).join(',')})`;
 
 const PARTS = {
   envelope: (seal, glyph, look) => `
@@ -189,23 +220,32 @@ const PARTS = {
     <span class="seal-spot">${seal}${sparks()}</span>`,
   book: (seal, glyph, look) => `
     <span class="book-shadow"></span>
-    <span class="book-tilt">
-      <span class="book-spread">
-        <span class="book-back"></span>
-        <span class="book-edge r"></span>
-        <span class="book-leaf r"><span class="leaf-lines"></span></span>
-        <span class="book-cover">
-          <span class="cover-out">${bookCover()}<span class="cover-roundel"><span>${glyph}</span></span></span>
-          <span class="cover-in"><span class="book-leaf l"><span class="leaf-lines"></span></span></span>
+    <span class="book-stage">
+      <span class="book-tilt">
+        <span class="book-spread">
+          <span class="book-back"></span>
+          <span class="book-edge r"></span><span class="book-edge l"></span><span class="book-side"></span>
+          <span class="book-leaf r"><span class="leaf-lines"></span></span>
+          <span class="book-cover">
+            <span class="cover-out">${bookCover()}<span class="cover-roundel"><span>${glyph}</span></span></span>
+            <span class="cover-in"><span class="book-leaf l"><span class="leaf-lines"></span></span></span>
+          </span>
         </span>
       </span>
-    </span>
-    <span class="book-popup">
-      <span class="pop pop-arch"><span class="pop-sky"></span><span class="pop-moon"><span>${glyph}</span></span></span>
-      <span class="pop pop-hills">${popHills()}</span>
-      <span class="pop pop-letter">${pageHtml(glyph, look)}</span>
-      <span class="pop pop-front">${popFront()}</span>
-      <span class="pop-stars"><i>✦</i><i>✧</i><i>✦</i><i>✧</i></span>
+      <span class="book-ribbon"></span>
+      <span class="book-popup">
+        <span class="pop pop-sky">${popSky()}<span class="pop-moon"><span>${glyph}</span></span></span>
+        <span class="pop pop-letter"><span class="pop-glow"></span>${pageHtml(glyph, look)}</span>
+        <span class="pop pop-theatre">
+          <span class="curtain l">${popCurtain()}</span><span class="curtain r">${popCurtain()}</span>
+          <span class="pop-frame">${popFrame()}</span>
+          <span class="pop-valance">${popValance()}</span>
+        </span>
+        <span class="pop pop-trees l">${popTrees()}</span>
+        <span class="pop pop-trees r">${popTrees()}</span>
+        <span class="pop pop-front">${popFront()}<span class="footlights"><i></i><i></i><i></i><i></i><i></i></span></span>
+        <span class="pop-stars"><i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i></span>
+      </span>
     </span>
     <span class="book-strap"></span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
@@ -218,20 +258,29 @@ const PARTS = {
     </span>
     <span class="owl-mail">${miniEnvelope(seal, glyph, look)}</span>
     <span class="owl-feathers"><i></i><i></i><i></i></span>`,
-  telegram: (seal, glyph, look, { inv, words }) => `
-    <span class="tw-carriage">
-      <span class="tw-paper"><span class="tw-head">✦ Telegram ✦</span><span class="tw-text">${telegramLines(inv, words)}</span></span>
+  telegram: (seal, glyph, look, { inv, words }) => {
+    const tg = telegram(inv, words);
+    return `
+    <span class="tw-carriage">${tg.moves}
+      <span class="tw-plate"></span>
+      <span class="tw-paper">${tg.feeds}<span class="tw-head">✦ Telegram ✦</span><span class="tw-text">${tg.text}</span>${tg.close(tg.lines - 1)}</span>
       <span class="tw-platen">${typewriterCarriage()}</span>
-    </span>
-    <span class="tw-body">${typewriterBody()}</span>
-    <span class="tw-bell"></span>
-    <span class="seal-spot">${seal}${sparks()}</span>`,
-  map: seal => `
-    <span class="map-panel c"><span class="map-face front"><span class="map-third">${mapArt()}</span></span></span>
-    <span class="map-panel r"><span class="map-face front"><span class="map-third">${mapArt()}</span></span><span class="map-face back">${mapBack()}</span></span>
-    <span class="map-panel l"><span class="map-face front"><span class="map-third">${mapArt()}</span></span><span class="map-face back">${mapBack()}</span></span>
-    <span class="map-twine">${twine()}</span>
-    <span class="seal-spot">${seal}${sparks()}</span>`,
+    ${tg.close(tg.lines)}</span>
+    <span class="tw-body" style="${tg.strike}">${typewriterBody()}</span>
+    ${tg.dings}
+    <span class="seal-spot">${seal}${sparks()}</span>`;
+  },
+  map: (seal, glyph) => {
+    const art = () => `<span class="map-third">${mapArt(glyph)}</span>`;
+    const face = (cls, inner, clip) => `<span class="map-face ${cls}"><span class="map-paper" style="clip-path:${clip}">${inner}</span></span>`;
+    const c = tornEdges(1, {}), l = tornEdges(2, { left: true }), r = tornEdges(3, { right: true });
+    return `
+    <span class="map-panel c">${face('front', art(), polygon(c))}</span>
+    <span class="map-panel r">${face('front', art(), polygon(r))}${face('back', mapBack(), polygon(r, true))}</span>
+    <span class="map-panel l">${face('front', art(), polygon(l))}${face('back', mapBack(), polygon(l, true))}</span>
+    <span class="map-twine v">${twine()}</span><span class="map-twine h">${twine()}</span>
+    <span class="seal-spot">${seal}${sparks()}</span>`;
+  },
 };
 
 export function wrapperHtml(inv, look, words) {
