@@ -156,6 +156,12 @@ Links you send only work from the deployed site, since the invitation is
 opened on whatever address made it. Build invitations from the live URL, not
 localhost.
 
+Each deploy stamps its release id on the code (a `version.txt` file, and a
+`?v=` on every module import). The page reads `version.txt` fresh on every
+visit and loads the matching files, so a plain reload always shows the latest
+release, with no waiting out browser or GitHub Pages caching. Keep imports in
+the form `from './name.js'` so the deploy can stamp them (a test checks this).
+
 ## Privacy notes
 
 - The invitation lives in the part of the URL after `#`, which browsers never

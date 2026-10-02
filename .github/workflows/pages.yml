@@ -37,6 +37,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # Stamp this release on the code so browsers never mix in stale cached
+      # files: version.txt holds the id, and every module import carries it.
+      - name: Stamp the release id
+        run: |
+          v="${GITHUB_SHA::12}"
+          echo "$v" > version.txt
+          sed -i -E "s#(from '\./[A-Za-z0-9_-]+\.js)'#\1?v=$v'#g" js/*.js
+          if grep -nE "from '[^']+\.js'" js/*.js; then echo "Unstamped imports remain" >&2; exit 1; fi
+          grep -c "?v=$v" js/*.js
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
