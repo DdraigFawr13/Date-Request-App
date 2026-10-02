@@ -10,6 +10,12 @@ export function endOf(inv) {
   return inv.e && inv.e > inv.s ? inv.e : inv.s + DEFAULT_DURATION;
 }
 
+// When the event is over: the end time, or the end of the day for all-day events.
+export function finishedAt(inv) {
+  return inv.ad ? inv.s + 864e5 : endOf(inv);
+}
+export const isPast = (inv, now = Date.now()) => finishedAt(inv) <= now;
+
 // Plain-text "icon Label: value" lines for every filled-in detail.
 export function detailLines(inv) {
   const lines = [];

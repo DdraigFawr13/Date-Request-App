@@ -10,10 +10,18 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://ddraigfawr13.github.io/Date-Request-App/og.png">
   <meta name="theme-color" content="#2a1b4a">
+  <!-- Add to home screen: the builder opens like an app. -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Moonpost">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,700;1,400&family=Amatic+SC:wght@700&family=Caveat:wght@600&family=Creepster&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Fredoka:wght@500;600&family=Great+Vibes&family=Henny+Penny&family=IM+Fell+English:ital@0;1&family=Limelight&family=MedievalSharp&family=Orbitron:wght@600;800&family=Monoton&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,700;1,500&family=Quicksand:wght@400;600;700&family=Righteous&family=Sniglet:wght@400;800&family=Uncial+Antiqua&family=UnifrakturMaguntia&display=swap">
+  <!-- Only the faces every page uses; each invitation loads its own lettering (js/fonts.js). -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Quicksand:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -26,15 +34,29 @@
       <p>Write a whimsical invitation, text it to someone, and let them say yes and add it to their calendar.</p>
     </header>
 
+    <details id="history" class="history" hidden>
+      <summary>📮 <span id="history-label">Your invitations</span></summary>
+      <p class="hint">Every invitation you seal is kept here, on this device only. Paste a reply they texted you to count who’s coming.</p>
+      <ol id="history-list" class="history-list"></ol>
+    </details>
+
     <div class="builder-grid">
       <form id="form" class="form" autocomplete="off" onsubmit="return false">
 
+        <div class="mode-switch" role="group" aria-label="How much do you want to design?">
+          <button type="button" data-action="mode" data-id="quick">⚡ Quick</button>
+          <button type="button" data-action="mode" data-id="full">🎨 Design everything</button>
+        </div>
+
         <section class="step">
           <h2><span class="step-num">1</span> What’s the occasion?</h2>
-          <p class="hint">The occasion sets the wording and the lettering. You’ll choose the colors in step 3.</p>
+          <p class="hint full-only">The occasion sets the wording and the lettering. You’ll choose the colors in step 3.</p>
+          <p class="hint quick-only">The occasion picks the words, lettering and a look to match. You can change any of it later.</p>
           <div id="templates" class="template-grid"></div>
-          <p class="sub">Lettering</p>
-          <div id="fonts" class="font-grid"></div>
+          <div class="full-only">
+            <p class="sub">Lettering</p>
+            <div id="fonts" class="font-grid"></div>
+          </div>
         </section>
 
         <section class="step">
@@ -46,16 +68,30 @@
           <label>Title <input data-bind="title" placeholder="e.g. Dinner under the Hunter’s Moon"></label>
           <label>A personal note <textarea data-bind="msg" rows="3" placeholder="I’ve been wanting to take you somewhere special…"></textarea></label>
           <div class="row three">
-            <label>Date <input type="date" data-bind="date" required></label>
-            <label>Starts <input type="time" data-bind="time"></label>
+            <label>Date <input type="date" data-bind="date" required aria-describedby="date-warning"></label>
+            <label>Starts <input type="time" data-bind="time" aria-describedby="date-warning"></label>
             <label>Ends <input type="time" data-bind="endTime"></label>
           </div>
+          <p id="date-warning" class="warn" role="status" hidden></p>
           <label class="check"><input type="checkbox" data-bind="allDay"> All-day event</label>
           <label>Place <input data-bind="loc" placeholder="e.g. The Gilded Owl"></label>
           <label>Address <input data-bind="addr" placeholder="123 Willow Lane (becomes a map link)"></label>
+          <label class="check"><input type="checkbox" data-bind="group"> It’s for a group: ask each guest how many are coming</label>
+          <label id="group-max" class="inline-number" hidden>Most people per reply
+            <input type="number" data-bind="hc" min="2" max="50" inputmode="numeric">
+          </label>
         </section>
 
-        <section class="step">
+        <section class="step quick-summary quick-only" aria-labelledby="quick-title">
+          <h2 id="quick-title"><span class="step-num">3</span> The finishing touches</h2>
+          <div id="quick-summary"></div>
+          <div class="btn-row">
+            <button type="button" class="btn small" data-action="shuffle-look">🔀 Try another look</button>
+            <button type="button" class="btn ghost small" data-action="mode" data-id="full">🎨 Customize everything</button>
+          </div>
+        </section>
+
+        <section class="step full-only">
           <h2><span class="step-num">3</span> The look</h2>
           <p class="hint">Colors, background, paper and ornaments.</p>
           <div id="look-tabs" class="tab-row" role="tablist" aria-label="Look categories"></div>
@@ -84,7 +120,7 @@
           </details>
         </section>
 
-        <section class="step">
+        <section class="step full-only">
           <h2><span class="step-num">4</span> Delivery &amp; wax seal</h2>
           <p class="sub">Delivered as</p>
           <div id="wrappers" class="wrapper-grid"></div>
@@ -106,7 +142,7 @@
           </div>
         </section>
 
-        <section class="step">
+        <section class="step full-only">
           <h2><span class="step-num">5</span> The details</h2>
           <p class="hint">Add only what matters for this occasion. Tap a suggestion or write your own; you can rename any label too.</p>
           <div id="modules"></div>
@@ -117,7 +153,7 @@
           <button type="button" class="btn ghost small" data-action="add-custom">+ Add a custom field</button>
         </section>
 
-        <section class="step">
+        <section class="step full-only">
           <h2><span class="step-num">6</span> Questions for them</h2>
           <p class="hint">Their answers come back in their reply.</p>
           <div id="asks" class="chip-row"></div>
@@ -126,7 +162,7 @@
           <button type="button" class="btn ghost small" data-action="add-ask">+ Add your own question</button>
         </section>
 
-        <section class="step">
+        <section class="step full-only">
           <h2><span class="step-num">7</span> The wording</h2>
           <p class="hint">Every line is filled in from the occasion. Change anything, or clear a line to hide it.</p>
           <div id="wording"></div>
@@ -147,7 +183,10 @@
           <label>Message to send with the link
             <textarea data-bind="smsText" rows="2"></textarea>
           </label>
-          <button type="button" class="btn primary big" data-action="create">✨ Seal my invitation</button>
+          <div class="btn-row">
+            <button type="button" class="btn primary big" data-action="create">✨ Seal my invitation</button>
+            <button type="button" class="btn" data-action="as-them">👀 See it as they will</button>
+          </div>
           <div id="result" class="result" hidden>
             <label>Your message, ready to paste
               <textarea id="result-message" rows="3" readonly></textarea>
@@ -183,6 +222,15 @@
       </aside>
     </div>
     <button type="button" class="btn primary fab" data-action="toggle-preview">👁 Preview</button>
+
+    <div id="as-them" class="as-them" role="dialog" aria-modal="true" aria-labelledby="as-them-title" hidden>
+      <div class="as-them-bar">
+        <span id="as-them-title">Exactly what they’ll see</span>
+        <button type="button" class="btn small" data-action="restart-as-them">↺ Again</button>
+        <button type="button" class="btn small" data-action="close-as-them">✕ Close</button>
+      </div>
+      <div class="as-them-phone"><iframe id="as-them-frame" title="Your invitation, as they’ll see it"></iframe></div>
+    </div>
   </main>
 
   <!-- ───────────── Invitation (the recipient's side) ───────────── -->

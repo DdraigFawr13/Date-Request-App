@@ -85,6 +85,8 @@ export function normalizeInvite(raw) {
   const inv = { s };
   for (const k of ['v', 'rm']) if (typeof raw[k] === 'number' && Number.isFinite(raw[k])) inv[k] = raw[k];
   if (typeof raw.e === 'number' && Number.isFinite(raw.e) && raw.e > s && raw.e - s < 31 * DAY) inv.e = raw.e;
+  // Group invitations: the most people one reply can count.
+  if (typeof raw.hc === 'number' && Number.isFinite(raw.hc) && raw.hc >= 1) inv.hc = Math.min(Math.round(raw.hc), 50);
   if (raw.ad === true) inv.ad = true;
   if (raw.at === true) inv.at = true;
   const tz = validTz(raw.tz);

@@ -153,6 +153,17 @@ export const WORDING = [
   { group: 'After they answer', key: 'noP', label: 'No — message', def: () => 'It’s kind to let them know.' },
 ];
 
+// The look each occasion is dressed in by default in quick mode. Missing ones
+// (the sabbat gathering, "something else") keep the season of the date.
+export const OCCASION_LOOKS = {
+  dinner: 'candlelit', picnic: 'picnic', stars: 'starlit', adventure: 'adventure', cozy: 'cozy',
+  show: 'show', party: 'party', drinks: 'speakeasy', club: 'disco', games: 'gamenight',
+  birthday: 'birthday', halloween: 'halloween', soiree: 'nocturne', masquerade: 'masquerade',
+  afterdark: 'noir', magic: 'wizard', neoncity: 'cyberpunk', fellowship: 'fellowship', quest: 'dragon',
+  tea: 'woodland', medieval: 'royal', cats: 'blackcat', coffee: 'blush', beach: 'seaside',
+  fae: 'enchanted', surprise: 'constellation',
+};
+
 // The occasion's words (seasonal ones depend on the date).
 export function occasionWords(inv) {
   const t = own(TEMPLATE_BY_ID, inv.k) || TEMPLATE_BY_ID.custom;

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a2463"/><stop offset="1" stop-color="#1e1436"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbe3a1"/><stop offset=".55" stop-color="#f2c46d"/><stop offset="1" stop-color="#c9902e"/>
+    </linearGradient>
+    <radialGradient id="wax" cx=".38" cy=".35" r=".7">
+      <stop offset="0" stop-color="#d0475e"/><stop offset=".7" stop-color="#9c1f36"/><stop offset="1" stop-color="#6e1124"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#sky)"/>
+  <g fill="#f6efff">
+    <circle cx="96" cy="110" r="4"/><circle cx="410" cy="420" r="3"/><circle cx="430" cy="140" r="3.5"/><circle cx="80" cy="390" r="3"/>
+    <path d="M150 70l5 13 13 5-13 5-5 13-5-13-13-5 13-5z"/>
+  </g>
+  <!-- the crescent moon -->
+  <path d="M352 66a96 96 0 1 0 74 152 76 76 0 1 1-74-152z" fill="url(#gold)"/>
+  <!-- the envelope -->
+  <g transform="translate(106 196)">
+    <rect width="300" height="200" rx="14" fill="#fbf5e8"/>
+    <path d="M0 186 L120 98 M300 186 L180 98" stroke="#e2d4b5" stroke-width="6" fill="none"/>
+    <path d="M6 10 L150 120 L294 10" fill="#efe3c8" stroke="#d9c69e" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="150" cy="118" r="36" fill="url(#wax)"/>
+    <path d="M150 96a22 22 0 1 0 15 38 17 17 0 1 1-15-38z" fill="#f2c46d" opacity=".9"/>
+  </g>
+</svg>

@@ -27,9 +27,28 @@ jobs:
           node-version: 22
       - run: npm test
 
+  # Browser smoke tests: build, seal, open every kind of wrapper, answer.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
+
   deploy:
     if: github.ref == 'refs/heads/main'
-    needs: test
+    needs: [test, e2e]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -43,8 +62,8 @@ jobs:
         run: |
           v="${GITHUB_SHA::12}"
           echo "$v" > version.txt
-          sed -i -E "s#(from '\./[A-Za-z0-9_-]+\.js)'#\1?v=$v'#g" js/*.js
-          if grep -nE "from '[^']+\.js'" js/*.js; then echo "Unstamped imports remain" >&2; exit 1; fi
+          sed -i -E "s#(from '\./[A-Za-z0-9_-]+\.js)'#\1?v=$v'#g; s#(import\('\./[A-Za-z0-9_-]+\.js)'#\1?v=$v'#g" js/*.js
+          if grep -nE "from '[^']+\.js'|import\('[^']+\.js'\)" js/*.js; then echo "Unstamped imports remain" >&2; exit 1; fi
           grep -c "?v=$v" js/*.js
       - uses: actions/upload-pages-artifact@v3
         with:
