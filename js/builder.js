@@ -245,6 +245,7 @@ function renderAsks() {
 }
 
 // ── Step 7: wording ──────────────────────────────────────────────────
+const WORDING_ICONS = { 'On the outside': '✉️', 'On the card': '💌', 'Reply buttons': '🔘', 'After they answer': '💬' };
 function renderWording() {
   const inv = toInvite(state);
   const defaults = wordsFor({ ...inv, tx: {} });
@@ -252,7 +253,8 @@ function renderWording() {
   let html = '';
   for (const f of WORDING) {
     if (f.group !== group) {
-      html += `${group ? '</div>' : ''}<p class="sub">${esc(f.group)}</p><div class="wording-group">`;
+      html += `${group ? '</div></section>' : ''}<section class="wording-block">
+        <h3 class="wording-title"><span aria-hidden="true">${WORDING_ICONS[f.group] || '✦'}</span>${esc(f.group)}</h3><div class="wording-group">`;
       group = f.group;
     }
     const own = typeof state.tx[f.key] === 'string';
@@ -263,7 +265,7 @@ function renderWording() {
       : `<input data-tx="${f.key}" value="${esc(value)}" placeholder="(hidden)">`;
     html += `<label class="${own ? 'edited' : ''}">${esc(f.label)}${own ? ` <button type="button" class="reset-line" data-action="reset-line" data-id="${f.key}" title="Back to the default">↺ default</button>` : ''}${field}</label>`;
   }
-  $('#wording').innerHTML = `${html}</div>`;
+  $('#wording').innerHTML = `${html}</div></section>`;
 }
 
 // Shows or hides a line's "↺ default" button without re-rendering (which would steal focus).
