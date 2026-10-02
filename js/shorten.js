@@ -1,20 +1,44 @@
 // Short links via is.gd (falling back to its sister v.gd). Their API supports
 // JSONP, which works from a static page with no server. If both fail, the
 // full link is used — it works just the same, it's only longer.
+//
+// JSONP means running is.gd's script, so it runs inside a sandboxed iframe with
+// an opaque origin: it can't reach this page, its storage or the draft, and all
+// it can do is post a message back, which is checked before it's used.
 
 const MAX_LENGTH = 5000; // is.gd refuses longer URLs
 const cache = new Map();
 
+// JSON for inside an inline <script>: no "</script>" or "<!--" can break out.
+const scriptJson = v => JSON.stringify(v).replace(/</g, '\\u003c');
+
+export function sandboxDoc(url, id) {
+  return `<!doctype html><script>
+    const send = msg => parent.postMessage({ id: ${scriptJson(id)}, ...msg }, '*');
+    window.cb = data => send({ data });
+    const s = document.createElement('script');
+    s.onerror = () => send({ error: 'network' });
+    s.src = ${scriptJson(`${url}&callback=cb`)};
+    document.head.append(s);
+  </script>`;
+}
+
 function jsonp(url, timeout = 7000) {
   return new Promise((resolve, reject) => {
-    const cb = `__moonpost_${Math.random().toString(36).slice(2)}`;
-    const script = document.createElement('script');
-    const cleanup = () => { delete window[cb]; script.remove(); clearTimeout(timer); };
+    const id = Math.random().toString(36).slice(2);
+    const frame = Object.assign(document.createElement('iframe'), { hidden: true, title: 'Link shortener' });
+    frame.setAttribute('sandbox', 'allow-scripts');
+    const cleanup = () => { removeEventListener('message', onMessage); frame.remove(); clearTimeout(timer); };
     const timer = setTimeout(() => { cleanup(); reject(new Error('timeout')); }, timeout);
-    window[cb] = data => { cleanup(); resolve(data); };
-    script.onerror = () => { cleanup(); reject(new Error('network')); };
-    script.src = `${url}&callback=${cb}`;
-    document.head.append(script);
+    function onMessage(e) {
+      if (e.source !== frame.contentWindow || e.data?.id !== id) return;
+      cleanup();
+      if (e.data.error) reject(new Error(String(e.data.error)));
+      else resolve(e.data.data);
+    }
+    addEventListener('message', onMessage);
+    frame.srcdoc = sandboxDoc(url, id);
+    document.body.append(frame);
   });
 }
 

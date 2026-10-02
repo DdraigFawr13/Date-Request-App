@@ -159,6 +159,11 @@ test('every look and occasion only references things that exist', async () => {
   }
   for (const c of LOOK_CATEGORIES) assert.ok(Object.values(THEMES).some(t => t.cat === c.id), `empty tab ${c.id}`);
   for (const t of TEMPLATES) assert.ok(FONTS[t.font], `${t.id}: font ${t.font}`);
+  const { OCCASION_LOOKS } = await import('../js/occasions.js');
+  for (const [k, look] of Object.entries(OCCASION_LOOKS)) {
+    assert.ok(TEMPLATES.some(t => t.id === k), `quick look for unknown occasion ${k}`);
+    assert.ok(THEMES[look], `${k}: quick look ${look}`);
+  }
 });
 
 test('page color is independent of the background and stays readable', async () => {
@@ -267,7 +272,9 @@ test('every module import can be stamped with the release id on deploy', async (
     for (const [, spec] of src.matchAll(/\bfrom\s+["'`]([^"'`]+)["'`]/g)) {
       assert.match(spec, /^\.\/[A-Za-z0-9_-]+\.js$/, `${file}: import "${spec}" must be a plain './name.js' so the deploy can stamp it`);
     }
-    assert.ok(!/\bimport\s*\(/.test(src), `${file}: dynamic import() would not be stamped`);
+    for (const [call] of src.matchAll(/\bimport\s*\([^)]*\)/g)) {
+      assert.match(call, /^import\('\.\/[A-Za-z0-9_-]+\.js'\)$/, `${file}: ${call} must be a plain import('./name.js') so the deploy can stamp it`);
+    }
   }
 });
 
@@ -277,4 +284,64 @@ test('every look is a complete, flat entry (no look nested inside another)', asy
     for (const key of ['name', 'cat', 'bg', 'card', 'ink', 'accent', 'accent2', 'seal', 'pattern', 'wax', 'paper']) assert.ok(t[key], `${id}: missing ${key}`);
     for (const [k, v] of Object.entries(t)) assert.ok(typeof v !== 'object' || Array.isArray(v), `${id}.${k} is a nested object`);
   }
+});
+
+test('each invitation loads only the fonts its lettering needs', async () => {
+  const { familiesIn, fontsUrl, BASE_FAMILIES } = await import('../js/fonts.js');
+  const { FONTS } = await import('../js/occasions.js');
+  for (const [id, f] of Object.entries(FONTS)) {
+    assert.ok(familiesIn(f.display, f.body).length >= 1, `${id}: no loadable family`);
+  }
+  assert.deepEqual(familiesIn("'Great Vibes', cursive", "'Cormorant Garamond', serif"), ['Great Vibes', 'Cormorant Garamond']);
+  assert.deepEqual(familiesIn("'Not A Font', serif", 'system-ui'), [], 'unknown families are ignored');
+  assert.equal(fontsUrl(['Amatic SC', 'Creepster']), 'https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Creepster&display=swap');
+  const { readFileSync } = await import('node:fs');
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const head = html.match(/fonts\.googleapis\.com\/css2\?([^"]+)"/)[1];
+  assert.deepEqual([...head.matchAll(/family=([^:&]+)/g)].map(m => m[1].replace(/\+/g, ' ')), BASE_FAMILIES, 'index.html loads just the base faces');
+});
+
+test('an invitation is over once it ends (or at the end of an all-day date)', async () => {
+  const { isPast } = await import('../js/calendar.js');
+  const now = Date.UTC(2026, 9, 31, 12);
+  assert.equal(isPast({ s: now - 3600e3 }, now), false, 'still on (default two hours)');
+  assert.equal(isPast({ s: now - 3 * 3600e3 }, now), true);
+  assert.equal(isPast({ s: now - 3 * 3600e3, e: now + 60e3 }, now), false, 'uses the end time');
+  assert.equal(isPast({ s: now - 10 * 3600e3, ad: true }, now), false, 'all day lasts the day');
+  assert.equal(isPast({ s: now - 25 * 3600e3, ad: true }, now), true);
+});
+
+test('group replies carry a headcount and a name the sender can count', async () => {
+  const { replyText } = await import('../js/invite.js');
+  const { parseReply, tally, upsertSent, cleanSent } = await import('../js/replies.js');
+  const { normalizeInvite } = await import('../js/codec.js');
+  const inv = normalizeInvite({ s: Date.UTC(2026, 9, 31, 23), tz: 'UTC', title: 'Game night', hc: 6 });
+  const yes = replyText(inv, 'yes', { name: 'Rowan', party: 3, answers: ['Red'] }, ['Drink of choice?']);
+  assert.match(yes, /^✨ Yes!/);
+  assert.deepEqual(parseReply(yes), { r: 'yes', n: 3, name: 'Rowan' });
+  assert.deepEqual(parseReply(replyText(inv, 'no', { name: 'Ash' })), { r: 'no', n: 1, name: 'Ash' });
+  assert.deepEqual(parseReply(replyText(inv, 'maybe', {})), { r: 'maybe', n: 1, name: '' });
+  assert.equal(parseReply('Count me in!!').r, 'yes', 'hand-typed replies get a best guess');
+  assert.equal(parseReply('so sorry, can’t make it').r, 'no');
+  assert.equal(parseReply('👥 Party of 999').n, 50);
+  const one = replyText(normalizeInvite({ s: inv.s, title: 'Dinner' }), 'yes', { name: 'Rowan', party: 4 });
+  assert.ok(!/Party of|Rowan/.test(one), 'one-to-one invitations stay as they were');
+
+  assert.deepEqual(tally([{ r: 'yes', n: 3 }, { r: 'yes' }, { r: 'no' }, { r: 'maybe' }, { r: 'coming' }, { r: 'x' }]), { yes: 2, maybe: 1, no: 1, coming: 4 });
+  let list = upsertSent([], { id: 'a', url: 'u1' });
+  list[0].replies.push({ r: 'yes', n: 2 });
+  list = upsertSent(upsertSent(list, { id: 'b', url: 'u2' }), { id: 'a', url: 'u3' });
+  assert.deepEqual(list.map(e => [e.id, e.url, e.replies.length]), [['a', 'u3', 1], ['b', 'u2', 0]], 'resealing keeps replies and moves it to the top');
+  assert.deepEqual(cleanSent([null, 'x', { id: 1 }, { id: 'c', url: 'u', replies: 'no' }]), [{ id: 'c', url: 'u', replies: [] }]);
+
+  assert.equal(normalizeInvite({ s: inv.s, hc: 7.6 }).hc, 8);
+  assert.equal(normalizeInvite({ s: inv.s, hc: 1e9 }).hc, 50);
+  for (const bad of [0, -2, '5', NaN, null]) assert.equal(normalizeInvite({ s: inv.s, hc: bad }).hc, undefined, `hc ${bad}`);
+});
+
+test('the shortener sandbox can’t be broken out of by a crafted link', async () => {
+  const { sandboxDoc } = await import('../js/shorten.js');
+  const doc = sandboxDoc('https://is.gd/create.php?format=json&url=</script><script>alert(1)</script>', 'id"1');
+  assert.equal(doc.match(/<\/script>/g).length, 1, 'only the sandbox’s own closing tag');
+  assert.ok(!/<script>alert/.test(doc));
 });

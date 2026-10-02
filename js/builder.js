@@ -2,15 +2,18 @@
 // "seal & send" step that produces a short, shareable link.
 
 import { LOOK_CATEGORIES, THEMES, sabbatFor } from './themes.js';
-import { FONTS, TEMPLATES, TEMPLATE_BY_ID, WORDING, resolveTheme } from './occasions.js';
+import { FONTS, OCCASION_LOOKS, TEMPLATES, TEMPLATE_BY_ID, WORDING, resolveTheme } from './occasions.js';
 import { MODULES, MODULE_BY_ID, QUESTIONS } from './modules.js';
 import { encodeInvite } from './codec.js';
-import { applyTheme, esc, particles, renderCard, wordsFor } from './render.js';
+import { applyTheme, esc, formatWhen, particles, renderCard, wordsFor } from './render.js';
+import { isPast } from './calendar.js';
+import { SENT_KEY, cleanSent, parseReply, tally, upsertSent } from './replies.js';
 import { CORNER_OPTIONS, FOILS, GLOW_COLORS, PAPERS, foilCss, ornamentPreview, RULE_OPTIONS, SCENES, SIDE_OPTIONS, backdropCss, luminance, resolvePaper, safeHex } from './decor.js';
 import { EMBLEM_GROUPS, FACE_FINISHES, SVG_EMBLEMS, WAX_BY_ID, WAX_COLORS, sealHtml } from './seal.js';
 import { WRAPPERS, playOpening, resolveWrapper, wrapperHtml } from './wrappers.js';
 import { shortenUrl } from './shorten.js';
-import { $, copyText, randomId, store, toast } from './util.js';
+import { loadAllFonts } from './fonts.js';
+import { $, copyText, own, randomId, store, toast } from './util.js';
 
 const DRAFT_KEY = 'moonpost:draft';
 
@@ -27,9 +30,11 @@ function blankState() {
     look, font: '', lookTab: THEMES[look].cat, bs: 'look', bc: [], cc: '', gl: '', af: '', at: false, pp: 'look', dc: 'look', ds: 'look', dv: 'look',
     wrap: 'auto', sealColor: '', sealFace: '', sealEmblem: '', emblemTab: 'regal',
     mods: {}, dl: {}, asks: [], askCustom: [], custom: [], tx: {},
-    remind: 60, smsText: '',
+    remind: 60, smsText: '', mode: 'quick', group: false, hc: 6,
   };
 }
+
+const clampGuests = n => Math.min(50, Math.max(2, Math.round(Number(n)) || 6));
 
 // Brings a draft saved by an older version up to date.
 function normalize(saved) {
@@ -52,6 +57,11 @@ function normalize(saved) {
   if (!TEMPLATE_BY_ID[st.kind]) st.kind = 'custom';
   if (WAX_COLORS.every(c => c.hex !== st.sealColor && c.id !== st.sealColor) && !safeHex(st.sealColor)) st.sealColor = '';
   if (!/^@/.test(st.sealEmblem) && Array.from(st.sealEmblem || '').length > 4) st.sealEmblem = '';
+  // People who were already designing before quick mode keep the full designer.
+  if (saved && typeof saved === 'object' && !saved.mode) st.mode = 'full';
+  if (!['quick', 'full'].includes(st.mode)) st.mode = 'quick';
+  st.group = st.group === true;
+  st.hc = clampGuests(st.hc);
   for (const k of ['theme', 'hemi', 'phone', 'toPhone', 'closing']) delete st[k];
   return st;
 }
@@ -91,7 +101,7 @@ export function toInvite(st) {
     w: pick(st.wrap, 'auto'), sc: st.sealColor, sf: st.sealFace, se: st.sealEmblem.trim(),
     d, dl, q: st.asks, qc: st.askCustom.map(q => q.trim()).filter(Boolean),
     cf: st.custom.filter(c => c.l || c.v).map(c => ({ i: c.i, l: c.l.trim(), v: c.v.trim() })),
-    tx, rm: Number(st.remind) || 0,
+    tx, rm: Number(st.remind) || 0, hc: st.group ? clampGuests(st.hc) : undefined,
   };
 }
 
@@ -316,6 +326,8 @@ function syncForm() {
   }
   $('[data-bind="smsText"]').placeholder = defaultSmsText(state);
   for (const el of document.querySelectorAll('[data-bind="time"], [data-bind="endTime"]')) el.disabled = state.allDay;
+  $('#group-max').hidden = !state.group;
+  $('[data-bind="to"]').placeholder = state.group ? 'Their name, or “Everyone”' : 'Their name';
 }
 
 // Screen readers can't see the purple "selected" outline, so mirror it as
@@ -326,7 +338,7 @@ function syncPressed() {
     if (el.classList.contains('tab')) {
       el.setAttribute('role', 'tab');
       el.setAttribute('aria-selected', String(on));
-    } else if (el.matches('button') && /^(template|font|look|scene|bg-colors|page-color|glow|foil|paper|corners|sides|rules|wrap|seal-color|seal-face|emblem|chip|ask|preview-mode)$/.test(el.dataset.action)) {
+    } else if (el.matches('button') && /^(mode|template|font|look|scene|bg-colors|page-color|glow|foil|paper|corners|sides|rules|wrap|seal-color|seal-face|emblem|chip|ask|preview-mode)$/.test(el.dataset.action)) {
       el.setAttribute('aria-pressed', String(on));
     }
   }
@@ -341,6 +353,7 @@ function renderAll() {
   renderAsks();
   renderWording();
   syncForm();
+  syncMode();
   refresh();
   syncPressed();
 }
@@ -358,6 +371,8 @@ function refresh() {
     $('#preview-card').innerHTML = previewMode === 'wrapper' ? wrapperHtml(inv, theme, words) : renderCard(inv, theme, words);
     for (const b of document.querySelectorAll('[data-action=preview-mode]')) b.classList.toggle('on', b.dataset.mode === previewMode);
     syncPressed();
+    renderQuick();
+    checkDate();
     if (lastPreviewTheme !== theme.id) {
       particles($('#preview-sky'), theme, 10);
       lastPreviewTheme = theme.id;
@@ -368,6 +383,215 @@ function refresh() {
     lastUrl = '';
     $('#result').hidden = true;
   }
+}
+
+// ── Quick mode ───────────────────────────────────────────────────────
+// Quick mode shows only the occasion, the basics and sending; everything else
+// follows the occasion (including a matching look) until they open it all up.
+function syncMode() {
+  const quick = state.mode === 'quick';
+  $('#form').classList.toggle('quick', quick);
+  for (const b of document.querySelectorAll('[data-action=mode]')) b.classList.toggle('on', b.dataset.id === state.mode);
+  let n = 0;
+  for (const step of document.querySelectorAll('#form > .step')) {
+    if (step.matches(quick ? '.full-only' : '.quick-only')) continue;
+    step.querySelector('.step-num').textContent = ++n;
+  }
+}
+
+function seasonLook() {
+  const [, m, d] = String(state.date).split('-').map(Number);
+  return m && d ? sabbatFor(m, d) : state.look;
+}
+
+function setLook(id) {
+  state.look = id;
+  state.lookTab = THEMES[id].cat;
+}
+
+function renderQuick() {
+  if (state.mode !== 'quick') return;
+  const inv = toInvite(state);
+  const look = resolveTheme(inv);
+  const wrap = WRAPPERS[resolveWrapper(inv, look)];
+  const font = own(FONTS, state.font) || FONTS[TEMPLATE_BY_ID[state.kind]?.font] || FONTS.storybook;
+  const details = Object.keys(inv.d).length + inv.cf.length;
+  const asks = inv.q.length + inv.qc.length;
+  $('#quick-summary').innerHTML = `<ul class="quick-list">
+    <li><span class="mini-swatch" style="background:linear-gradient(135deg, ${look.bg[0]}, ${look.bg[1]})"></span><b>Look</b> ${esc(THEMES[state.look].name)}</li>
+    <li><span aria-hidden="true">${wrap.icon}</span><b>Arrives as</b> ${esc(wrap.label.toLowerCase())}</li>
+    <li><span aria-hidden="true">✒️</span><b>Lettering</b> <span style="font-family:${font.display}">${esc(font.name)}</span></li>
+    <li><span aria-hidden="true">📋</span><b>Details</b> ${details ? `${details} from the occasion` : 'none'}${asks ? ` · ${asks} question${asks > 1 ? 's' : ''} for them` : ''}</li>
+  </ul>`;
+}
+
+function shuffleLook() {
+  // The after-dark looks only come up if that's where they already are.
+  const pool = Object.keys(THEMES).filter(id => id !== state.look && (THEMES[id].cat !== 'afterdark' || THEMES[state.look].cat === 'afterdark'));
+  setLook(pool[Math.floor(Math.random() * pool.length)]);
+  previewMode = 'card';
+  renderLook(); renderDelivery(); refresh();
+  toast(`${THEMES[state.look].glyph} ${THEMES[state.look].name}`);
+}
+
+// ── Dates that have already passed ───────────────────────────────────
+const isPastDraft = () => !!state.date && isPast(toInvite(state));
+function checkDate() {
+  const el = $('#date-warning');
+  const past = isPastDraft();
+  el.hidden = !past;
+  el.textContent = past ? '⚠️ That date and time have already passed. They’d see the invitation as over, with nothing to answer.' : '';
+}
+
+// ── Your invitations (sent history and replies) ──────────────────────
+let openLog = '';
+const sentList = () => cleanSent(store.get(SENT_KEY));
+const saveSent = list => { store.set(SENT_KEY, list); renderHistory(); };
+const ANSWER_ICON = { yes: '✨', maybe: '🌙', no: '💌' };
+
+function sentItem(e) {
+  const when = formatWhen(e);
+  const t = tally(e.replies);
+  const counts = e.replies.length
+    ? `<p class="sent-tally"><b>${t.coming} coming</b> · ✨ ${t.yes} yes · 🌙 ${t.maybe} maybe · 💌 ${t.no} can’t</p>` : '';
+  const logged = e.replies.map((x, i) => `<li>${ANSWER_ICON[x.r] || '•'} ${esc(x.name || 'Someone')}${x.r === 'yes' && x.n > 1 ? ` · party of ${x.n}` : ''}
+    <button type="button" class="icon-btn" data-action="log-remove" data-id="${esc(e.id)}" data-index="${i}" aria-label="Remove ${esc(x.name || 'this')} reply">✕</button></li>`).join('');
+  const open = openLog === e.id;
+  return `<li class="sent" data-sent="${esc(e.id)}">
+    <div class="sent-head"><b>${esc(e.title)}</b>${isPast(e) ? '<span class="badge">over</span>' : ''}
+      <span class="sent-when">${e.to ? `for ${esc(e.to)} · ` : ''}${esc(when.date)}</span></div>
+    ${counts}
+    <div class="btn-row small">
+      <button type="button" class="btn small" data-action="sent-copy" data-id="${esc(e.id)}">📋 Copy link</button>
+      <button type="button" class="btn small" data-action="sent-log" data-id="${esc(e.id)}" aria-expanded="${open}">💬 Log a reply</button>
+      <button type="button" class="btn small" data-action="sent-edit" data-id="${esc(e.id)}">✏️ Edit</button>
+      <button type="button" class="btn small" data-action="sent-dup" data-id="${esc(e.id)}">⧉ Send again</button>
+      <button type="button" class="btn ghost small" data-action="sent-remove" data-id="${esc(e.id)}" aria-label="Forget ${esc(e.title)}">🗑</button>
+    </div>
+    <div class="reply-log" ${open ? '' : 'hidden'}>
+      <label>Paste the reply they texted you<textarea data-log-paste rows="2" placeholder="✨ Yes! I’d love to come…"></textarea></label>
+      <div class="log-row">
+        <label>Name<input data-log-name placeholder="Who?"></label>
+        <label>Answer<select data-log-r><option value="yes">✨ Yes</option><option value="maybe">🌙 Maybe</option><option value="no">💌 Can’t</option></select></label>
+        <label>People<input type="number" data-log-n min="1" max="50" value="1" inputmode="numeric"></label>
+      </div>
+      <button type="button" class="btn primary small" data-action="log-add" data-id="${esc(e.id)}">Add reply</button>
+      ${logged ? `<ul class="logged">${logged}</ul>` : ''}
+    </div>
+  </li>`;
+}
+
+function renderHistory() {
+  const list = sentList();
+  $('#history').hidden = !list.length;
+  $('#history-label').textContent = `Your invitations (${list.length})`;
+  $('#history-list').innerHTML = list.map(sentItem).join('');
+}
+
+function loadSent(id, { copy = false } = {}) {
+  const entry = sentList().find(e => e.id === id);
+  if (!entry?.draft) return;
+  const unsaved = !sentList().some(e => e.id === state.id) && (state.title.trim() || state.to.trim() || state.msg.trim());
+  if (unsaved && !confirm('Replace the invitation you’re working on? It hasn’t been sealed yet.')) return;
+  state = normalize(structuredClone(entry.draft));
+  if (copy) state.id = randomId();
+  lastUrl = '';
+  $('#result').hidden = true;
+  renderAll();
+  $('#history').open = false;
+  scrollTo({ top: 0, behavior: 'smooth' });
+  toast(copy ? 'A fresh copy — change what you like and seal it again ✨' : 'Editing it — seal it again for an updated link ✨');
+}
+
+function historyAction(action, id, btn) {
+  const list = sentList();
+  const entry = list.find(e => e.id === id);
+  if (!entry) return;
+  const row = btn.closest('.sent');
+  switch (action) {
+    case 'sent-copy': copyText(entry.url).then(() => toast('Link copied 📋')); break;
+    case 'sent-edit': loadSent(id); break;
+    case 'sent-dup': loadSent(id, { copy: true }); break;
+    case 'sent-log':
+      openLog = openLog === id ? '' : id;
+      renderHistory();
+      if (openLog) $(`[data-sent="${CSS.escape(id)}"] [data-log-paste]`)?.focus();
+      break;
+    case 'sent-remove':
+      if (confirm(`Forget “${entry.title}”? The link they have keeps working.`)) saveSent(list.filter(e => e.id !== id));
+      break;
+    case 'log-add': {
+      const r = row.querySelector('[data-log-r]').value;
+      const n = Math.min(50, Math.max(1, Math.round(Number(row.querySelector('[data-log-n]').value)) || 1));
+      entry.replies.push({ r, n: r === 'yes' ? n : 1, name: row.querySelector('[data-log-name]').value.trim().slice(0, 60), at: Date.now() });
+      saveSent(list);
+      toast(`${ANSWER_ICON[r]} Reply counted`);
+      $(`[data-sent="${CSS.escape(id)}"] [data-log-paste]`)?.focus();
+      break;
+    }
+    case 'log-remove':
+      entry.replies.splice(Number(btn.dataset.index), 1);
+      saveSent(list);
+      break;
+  }
+}
+
+// Pasting a reply fills in the name, answer and headcount for them.
+function onHistoryInput(e) {
+  if (!('logPaste' in e.target.dataset)) return;
+  const row = e.target.closest('.sent');
+  const { r, n, name } = parseReply(e.target.value);
+  if (r) row.querySelector('[data-log-r]').value = r;
+  row.querySelector('[data-log-n]').value = n;
+  if (name) row.querySelector('[data-log-name]').value = name;
+}
+
+// ── See it as they will ──────────────────────────────────────────────
+// The real recipient page in a phone-sized frame, in preview mode (nothing is
+// remembered or sent), so the sender can watch the whole opening first.
+let asThemTrigger;
+async function showAsThem(trigger) {
+  const code = await encodeInvite(toInvite(state));
+  asThemTrigger = trigger;
+  const frame = $('#as-them-frame');
+  frame.src = 'about:blank';
+  frame.src = `${location.pathname}#i=${code}&preview`;
+  $('#as-them').hidden = false;
+  document.body.classList.add('modal-open');
+  $('[data-action=close-as-them]').focus();
+}
+
+function closeAsThem() {
+  if ($('#as-them').hidden) return false;
+  $('#as-them').hidden = true;
+  $('#as-them-frame').src = 'about:blank';
+  document.body.classList.remove('modal-open');
+  asThemTrigger?.focus();
+  return true;
+}
+
+function togglePreviewPane() {
+  const open = document.body.classList.toggle('show-preview');
+  (open ? $('.close-preview') : $('.fab'))?.focus();
+}
+
+// ── Keyboard ─────────────────────────────────────────────────────────
+function onKeydown(e) {
+  if (e.key === 'Escape') {
+    if (closeAsThem()) return;
+    if (document.body.classList.contains('show-preview')) togglePreviewPane();
+    return;
+  }
+  // Tabs (look categories, emblem groups) move with the arrow keys.
+  const tab = e.target.closest?.('.tab-row .tab');
+  if (!tab || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
+  const tabs = [...tab.parentElement.querySelectorAll('.tab')];
+  const i = tabs.indexOf(tab);
+  const next = tabs[{ ArrowLeft: (i - 1 + tabs.length) % tabs.length, ArrowRight: (i + 1) % tabs.length, Home: 0, End: tabs.length - 1 }[e.key]];
+  e.preventDefault();
+  const { action, id } = next.dataset;
+  next.click();
+  document.querySelector(`[data-action="${action}"][data-id="${CSS.escape(id)}"]`)?.focus();
 }
 
 // ── Actions ───────────────────────────────────────────────────────────
@@ -384,6 +608,7 @@ function applyTemplate(t) {
   for (const [k, v] of Object.entries(t.mods)) if (!(k in mods)) mods[k] = structuredClone(v);
   state.mods = mods;
   state.asks = [...new Set([...state.asks.filter(a => !prev?.asks.includes(a)), ...t.asks])];
+  if (state.mode === 'quick') setLook(own(OCCASION_LOOKS, t.id) || seasonLook());
   renderAll();
 }
 
@@ -393,11 +618,13 @@ async function createLink() {
     $('[data-bind="date"]').focus();
     return;
   }
+  if (isPastDraft() && !confirm('This invitation is for a time that has already passed, so they’ll see it as over. Seal it anyway?')) return;
   const btn = $('[data-action=create]');
   btn.disabled = true;
   btn.textContent = '✨ Sealing…';
   try {
-    const code = await encodeInvite(toInvite(state));
+    const inv = toInvite(state);
+    const code = await encodeInvite(inv);
     const longUrl = `${location.origin}${location.pathname}#i=${code}`;
     const { url, error: shortError } = await shortenUrl(longUrl);
     lastUrl = url;
@@ -410,7 +637,12 @@ async function createLink() {
     $('#result-note').textContent = url === longUrl
       ? `We couldn’t make a short link, so this is the full link (the whole invitation lives inside it). It works just the same. Why: ${shortError}.`
       : 'Paste it into a text to them. When they answer, their reply opens in their messages, ready to send back to you.';
+    saveSent(upsertSent(sentList(), {
+      id: state.id, title: state.title.trim() || 'An invitation', to: state.to.trim(),
+      s: inv.s, e: inv.e, ad: inv.ad, tz: inv.tz, hc: inv.hc, url, at: Date.now(), draft: structuredClone(state),
+    }));
     $('#result').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    $('[data-action=copy-message]').focus({ preventScroll: true });
     toast('Sealed with a little magic ✨');
   } finally {
     btn.disabled = false;
@@ -422,7 +654,20 @@ function onClick(e) {
   const btn = e.target.closest('[data-action]');
   if (!btn) return;
   const { action, id } = btn.dataset;
+  if (/^(sent|log)-/.test(action)) { historyAction(action, id, btn); return; }
+  // Most choices redraw their group; keep keyboard focus on the same choice.
+  const hadFocus = document.activeElement === btn;
+  const selector = `[data-action="${action}"]${id !== undefined ? `[data-id="${CSS.escape(id)}"]` : ''}${btn.dataset.value !== undefined ? `[data-value="${CSS.escape(btn.dataset.value)}"]` : ''}`;
   switch (action) {
+    case 'mode':
+      state.mode = id;
+      renderAll();
+      if (id === 'full' && btn.closest('.quick-summary')) $('#form > .step.full-only')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      break;
+    case 'shuffle-look': shuffleLook(); break;
+    case 'as-them': showAsThem(btn); break;
+    case 'close-as-them': closeAsThem(); break;
+    case 'restart-as-them': $('#as-them-frame').contentWindow?.location.reload(); break;
     case 'template': applyTemplate(TEMPLATE_BY_ID[id]); break;
     case 'font': state.font = id; renderTemplates(); refresh(); break;
     case 'look-tab': state.lookTab = id; renderLook(); break;
@@ -481,7 +726,7 @@ function onClick(e) {
     case 'share':
       navigator.share({ title: state.title || 'An invitation', text: state.smsText.trim() || defaultSmsText(state), url: lastUrl }).catch(() => {});
       break;
-    case 'toggle-preview': document.body.classList.toggle('show-preview'); break;
+    case 'toggle-preview': togglePreviewPane(); break;
     case 'reset':
       if (confirm('Start a brand-new invitation? This clears the current one.')) {
         state = blankState();
@@ -493,6 +738,7 @@ function onClick(e) {
       break;
   }
   syncPressed();
+  if (hadFocus && !btn.isConnected) document.querySelector(selector)?.focus();
 }
 
 function onInput(e) {
@@ -500,7 +746,7 @@ function onInput(e) {
   if (el.dataset.bind) {
     const key = el.dataset.bind;
     state[key] = el.type === 'checkbox' ? el.checked : el.value;
-    if (key === 'allDay') syncForm();
+    if (key === 'allDay' || key === 'group') syncForm();
     if (key === 'to') $('[data-bind="smsText"]').placeholder = defaultSmsText(state);
     if (['to', 'from', 'date', 'allDay'].includes(key)) syncWordingDefaults();
     if (key === 'title') for (const s of document.querySelectorAll('.font-sample')) s.textContent = state.title || 'Aa';
@@ -560,7 +806,20 @@ function onInput(e) {
   refresh();
 }
 
-export function showBuilder() {
+// The builder's own stylesheet, stamped with the same release as this module.
+function loadBuilderCss() {
+  if (loadBuilderCss.done) return loadBuilderCss.done;
+  const link = Object.assign(document.createElement('link'), {
+    rel: 'stylesheet', href: new URL(`../css/builder.css${new URL(import.meta.url).search}`, import.meta.url).href,
+  });
+  loadBuilderCss.done = new Promise(resolve => { link.onload = link.onerror = resolve; });
+  document.head.append(link);
+  return loadBuilderCss.done;
+}
+
+export async function showBuilder() {
+  loadAllFonts();
+  await loadBuilderCss();
   state = normalize(store.get(DRAFT_KEY));
   document.documentElement.removeAttribute('style');
   document.documentElement.removeAttribute('data-theme');
@@ -573,8 +832,14 @@ export function showBuilder() {
     $('#builder').addEventListener('click', onClick);
     $('#form').addEventListener('input', onInput);
     $('#form').addEventListener('change', onInput);
+    $('#history').addEventListener('input', onHistoryInput);
+    addEventListener('keydown', onKeydown);
+    addEventListener('message', e => {
+      if (e.origin === location.origin && e.source === $('#as-them-frame').contentWindow && e.data?.moonpost === 'close-preview') closeAsThem();
+    });
     showBuilder.bound = true;
   }
   renderAll();
+  renderHistory();
 }
 

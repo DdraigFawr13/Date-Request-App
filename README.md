@@ -25,6 +25,32 @@ their calendar, and texts their answer back to you.
    .ics). **Text my answer** opens their messages app with the reply already
    written (they pick you as the recipient), or they can copy it.
 
+## Quick or the full designer
+
+New invitations start in **⚡ Quick** mode: pick an occasion, fill in the
+basics and send. The occasion picks the wording, lettering, details and a
+look to match (a dinner date is Candlelit, a game night is Game Night…), and
+**🔀 Try another look** shuffles it. **🎨 Design everything** opens all the
+steps below; nothing you've set is lost when switching.
+
+Before sending, **👀 See it as they will** plays the real invitation in a
+phone-sized frame, from the sealed wrapper through to the reply, without
+recording an answer. A date that has already passed gets a warning (and a
+confirmation before sealing), and an invitation opened after its date shows
+that the evening has passed instead of asking for an answer.
+
+## Group invitations and your sent invitations
+
+Tick **It's for a group** to ask each guest for their name and how many
+they're bringing (up to a limit you set). Their reply then says
+"👥 Party of 3" and ends "— Rowan".
+
+Every invitation you seal is listed under **📮 Your invitations**, on your
+device only. From there you can copy its link again, edit it and re-seal it,
+send a copy (say, for next month), or **log a reply**: paste the text they
+sent you and Moonpost fills in who, what they answered and how many, and
+keeps a running headcount.
+
 ## Occasion vs. look
 
 - **The occasion** sets the *words* and the *lettering*: the banner, greeting,
@@ -138,9 +164,15 @@ the reply text.
 It's plain HTML, CSS and JavaScript modules, with no build step.
 
 ```sh
-npm start        # serves at http://localhost:8080
-npm test         # runs the unit tests (Node 18+)
+npm start         # serves at http://localhost:8080
+npm test          # runs the unit tests (Node 18+)
+npm install       # once, for the browser tests
+npm run test:e2e  # browser tests: build, seal, open every wrapper, answer
 ```
+
+The browser tests use Playwright with Chromium (`npx playwright install
+chromium` the first time). Both suites run on every push and pull request,
+and a deploy only goes out when both pass.
 
 (Any static server works, e.g. `python3 -m http.server`. Opening
 `index.html` directly as a file won't work, because browsers block JS
@@ -164,7 +196,17 @@ Each deploy stamps its release id on the code (a `version.txt` file, and a
 `?v=` on every module import). The page reads `version.txt` fresh on every
 visit and loads the matching files, so a plain reload always shows the latest
 release, with no waiting out browser or GitHub Pages caching. Keep imports in
-the form `from './name.js'` so the deploy can stamp them (a test checks this).
+the form `from './name.js'` or `import('./name.js')` so the deploy can stamp
+them (a test checks this).
+
+Someone opening an invitation downloads only what they need: the builder's
+code and styles load only on the builder, and each invitation fetches just
+its own pair of fonts.
+
+**Add to home screen:** the site has a web app manifest and icons, so on a
+phone the builder can be added to the home screen and opens like an app
+(on iPhone, a home-screen app keeps its own sent-invitations list, separate
+from Safari's).
 
 ## Privacy notes
 
@@ -172,8 +214,11 @@ the form `from './name.js'` so the deploy can stamp them (a test checks this).
   send to a server. Anyone *with the link* can read it, though, so share
   it like you would the text itself.
 - Short links are made by is.gd, which stores the full link (and so can see
-  the invitation). If it can't be reached, Moonpost gives you the full link
+  the invitation). Its script runs inside a sandboxed frame, so it can't
+  read or change the page, your draft or your sent invitations. If it can't be reached, Moonpost gives you the full link
   instead and says why (for example, a content blocker blocking is.gd).
+- Your sent invitations and logged replies stay in this browser
+  (localStorage) and are never uploaded.
 - No phone numbers are stored. RSVPs aren't collected anywhere; they arrive as
   a normal text message from your guest.
 
@@ -181,8 +226,9 @@ the form `from './name.js'` so the deploy can stamp them (a test checks this).
 
 ```
 index.html          page shell (builder + invitation views)
-css/styles.css      all styling, including envelope & particle animations
-js/app.js           routes between builder and invitation (#i=…)
+css/styles.css      the invitation's styling, including envelope & particle animations
+css/builder.css     the builder's styling (loaded only on the builder)
+js/app.js           routes between builder and invitation (#i=…), loading each on demand
 js/builder.js       the sender's form, live preview and "seal & send"
 js/invite.js        the recipient's envelope, RSVP and replies
 js/render.js        renders the invitation card (shared by both views)
@@ -196,7 +242,11 @@ js/shorten.js       short links via is.gd / v.gd
 js/modules.js       detail modules and questions
 js/calendar.js      .ics / Google / Outlook calendar links
 js/codec.js         packs the invitation into the link (compressed)
+js/fonts.js         loads only the web fonts a page needs
+js/replies.js       sent invitations, reading pasted replies, headcounts
 tests/              unit tests (node --test)
+e2e/                browser tests (Playwright) and a tiny static server
+icons/, manifest.webmanifest   home-screen app icons
 ```
 
 ### Adding your own look or occasion
@@ -209,9 +259,16 @@ tests/              unit tests (node --test)
 
 ## Ideas for later
 
-- A tiny backend (e.g. a Cloudflare Worker) for our own short links, photo
-  backgrounds, per-invite link previews, and an RSVP dashboard.
+- A tiny backend (e.g. a Cloudflare Worker) for our own short links (no is.gd),
+  per-invite link previews ("Dinner under the Hunter's Moon, from Sam"), photo
+  backgrounds, and replies that arrive by themselves (seen / said yes), which
+  would also make group headcounts automatic.
+- One-tap replies: an optional "your number" field so "Text my answer" opens
+  already addressed to the sender (`ph` is already supported in the link).
+- Shorter links: a preset deflate dictionary of common keys and words, so a
+  full link is shorter when shortening fails.
+- Reschedule round-trip: "Maybe" proposes a new date that comes back to the
+  sender as a ready-made, re-sealed invitation.
 - Photo or GIF header on the card.
-- Multi-guest invitations with a headcount.
 - Month-specific flourishes (birth flowers, birthstones) layered on the
   seasonal theme.
