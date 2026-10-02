@@ -11,6 +11,7 @@ export const LOOK_CATEGORIES = [
   { id: 'sky', label: 'Sky', icon: '🌌' },
   { id: 'cats', label: 'Cats', icon: '🐈‍⬛' },
   { id: 'party', label: 'Parties', icon: '🎉' },
+  { id: 'stage', label: 'Stage', icon: '🎭' },
   { id: 'dark', label: 'Dark side', icon: '🖤' },
   { id: 'night', label: 'Night & glam', icon: '✨' },
 ];
@@ -199,6 +200,26 @@ export const THEMES = {
     bg: ['#04121c', '#0f2a3a'], card: '#0b1d27', ink: '#e8fbf6', accent: '#5ff2c2', accent2: '#b59cff', onAccent: '#04121c', dark: true,
     particles: ['✦', '❄', '✧', '🌲', '💫'], seal: '❄', divider: '✧ ❄ ✧', wrap: 'bottle', glow: '#5ff2c2',
     pattern: 'snow', scene: 'aurora', wax: 'teal', waxFace: 'silver', paper: 'smooth', corners: 'celestial', rule: 'swash',
+  },
+
+  // ── Stage ────────────────────────────────────────────────────────────
+  midsummer: {
+    name: 'A Midsummer Night’s Dream', cat: 'stage', tagline: 'A moonlit wood, fairies & mischief', glyph: '☾',
+    bg: ['#0a1630', '#2b2a5e'], card: '#f6f0e2', ink: '#24233f', accent: '#6b4aa8', accent2: '#b89a4a', onAccent: '#ffffff',
+    particles: ['🧚', '✨', '🌙', '🌸', '🦋', '🍃'], seal: '@pansy', divider: '✧ ☾ ✧', wrap: 'scroll',
+    pattern: 'midsummer', scene: 'moonwood', wax: 'lavender', waxFace: 'gold', paper: 'vellum', corners: 'floral', sides: 'vine', rule: 'vine',
+  },
+  theatre: {
+    name: 'Theatre Night', cat: 'stage', tagline: 'Red velvet, gilt & curtain up', glyph: '🎭',
+    bg: ['#1c0408', '#4f0d18'], card: '#f7eedb', ink: '#2b1014', accent: '#9b1b2c', accent2: '#c9a24a', onAccent: '#fff6e6',
+    particles: ['🎭', '🌹', '🎟️', '✨', '⭐'], seal: '@masks', divider: '✦ 🎭 ✦', wrap: 'book',
+    pattern: 'masks', scene: 'curtain', wax: 'burgundy', waxFace: 'gold', paper: 'cotton', corners: 'filigree', sides: 'frame', rule: 'flourish',
+  },
+  musical: {
+    name: 'Broadway Musical', cat: 'stage', tagline: 'Marquee lights & a showstopper', glyph: '♪',
+    bg: ['#0c0814', '#2a1238'], card: '#1a1026', ink: '#fff4dc', accent: '#f4c24c', accent2: '#ff5d8f', onAccent: '#1a1026', dark: true,
+    particles: ['🎶', '🎵', '⭐', '🎤', '✨', '💃'], seal: '@note', divider: '♪ ★ ♪', wrap: 'gift', glow: '#ffcf6a',
+    pattern: 'notes', scene: 'marquee', wax: 'gold', waxFace: 'black', paper: 'silk', corners: 'deco', rule: 'swash',
   },
 
   // ── Parties & nights out ─────────────────────────────────────────────
