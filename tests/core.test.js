@@ -196,3 +196,42 @@ test('emoji in italic lines are wrapped so they stay upright, and text is still 
   assert.equal(escEmoji('🌕 Beneath the <full> moon'), '<span class="emo">🌕</span> Beneath the &lt;full&gt; moon');
   assert.match(escEmoji('✨ It falls on Samhain itself ✨'), /^<span class="emo">✨<\/span>.*<span class="emo">✨<\/span>$/);
 });
+
+test('hand-edited links are cleaned up or rejected, never crash the page', async () => {
+  const { normalizeInvite } = await import('../js/codec.js');
+  const { wrapperHtml } = await import('../js/wrappers.js');
+  const s = Date.UTC(2026, 9, 31, 23);
+  const hostile = [
+    { th: '__proto__' }, { th: 'constructor' }, { fn: 'constructor' }, { k: 'toString' }, { sc: 'toString' }, { sf: 'constructor' },
+    { se: '@constructor' }, { se: '@__proto__' }, { w: 'constructor' }, { q: ['constructor', 'diet'] }, { cf: { a: 1 } }, { cf: ['x', { l: 5 }] },
+    { q: 'diet' }, { qc: 5 }, { d: 'x' }, { d: { link: 'x', dress: 7 } }, { dl: ['x'] }, { tx: ['a'] }, { title: 123 }, { to: { x: 1 } },
+    { tz: 'Not/AZone' }, { e: -5 }, { bc: '#123456' }, { title: 'x'.repeat(50000) },
+  ];
+  for (const extra of hostile) {
+    const inv = normalizeInvite({ s, tz: 'UTC', title: 'T', ...extra });
+    const theme = resolveTheme(inv);
+    const words = wording(inv);
+    const html = renderCard(inv, theme) + wrapperHtml(inv, theme, words);
+    assert.ok(!/undefined|\[object Object\]|function \w*\(|NaN/.test(html), `junk in markup for ${JSON.stringify(extra).slice(0, 60)}`);
+  }
+  for (const bad of [null, [], 'x', {}, { s: 'soon' }, { s: NaN }, { s: 9e15 }, { s: Infinity }]) {
+    assert.throws(() => normalizeInvite(bad), `rejects ${JSON.stringify(bad)}`);
+  }
+  assert.equal(normalizeInvite({ s, tz: 'Not/AZone' }).tz, undefined, 'unknown time zones are dropped');
+  assert.deepEqual(normalizeInvite({ s, qc: 'Sweet or savory?' }).qc, ['Sweet or savory?'], 'older single questions still work');
+});
+
+test('every look reads well: text, titles, buttons and text on the background', async () => {
+  const { THEMES } = await import('../js/themes.js');
+  const { contrast, readableButton, textOnBackdrop } = await import('../js/decor.js');
+  const mix = (a, b, t) => { const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16); return '#' + [16, 8, 0].map(s => Math.round(((pa >> s) & 255) * (1 - t) + ((pb >> s) & 255) * t).toString(16).padStart(2, '0')).join(''); };
+  for (const t of Object.values(THEMES)) {
+    assert.ok(contrast(t.ink, t.card) >= 4.5, `${t.id}: body text`);
+    assert.ok(contrast(mix(t.card, t.ink, 0.76), t.card) >= 4.5, `${t.id}: greeting text`);
+    assert.ok(contrast(t.accent, t.card) >= 3, `${t.id}: title`);
+    const b = readableButton(t);
+    assert.ok(contrast(b.ink, b.bg) >= 4.5, `${t.id}: button text (${contrast(b.ink, b.bg).toFixed(2)})`);
+    const fg = textOnBackdrop(t);
+    assert.ok(Math.min(contrast(fg, t.bg[0]), contrast(fg, t.bg[1])) >= 3, `${t.id}: text on the background`);
+  }
+});

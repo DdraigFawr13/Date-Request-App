@@ -313,6 +313,20 @@ function syncForm() {
   for (const el of document.querySelectorAll('[data-bind="time"], [data-bind="endTime"]')) el.disabled = state.allDay;
 }
 
+// Screen readers can't see the purple "selected" outline, so mirror it as
+// aria-pressed on toggle buttons and aria-selected on tabs.
+function syncPressed() {
+  for (const el of document.querySelectorAll('#builder button[data-action], #builder label.color-dot, #builder label.face-dot, #builder label.glow-dot')) {
+    const on = el.classList.contains('on');
+    if (el.classList.contains('tab')) {
+      el.setAttribute('role', 'tab');
+      el.setAttribute('aria-selected', String(on));
+    } else if (el.matches('button') && /^(template|font|look|scene|bg-colors|page-color|glow|paper|corners|sides|rules|wrap|seal-color|seal-face|emblem|chip|ask|preview-mode)$/.test(el.dataset.action)) {
+      el.setAttribute('aria-pressed', String(on));
+    }
+  }
+}
+
 function renderAll() {
   renderTemplates();
   renderLook();
@@ -323,6 +337,7 @@ function renderAll() {
   renderWording();
   syncForm();
   refresh();
+  syncPressed();
 }
 
 let previewTimer;
@@ -337,6 +352,7 @@ function refresh() {
     applyTheme(stage, theme, inv);
     $('#preview-card').innerHTML = previewMode === 'wrapper' ? wrapperHtml(inv, theme, words) : renderCard(inv, theme, words);
     for (const b of document.querySelectorAll('[data-action=preview-mode]')) b.classList.toggle('on', b.dataset.mode === previewMode);
+    syncPressed();
     if (lastPreviewTheme !== theme.id) {
       particles($('#preview-sky'), theme, 10);
       lastPreviewTheme = theme.id;
@@ -470,6 +486,7 @@ function onClick(e) {
       }
       break;
   }
+  syncPressed();
 }
 
 function onInput(e) {

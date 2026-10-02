@@ -148,10 +148,25 @@ function backdropColors(look, inv) {
   return [c1, safeHex(custom[1], custom[0] ? c1 : look.bg[1])];
 }
 
-// Whether text sitting directly on the background should be light.
-export function backdropIsDark(look, inv = {}) {
+// The most readable color for text sitting directly on the background
+// (it has to work across the whole gradient, so the worst end decides).
+export function textOnBackdrop(look, inv = {}) {
   const [c1, c2] = backdropColors(look, inv);
-  return (luminance(c1) + luminance(c2)) / 2 < 0.35;
+  const score = c => Math.min(contrast(c, c1), contrast(c, c2));
+  return ['#ffffff', look.ink, '#1a1418'].reduce((best, c) => (score(c) > score(best) ? c : best));
+}
+
+// Button colors that read: the better of the look's text color, white or
+// near-black; if even that falls short, the button itself is shaded.
+export function readableButton(look) {
+  const inks = [look.onAccent, '#ffffff', '#1a1418'];
+  const pick = bg => inks.reduce((best, c) => (contrast(c, bg) > contrast(best, bg) ? c : best));
+  let bg = look.accent, ink = pick(bg);
+  for (let i = 1; i <= 8 && contrast(ink, bg) < 4.5; i++) {
+    bg = shade(look.accent, (luminance(ink) > 0.5 ? -1 : 1) * i * 0.08);
+    ink = pick(bg);
+  }
+  return { bg, ink };
 }
 
 export function backdropCss(look, inv = {}) {

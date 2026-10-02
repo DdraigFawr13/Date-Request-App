@@ -331,7 +331,7 @@ export function seasonOf(inv) {
 
 // The look's own data. Older links may say 'auto', meaning "the season of the date".
 export function resolveLook(inv) {
-  if (inv.th && THEMES[inv.th]) return THEMES[inv.th];
+  if (typeof inv.th === 'string' && Object.hasOwn(THEMES, inv.th)) return THEMES[inv.th];
   return THEMES[seasonOf(inv)];
 }
 

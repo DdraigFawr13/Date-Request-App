@@ -97,7 +97,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(1px); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 35%, transparent); }
+.btn.primary { background: var(--btn, var(--accent)); border-color: var(--btn, var(--accent)); color: var(--on-accent); box-shadow: 0 6px 18px color-mix(in srgb, var(--btn, var(--accent)) 35%, transparent); }
 .btn.ghost { border-color: transparent; text-decoration: underline; text-underline-offset: 3px; }
 .btn.big { font-size: 1.1rem; padding: 0.85em 1.5em; }
 .btn.small { font-size: 0.9rem; padding: 0.45em 0.9em; }
@@ -419,7 +419,7 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32), 0 2px 0 color-mix(in srgb, var(--ink) 10%, transparent);
 }
 .card-body { position: relative; z-index: 2; }
-.invite-stage, .card { --muted: color-mix(in srgb, var(--ink) 70%, transparent); }
+.invite-stage, .card { --muted: color-mix(in srgb, var(--ink) 76%, transparent); }
 
 /* Paper textures: an overlay blended into the card color. */
 .card::before, .paper-art::before {

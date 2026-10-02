@@ -6,14 +6,14 @@ import { QUESTION_BY_ID } from './modules.js';
 import { decodeInvite } from './codec.js';
 import { downloadIcs, googleUrl, outlookUrl } from './calendar.js';
 import { ICONS, applyTheme, cardOpen, esc, formatWhen, particles, renderCard, sectionRule, wordsFor } from './render.js';
-import { $, copyText, smsHref, store, toast } from './util.js';
+import { $, copyText, own, smsHref, store, toast } from './util.js';
 import { playOpening, wrapperHtml } from './wrappers.js';
 
 let inv, theme, url, words;
 const responseKey = () => `moonpost:rsvp:${inv.id || inv.s}`;
 
 function questions() {
-  const qs = (inv.q || []).map(id => QUESTION_BY_ID[id]?.q).filter(Boolean);
+  const qs = (inv.q || []).map(id => own(QUESTION_BY_ID, id)?.q).filter(Boolean);
   const own = Array.isArray(inv.qc) ? inv.qc : [inv.qc];
   for (const q of own) if (typeof q === 'string' && q.trim()) qs.push(q.trim());
   return qs;
@@ -49,7 +49,7 @@ function replyControls(kind) {
   const notePlaceholder = { yes: 'Anything else to add? (optional)', maybe: 'When works better for you?', no: 'Add a note (optional)' }[kind];
   return `${fields}<label>${kind === 'maybe' ? 'Suggest a time' : 'A note'}<textarea data-note rows="2" placeholder="${notePlaceholder}"></textarea></label>
     <div class="btn-row">
-      <a id="reply-send" class="btn primary">${ICONS.message} Text ${who} my answer</a>
+      <a id="reply-send" class="btn primary" data-action="send-reply">${ICONS.message} Text ${who} my answer</a>
       <button type="button" id="reply-copy" class="btn" data-action="copy-reply">${ICONS.copy} Copy my reply</button>
     </div>
     <p class="hint">“Text” opens your messages with the reply written for you — just pick ${who}. Or copy it and send it however you usually chat.</p>`;
@@ -68,11 +68,16 @@ function renderPanel(kind, { scroll = true } = {}) {
     const text = replyText(kind, answers, note);
     $('#reply-send').href = smsHref(inv.ph, text);
     $('#reply-copy').dataset.text = text;
-    store.set(responseKey(), { r: kind, at: Date.now() });
   };
+  panel.dataset.kind = kind;
   panel.oninput = update;
   update();
   if (scroll) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function rememberAnswer() {
+  const kind = $('#rsvp-panel')?.dataset.kind;
+  if (kind) store.set(responseKey(), { r: kind, at: Date.now() });
 }
 
 function celebrate() {
@@ -125,7 +130,9 @@ function onClick(e) {
   switch (btn.dataset.action) {
     case 'open': playOpening(btn, () => showCard(root, { animate: true })); break;
     case 'ics': downloadIcs(inv, url); break;
-    case 'copy-reply': copyText(btn.dataset.text).then(() => toast('Reply copied 📋')); break;
+    // An answer only counts once they actually send or copy it.
+    case 'send-reply': rememberAnswer(); break;
+    case 'copy-reply': rememberAnswer(); copyText(btn.dataset.text).then(() => toast('Reply copied 📋')); break;
   }
 }
 
@@ -136,6 +143,7 @@ export async function showInvite(code) {
   document.body.classList.remove('show-preview');
   try {
     inv = await decodeInvite(code);
+    resolveTheme(inv); wordsFor(inv); // fail here, not halfway through drawing the page
   } catch {
     root.innerHTML = `<div class="card lost"><h1 class="title">This invitation lost its way 🌫️</h1>
       <p>The link may have been cut off when it was sent. Ask the sender to send it again, or

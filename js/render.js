@@ -5,7 +5,7 @@
 import { THEMES, MONTH_MOONS, moonPhase, partsInTz, sabbatOn } from './themes.js';
 import { wording } from './occasions.js';
 import { MODULES } from './modules.js';
-import { backdropCss, backdropIsDark, resolveGlow, decorHtml, resolvePaper, resolveRule, ruleHtml } from './decor.js';
+import { backdropCss, luminance, readableButton, resolveGlow, textOnBackdrop, decorHtml, resolvePaper, resolveRule, ruleHtml } from './decor.js';
 import { sealHtml } from './seal.js';
 import { esc, escEmoji } from './util.js';
 
@@ -16,11 +16,12 @@ export const safeUrl = u => (/^https?:\/\//i.test(u || '') ? u : '');
 export function applyTheme(el, theme, inv = {}) {
   const vars = {
     '--bg1': theme.bg[0], '--bg2': theme.bg[1], '--card': theme.card, '--ink': theme.ink,
-    '--accent': theme.accent, '--accent2': theme.accent2, '--on-accent': theme.onAccent,
+    '--accent': theme.accent, '--accent2': theme.accent2, '--on-accent': readableButton(theme).ink,
     '--font-display': theme.display, '--font-body': theme.body,
     '--backdrop': backdropCss(theme, inv),
-    '--on-bg': backdropIsDark(theme, inv) ? '#ffffff' : theme.ink,
-    '--on-bg-glow': backdropIsDark(theme, inv) ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.75)',
+    '--on-bg': textOnBackdrop(theme, inv),
+    '--on-bg-glow': luminance(textOnBackdrop(theme, inv)) > 0.5 ? 'rgba(0, 0, 0, 0.55)' : 'rgba(255, 255, 255, 0.7)',
+    '--btn': readableButton(theme).bg,
   };
   const glow = resolveGlow(inv, theme);
   vars['--glow'] = glow || 'transparent';
