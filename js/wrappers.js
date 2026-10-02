@@ -172,6 +172,29 @@ function tornEdges(seed, { left = false, right = false }) {
 }
 const polygon = (pts, mirror = false) => `polygon(${pts.map(([x, y]) => `${(mirror ? 100 - x : x).toFixed(1)}% ${y.toFixed(1)}%`).join(',')})`;
 
+// A solid domed lid built as a closed 3D box: front and back panels, a
+// rounded top of angled planks and arched end caps. Every face is wood
+// outside and velvet inside, so it reads as solid from any angle as it
+// swings. Sizes are fractions of the chest width (--w).
+const LID = { depth: 0.3, front: 0.11, rise: 0.15 };
+function solidLid() {
+  const { depth: D, front: F, rise: R } = LID, H = F + R;
+  // Side profile (z back from the front, height up from the rim), front to back.
+  const prof = [[0, 0], [0, F], [-0.045, F + R * 0.6], [-0.15, H], [-0.255, F + R * 0.6], [-D, F], [-D, 0]];
+  const w = v => `calc(var(--w) * ${v.toFixed(4)})`;
+  const faces = [];
+  for (let i = 0; i < prof.length - 1; i++) {
+    const [z1, y1] = prof[i], [z2, y2] = prof[i + 1], dz = z2 - z1, dy = y2 - y1, L = Math.hypot(dz, dy);
+    const phi = Math.atan2(-dz, dy) * 180 / Math.PI, zm = (z1 + z2) / 2, ym = (y1 + y2) / 2;
+    const kind = i === 0 ? 'front' : i === prof.length - 2 ? 'back' : 'top';
+    const shade = kind === 'front' ? 1 : kind === 'back' ? 0.6 : [1.12, 1, 0.82, 0.7][i - 1];
+    faces.push(`<span class="lf ${kind}" style="height:${w(L)};transform:translate3d(0, ${w(H - ym - L / 2)}, ${w(zm)}) rotateX(${phi.toFixed(2)}deg);--b:${shade}"><span class="o"></span><span class="i"></span></span>`);
+  }
+  const clip = prof.map(([z, y]) => `${(-z / D * 100).toFixed(1)}% ${((H - y) / H * 100).toFixed(1)}%`).join(',');
+  const side = cls => `<span class="lid-cap ${cls}" style="width:${w(D)};height:${w(H)};clip-path:polygon(${clip})"></span>`;
+  return faces.join('') + side('l') + side('r');
+}
+
 const PARTS = {
   envelope: (seal, glyph, look) => `
     <span class="env-back"></span>
@@ -206,12 +229,7 @@ const PARTS = {
     <span class="chest-mouth"></span>
     <span class="chest-treasure">${treasure()}</span>
     <span class="chest-base">${chestBase()}</span>
-    <span class="chest-lid">
-      <span class="lid-front">${chestLid()}</span>
-      <span class="lid-front-in">${chestLining()}</span>
-      <span class="lid-top"><span class="lid-top-in">${chestLining()}</span><span class="lid-top-out"></span></span>
-      <span class="lid-side l"></span><span class="lid-side r"></span>
-    </span>
+    <span class="chest-lid">${solidLid()}</span>
     <span class="chest-plate">${chestPlate()}</span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
   gift: (seal, glyph, look) => `
