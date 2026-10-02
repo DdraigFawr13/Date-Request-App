@@ -124,6 +124,10 @@ export const PATTERNS = {
   midsummer: { label: 'Moons & pansies', size: [90, 90], draw: () => CRESCENT(22, 24, 2.2) + FLOWER(64, 60, 0.8) + SPARKLE(66, 18, 0.5) + SPARKLE(22, 68, 0.35)
     + LEAF(44, 40, 60, 0.55) + `<circle cx='84' cy='38' r='1'/><circle cx='40' cy='84' r='0.9'/><circle cx='8' cy='46' r='0.8'/>` },
   fishnet: { label: 'Fishnet', size: [22, 22], draw: () => `<path d='M0 0 L22 22 M22 0 L0 22' fill='none' stroke-width='1.6'/>` },
+  circuit: { label: 'Circuit traces', size: [80, 80], draw: () => `<g fill='none' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'><path d='M0 20 H22 L30 28 V52 L38 60 H80'/><path d='M50 0 V14 L58 22 H80'/><path d='M10 80 V66 L18 58 H30'/><path d='M62 60 V74'/></g>
+    <g fill='none' stroke-width='1.2'><circle cx='30' cy='58' r='2.4'/><circle cx='62' cy='76' r='2.4'/><circle cx='50' cy='16' r='2'/></g><rect x='40' y='32' width='12' height='12' rx='1.5' fill-opacity='.6'/>` },
+  elvish: { label: 'Leaves & stars', size: [90, 90], draw: () => LEAF(22, 24, 35, 1.1) + LEAF(66, 64, -40, 0.9) + SPARKLE(66, 20, 0.55) + SPARKLE(22, 68, 0.4)
+    + `<circle cx='46' cy='46' r='4' fill='none' stroke-width='1.2'/><circle cx='84' cy='40' r='0.9'/><circle cx='40' cy='86' r='0.8'/>` },
   plumes: { label: 'Plumes & bats', size: [100, 100], draw: () => PLUME(22, 30, -25) + PLUME(70, 70, 30, 0.85) + BAT(72, 22, 8, 0.75) + SPARKLE(24, 80, 0.4) + `<circle cx='50' cy='50' r='1.1'/>` },
   confetti: { label: 'Confetti', size: [70, 70], draw: () => `<rect x='10' y='12' width='8' height='3' rx='1' transform='rotate(30 14 13)'/><circle cx='50' cy='16' r='2.5' style='fill:var(--c2)'/>
     <rect x='40' y='48' width='8' height='3' rx='1' transform='rotate(-40 44 49)' style='fill:var(--c2)'/><circle cx='18' cy='52' r='2'/><path d='M60 34 l3 5 l-6 0z'/>` },
@@ -157,6 +161,9 @@ export const SCENES = [
   { id: 'marquee', label: 'Marquee lights' },
   { id: 'moonwood', label: 'Moonlit wood' },
   { id: 'burlesque', label: 'Burlesque stage' },
+  { id: 'cyber', label: 'Neon city' },
+  { id: 'middleearth', label: 'Misty mountains' },
+  { id: 'noir', label: 'Noir rooftops' },
   ...Object.entries(PATTERNS).map(([id, p]) => ({ id, label: p.label })),
 ];
 
@@ -320,6 +327,67 @@ function backdropLayers(look, inv = {}) {
       + `radial-gradient(circle at 80% 20%, #fff1d6 0 26px, rgba(255, 200, 140, 0.45) 28px, rgba(255, 150, 90, 0.12) 80px, transparent 150px), `
       + `linear-gradient(to top, rgba(40, 10, 10, 0.6), transparent 14%), ${vignette}, linear-gradient(175deg, ${c1}, ${c2})`;
   }
+  if (scene === 'cyber') {
+    // A neon megacity at night: layered towers with lit windows, glowing
+    // signs, a holographic grid floor and a magenta-cyan haze.
+    let n = 7;
+    const r = () => ((n = (n * 16807) % 2147483647) / 2147483647);
+    const towers = (count, base, hMin, hMax, fill, lit) => {
+      let x = -10, out = '';
+      for (let i = 0; i < count; i++) {
+        const w = 18 + r() * 34, h = hMin + r() * (hMax - hMin), top = base - h;
+        out += `<rect x='${x.toFixed(0)}' y='${top.toFixed(0)}' width='${w.toFixed(0)}' height='${h.toFixed(0)}' fill='${fill}'/>`;
+        if (r() > 0.6) out += `<rect x='${(x + w / 2 - 0.6).toFixed(1)}' y='${(top - 14).toFixed(0)}' width='1.2' height='14' fill='${fill}'/><circle cx='${(x + w / 2).toFixed(1)}' cy='${(top - 15).toFixed(0)}' r='1.6' fill='#ff2bd6'/>`;
+        if (lit) for (let wy = top + 6; wy < base - 4; wy += 7) for (let wx = x + 4; wx < x + w - 4; wx += 6) {
+          if (r() > 0.72) out += `<rect x='${wx.toFixed(0)}' y='${wy.toFixed(0)}' width='2.6' height='3' fill='${['#00f0ff', '#ff2bd6', '#ffe36e'][Math.floor(r() * 3)]}' opacity='${(0.35 + r() * 0.5).toFixed(2)}'/>`;
+        }
+        if (lit && r() > 0.7) out += `<rect x='${(x + 3).toFixed(0)}' y='${(top + 10 + r() * 30).toFixed(0)}' width='${(w * 0.6).toFixed(0)}' height='6' rx='1' fill='none' stroke='${r() > 0.5 ? '#ff2bd6' : '#00f0ff'}' stroke-width='1.6' opacity='.9'/>`;
+        x += w + 2 + r() * 6;
+      }
+      return out;
+    };
+    const city = svgTile(520, 240, `${towers(14, 240, 60, 150, '#120a24', false)}${towers(12, 240, 40, 120, '#07040f', true)}`);
+    return `linear-gradient(to bottom, transparent 84%, ${c2} 84%) 0 0 / 100% 100% no-repeat, `
+      + `repeating-linear-gradient(90deg, ${look.accent}44 0 1px, transparent 1px 40px) 0 100% / 100% 16% no-repeat, `
+      + `repeating-linear-gradient(0deg, ${look.accent2}55 0 1px, transparent 1px 22px) 0 100% / 100% 16% no-repeat, `
+      + `${svgUrl(city)} center 84% / max(100%, 620px) auto no-repeat, `
+      + `radial-gradient(70% 22% at 50% 78%, ${look.accent2}55, transparent 70%), radial-gradient(50% 30% at 80% 40%, ${look.accent}33, transparent 70%), `
+      + `${patternCss('stars', '#ffffff', look.accent, 0.3)}, linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'middleearth') {
+    // Misty mountains at dusk: three ranges fading into mist, a far peak
+    // smouldering on the horizon, and the first stars.
+    const range = (pts, fill) => `<path d='M0 200 ${pts} L600 200Z' fill='${fill}'/>`;
+    const far = svgTile(600, 200, range('L0 120 L40 96 L70 110 L110 70 L140 92 L180 60 L215 88 L250 74 L290 100 L330 66 L360 84 L400 56 L440 90 L480 78 L520 96 L560 72 L600 90', 'rgba(150, 165, 190, 0.35)'));
+    const mid = svgTile(600, 200, range('L0 140 L50 112 L90 128 L130 96 L170 122 L210 104 L260 132 L300 108 L350 126 L390 98 L430 120 L470 106 L520 130 L560 112 L600 124', 'rgba(60, 72, 90, 0.75)')
+      + `<path d='M384 102 L390 98 L396 103' fill='none' stroke='rgba(255,255,255,.5)' stroke-width='2'/>`);
+    const near = svgTile(600, 200, range('L0 168 C60 150 110 158 160 164 C220 172 280 146 340 152 C400 158 470 146 530 156 C560 160 590 156 600 158', '#0b1410')
+      + `<g fill='#0b1410'>${[30, 70, 520, 556].map(x => `<path d='M${x} 150 l9 22 h-18z M${x} 140 l7 18 h-14z'/>`).join('')}</g>`);
+    return `${svgUrl(near)} center bottom / max(100%, 640px) auto no-repeat, `
+      + `linear-gradient(to top, rgba(220, 230, 240, 0.0) 20%, rgba(220, 230, 240, 0.18) 30%, transparent 44%), `
+      + `${svgUrl(mid)} center bottom / max(100%, 640px) auto no-repeat, `
+      + `linear-gradient(to top, transparent 24%, rgba(220, 228, 240, 0.22) 36%, transparent 50%), `
+      + `${svgUrl(far)} center bottom / max(100%, 640px) auto no-repeat, `
+      + `radial-gradient(9% 5% at 80% 87%, rgba(255, 120, 40, 0.6), rgba(255, 80, 20, 0.15) 60%, transparent 100%), `
+      + `radial-gradient(90% 40% at 50% 85%, rgba(255, 190, 120, 0.22), transparent 70%), `
+      + `${patternCss('stars', '#ffffff', look.accent2, 0.35)}, linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'noir') {
+    // Film noir: rooftops and water towers in silhouette, a pale moon,
+    // drifting fog and one red neon glow far below.
+    const sil = '#050505';
+    const roofs = svgTile(560, 200, `<g fill='${sil}'><path d='M0 200 V120 H60 V100 H120 V130 H170 V90 H230 V140 H280 V110 H330 V80 H380 V125 H440 V105 H500 V135 H560 V200Z'/>
+      <g transform='translate(190 52)'><rect x='-14' y='10' width='28' height='26' rx='3'/><path d='M-16 10 L0 -2 L16 10Z'/><path d='M-12 36 L-16 44 M12 36 L16 44 M0 36 V44' stroke='${sil}' stroke-width='2.5'/></g>
+      <g transform='translate(470 70)'><rect x='-11' y='8' width='22' height='22' rx='2'/><path d='M-13 8 L0 -2 L13 8Z'/><path d='M-9 30 L-12 38 M9 30 L12 38' stroke='${sil}' stroke-width='2'/></g>
+      <rect x='350' y='66' width='3' height='18'/><rect x='80' y='88' width='2' height='14'/></g>
+      <g fill='#d8d8d8' opacity='.35'>${[[70, 112], [96, 112], [250, 152], [400, 136], [420, 136], [520, 150]].map(([x, y]) => `<rect x='${x}' y='${y}' width='5' height='7'/>`).join('')}</g>`);
+    return `radial-gradient(60% 10% at 30% 92%, rgba(210, 210, 210, 0.16), transparent 70%), `
+      + `${svgUrl(roofs)} center bottom / max(100%, 600px) auto no-repeat, `
+      + `radial-gradient(18% 8% at 70% 96%, ${look.accent}88, transparent 70%), `
+      + `radial-gradient(70% 18% at 60% 70%, rgba(200, 200, 200, 0.12), transparent 70%), radial-gradient(50% 14% at 20% 60%, rgba(200, 200, 200, 0.1), transparent 70%), `
+      + `radial-gradient(circle at 78% 18%, #f4f1ea 0 28px, rgba(240, 236, 228, 0.3) 30px, rgba(240, 236, 228, 0.08) 80px, transparent 150px), `
+      + `${vignette}, linear-gradient(175deg, ${c1}, ${c2})`;
+  }
   if (scene === 'marquee') {
     // Rows of marquee bulbs top and bottom, crossing searchlights and sparkle.
     const bulb = 'radial-gradient(circle, #fffbe6 0 2.5px, rgba(255, 214, 120, 0.85) 3.5px, rgba(255, 190, 80, 0.25) 7px, transparent 11px)';
@@ -450,6 +518,77 @@ const CORNERS = {
     <path d='M46 46 V64' stroke-width='0.7'/></g>
     <g transform='translate(46 68)'><ellipse rx='3.2' ry='3.8'/><circle cy='-4.4' r='2.2'/><g fill='none' stroke-width='0.9' stroke-linecap='round'><path d='M-2.6 -1 L-6.5 -4 M-2.8 1 L-7 0.5 M-2.6 2.6 L-6 5.5 M2.6 -1 L6.5 -4 M2.8 1 L7 0.5 M2.6 2.6 L6 5.5'/></g></g>`,
   paws: `${PAW(14, 15, 135, 1.35)}${PAW(36, 33, 135, 1.1)}${PAW(54, 55, 140, 0.85)}`,
+  // Ornate C-scrolls with acanthus leaves around a ridged scallop shell,
+  // mirrored across the corner.
+  baroque: (() => {
+    const half = `<g fill='none' stroke-width='1.3' stroke-linecap='round'><path d='M24 15 C34 10 46 9 56 12 C64 15 66 23 60 26 C55 28 52 23 55 20'/>
+      <path d='M60 12 C66 8 72 8 77 10' stroke-width='0.9'/><path d='M34 14 C38 17 44 18 50 16' stroke-width='0.7'/></g>
+      <path d='M30 13 C33 7 40 5 46 8 C41 9 36 11 34 15Z'/><path d='M46 9 C50 5 56 5 59 8 C55 8 51 10 49 13Z' fill-opacity='.75'/>
+      <circle cx='67' cy='17' r='1.3'/><circle cx='72' cy='14' r='0.9'/>`;
+    const ridges = [100, 117, 135, 153, 170].map(a => `M12 12 L${(12 + Math.cos(a * Math.PI / 180) * -11).toFixed(1)} ${(12 + Math.sin(a * Math.PI / 180) * -11).toFixed(1)}`).join(' ');
+    return `${half}<g transform='matrix(0 1 1 0 0 0)'>${half}</g>
+      <g fill='none' stroke-width='0.8'><path d='M4 76 V22 C4 12 12 4 22 4 H76'/></g>
+      <path d='M12 12 L25.5 16 A14 14 0 0 1 16 25.5Z'/>
+      <path d='${ridges.replace(/M12 12 L/g, 'M14 14 L').replace(/-/g, '')}' fill='none' stroke='#000' stroke-opacity='.35' stroke-width='0.8'/>
+      <circle cx='12' cy='12' r='3' style='fill:var(--c2)'/>`;
+  })(),
+  // A sinuous art-nouveau whiplash line ending in a lily bud.
+  nouveau: `<g fill='none' stroke-linecap='round'><path d='M4 78 C4 50 9 32 20 23 C31 14 44 22 37 31 C33 36 26 32 29 27' stroke-width='1.4'/>
+      <path d='M78 4 C52 4 36 8 26 16' stroke-width='1.4'/><path d='M10 78 C10 54 15 38 24 30' stroke-width='0.7'/><path d='M78 10 C56 10 42 13 32 19' stroke-width='0.7'/></g>
+    <path d='M40 40 C36 32 38 24 46 20 C47 28 45 35 40 40Z'/><path d='M40 40 C46 38 52 39 56 44 C49 46 44 44 40 40Z' fill-opacity='.75'/>
+    <path d='M40 40 C34 42 30 48 31 54 C37 51 40 46 40 40Z' fill-opacity='.75'/><circle cx='43' cy='31' r='1.8' style='fill:var(--c2)'/>`,
+  // Graduated rhinestones in gold settings, sweeping round the corner.
+  rhinestone: (() => {
+    const pts = [[13, 13, 6], [27, 8, 4.2], [8, 27, 4.2], [39, 6, 3.4], [6, 39, 3.4], [50, 5, 2.7], [5, 50, 2.7], [60, 4.5, 2.1], [4.5, 60, 2.1], [69, 4, 1.6], [4, 69, 1.6]];
+    return pts.map(([x, y, r]) => `<circle cx='${x}' cy='${y}' r='${r}'/><circle cx='${x}' cy='${y}' r='${(r * 0.72).toFixed(2)}' style='fill:var(--c2)'/>
+      <circle cx='${(x - r * 0.28).toFixed(2)}' cy='${(y - r * 0.3).toFixed(2)}' r='${(r * 0.22).toFixed(2)}' fill='#fff' fill-opacity='.85'/>`).join('')
+      + SPARKLE(24, 22, 0.55) + SPARKLE(34, 16, 0.32) + SPARKLE(16, 34, 0.32);
+  })(),
+  // Soft ostrich plumes curling along both edges, pinned with a jewel: long,
+  // drooping barbs that thin toward the tip, with a few loose wisps.
+  feather: (() => {
+    const plume = (len, curl, seed) => {
+      let n = seed;
+      const r = () => ((n = (n * 16807) % 2147483647) / 2147483647);
+      const at = t => [10 + t * len, 9 + t * t * curl];
+      const barbs = [];
+      for (let i = 1; i <= 26; i++) {
+        const t = i / 27, [x, y] = at(t), l = (13 - t * 8) * (0.8 + r() * 0.4);
+        barbs.push(`M${x.toFixed(1)} ${y.toFixed(1)} c${(l * 0.15).toFixed(1)} ${(-l * 0.5).toFixed(1)} ${(l * 0.7).toFixed(1)} ${(-l * 0.55).toFixed(1)} ${(l * 0.85).toFixed(1)} ${(-l * 0.25).toFixed(1)}`);
+        barbs.push(`M${x.toFixed(1)} ${y.toFixed(1)} c${(l * 0.1).toFixed(1)} ${(l * 0.55).toFixed(1)} ${(l * 0.6).toFixed(1)} ${(l * 0.85).toFixed(1)} ${(l * 0.95).toFixed(1)} ${(l * 0.9).toFixed(1)}`);
+      }
+      const [ex, ey] = at(1);
+      return `<path d='${barbs.join(' ')}' fill='none' stroke-width='0.7' stroke-linecap='round' stroke-opacity='.85'/>
+        <path d='M10 9 Q${10 + len * 0.6} 9 ${ex} ${ey}' fill='none' stroke-width='1.4'/>
+        <path d='M${ex} ${ey} q5 3 8 9 M${ex - 4} ${ey + 1} q4 5 5 11' fill='none' stroke-width='0.6' stroke-linecap='round'/>`;
+    };
+    return `${plume(56, 12, 3)}<g transform='matrix(0 1 1 0 0 0)'>${plume(48, 10, 9)}</g>
+      <circle cx='9' cy='9' r='5'/><circle cx='9' cy='9' r='3.5' style='fill:var(--c2)'/><circle cx='7.8' cy='7.8' r='1.1' fill='#fff' fill-opacity='.8'/>`;
+  })(),
+  // A rose in bloom with thorned stems and leaves along both edges.
+  rose: `<g fill='none' stroke-width='1.2' stroke-linecap='round'><path d='M24 12 C38 10 54 12 74 7'/><path d='M12 24 C10 38 12 54 7 74'/></g>
+    <g>${[[36, 11], [50, 11.5], [62, 9]].map(([x, y]) => `<path d='M${x} ${y} l2 -3.4 l1 3.2z'/>`).join('')}${[[11, 36], [11.5, 50], [9, 62]].map(([x, y]) => `<path d='M${x} ${y} l-3.4 2 l3.2 1z'/>`).join('')}</g>
+    ${LEAF(44, 6, 60, 0.6)}${LEAF(6, 44, 30, 0.6)}${LEAF(66, 12, 120, 0.5)}${LEAF(12, 66, -30, 0.5)}
+    <g transform='translate(15 15)'>
+      <path d='M-11 2 C-13 -8 -6 -13 0 -12 C7 -13 13 -7 11 2 C10 9 4 12 0 12 C-4 12 -10 9 -11 2Z'/>
+      <g fill='none' style='stroke:var(--c2)' stroke-width='1.2' stroke-linecap='round'>
+        <path d='M-9 3 C-6 9 6 9 9 3'/><path d='M-8 -4 C-8 -10 -1 -11 2 -9'/><path d='M8 -3 C9 3 5 7 0 7'/>
+        <path d='M-4 2 C-6 -3 -2 -6 2 -5 C5 -4 5 0 2 1 C0 2 -2 0 0 -2'/></g>
+      <path d='M-11 2 C-13 -8 -6 -13 0 -12 C7 -13 13 -7 11 2' fill='none' stroke='#fff' stroke-opacity='.3' stroke-width='0.8'/>
+    </g>`,
+  // Circuit traces with solder pads and a chip in the corner.
+  circuit: `<g fill='none' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><path d='M8 74 V34 L16 26 H44'/><path d='M16 78 V48 L24 40 H34'/><path d='M26 8 H52 L60 16 H76'/><path d='M44 16 V24 L38 30'/></g>
+    <g fill='none' stroke-width='1.3'><circle cx='46' cy='26' r='2.4'/><circle cx='36' cy='40' r='2.4'/><circle cx='78' cy='16' r='2'/><circle cx='36.5' cy='31.5' r='2'/></g>
+    <rect x='4' y='4' width='16' height='16' rx='2'/><rect x='8' y='8' width='8' height='8' rx='1' style='fill:var(--c2)'/>
+    <g stroke-width='1.2'><path d='M22 8 h3 M22 12 h3 M22 16 h3 M8 22 v3 M12 22 v3 M16 22 v3'/></g>`,
+  // Elven knotwork: interlaced curves, mallorn leaves and a star.
+  elven: `<g fill='none' stroke-width='1.2' stroke-linecap='round'><path d='M4 78 C4 42 14 18 36 9 C48 5 62 4 78 4'/><path d='M11 72 C12 48 21 30 37 21'/><path d='M72 11 C48 12 30 21 21 37'/>
+      <path d='M37 21 C45 17 48 25 42 27 C38 29 35 25 38 23'/><path d='M21 37 C17 45 25 48 27 42 C29 38 25 35 23 38'/></g>
+    ${LEAF(52, 13, 75, 0.85)}${LEAF(13, 52, 15, 0.85)}${LEAF(64, 8, 100, 0.6)}${LEAF(8, 64, -10, 0.6)}
+    <g transform='translate(19 19)' style='fill:var(--c2)'>${SPARKLE(0, 0, 0.9)}</g><circle cx='19' cy='19' r='1.4'/>`,
+  // Marquee bulbs along both edges, glowing.
+  marquee: `<g fill='none' stroke-width='0.9'><path d='M14 78 V14 H78'/></g>
+    ${[[7, 7], [19, 6], [31, 6], [43, 6], [55, 6], [67, 6], [6, 19], [6, 31], [6, 43], [6, 55], [6, 67]].map(([x, y]) => `<circle cx='${x}' cy='${y}' r='5.2' fill='#ffd98a' fill-opacity='.28' stroke='none'/><circle cx='${x}' cy='${y}' r='3'/><circle cx='${x}' cy='${y}' r='1.9' fill='#fff8e0' stroke='none'/>`).join('')}`,
 };
 // One corner ornament as SVG markup (for use outside the card, e.g. the scroll).
 export function cornerSvg(id, color, color2) {
@@ -460,24 +599,68 @@ export const CORNER_OPTIONS = [
   { id: 'look', label: 'Look’s pick' }, { id: 'none', label: 'None' },
   { id: 'filigree', label: 'Filigree' }, { id: 'gothic', label: 'Gothic' }, { id: 'floral', label: 'Floral vine' },
   { id: 'deco', label: 'Art deco' }, { id: 'celestial', label: 'Celestial' }, { id: 'web', label: 'Spiderweb' }, { id: 'stars', label: 'Constellation' }, { id: 'branch', label: 'Acorn branch' }, { id: 'paws', label: 'Paw prints' },
+  { id: 'baroque', label: 'Baroque scroll' }, { id: 'nouveau', label: 'Art nouveau' }, { id: 'rhinestone', label: 'Rhinestones' },
+  { id: 'feather', label: 'Ostrich plume' }, { id: 'rose', label: 'Thorned rose' }, { id: 'marquee', label: 'Marquee bulbs' },
+  { id: 'circuit', label: 'Circuit' }, { id: 'elven', label: 'Elven knot' },
 ];
 
 // ── Side borders ─────────────────────────────────────────────────────
 export const SIDE_OPTIONS = [
   { id: 'look', label: 'Look’s pick' }, { id: 'none', label: 'None' }, { id: 'frame', label: 'Double frame' },
   { id: 'vine', label: 'Climbing vine' }, { id: 'pearls', label: 'Pearls' }, { id: 'lace', label: 'Lace' }, { id: 'stitch', label: 'Stitching' }, { id: 'paws', label: 'Paw trail' },
+  { id: 'rhinestones', label: 'Rhinestones' }, { id: 'beads', label: 'Beads' }, { id: 'rope', label: 'Velvet rope' },
+  { id: 'bulbs', label: 'Marquee bulbs' }, { id: 'plumes', label: 'Feather boa' }, { id: 'thorns', label: 'Thorned vine' },
+  { id: 'circuit', label: 'Circuit trace' }, { id: 'elvenvine', label: 'Elven vine' },
 ];
 const SIDE_TILES = {
   vine: [24, 60, `<g fill='none' stroke-width='1.2'><path d='M12 0 C4 15 20 30 12 45 C8 52 10 56 12 60'/></g>${LEAF(17, 14, 50, 0.6)}${LEAF(7, 40, -50, 0.6)}<circle cx='12' cy='30' r='1.4'/>`],
   pearls: [12, 16, `<circle cx='6' cy='8' r='2.6'/>`],
   lace: [20, 18, `<path d='M2 0 Q20 9 2 18' fill='none' stroke-width='1.2'/><path d='M2 3 Q13 9 2 15' fill='none' stroke-width='0.7'/><circle cx='5' cy='9' r='1.5'/><circle cx='14' cy='9' r='1'/>`],
   paws: [24, 64, `${PAW(9, 16, -8, 0.55)}${PAW(15, 46, 8, 0.55)}`],
+  rhinestones: [24, 26, `<circle cx='12' cy='8' r='4.4'/><circle cx='12' cy='8' r='3.1' style='fill:var(--c2)'/><circle cx='10.8' cy='6.7' r='1' fill='#fff' fill-opacity='.85'/>
+    <circle cx='12' cy='20' r='2.3'/><circle cx='12' cy='20' r='1.5' style='fill:var(--c2)'/><circle cx='11.4' cy='19.4' r='.5' fill='#fff' fill-opacity='.8'/>`],
+  beads: [24, 14, `<ellipse cx='12' cy='7' rx='2.7' ry='4.4'/><ellipse cx='11.2' cy='5.6' rx='.8' ry='1.4' fill='#fff' fill-opacity='.55'/><path d='M12 0 V2.4 M12 11.6 V14' stroke-width='.8'/>`],
+  rope: [24, 7, `<path d='M8.6 0.6 C11 2.2 13.9 4.6 15.4 7.6' fill='none' stroke-width='4' stroke-linecap='round'/>
+    <path d='M9.4 0.2 C11.6 1.8 13.6 3.6 14.8 5.6' fill='none' stroke='#fff' stroke-opacity='.3' stroke-width='.9' stroke-linecap='round'/>
+    <path d='M7.4 2.2 C9.6 3.8 12 5.8 13.2 8' fill='none' stroke='#000' stroke-opacity='.35' stroke-width='.7'/>`],
+  bulbs: [24, 24, `<circle cx='12' cy='12' r='7.5' fill='#ffd98a' fill-opacity='.25' stroke='none'/><circle cx='12' cy='12' r='3.6'/><circle cx='12' cy='12' r='2.3' fill='#fff8e0' stroke='none'/>`],
+  plumes: [24, 30, (() => {
+    let n = 11;
+    const r = () => ((n = (n * 16807) % 2147483647) / 2147483647);
+    const barbs = Array.from({ length: 34 }, (_, i) => {
+      const y = (i / 34) * 30, side = i % 2 ? 1 : -1, l = 5 + r() * 5, a = (r() - 0.5) * 6;
+      return `M${(12 + (r() - 0.5) * 2).toFixed(1)} ${y.toFixed(1)} c${(side * l * 0.5).toFixed(1)} ${(a - 1).toFixed(1)} ${(side * l * 0.9).toFixed(1)} ${(a + 1).toFixed(1)} ${(side * l).toFixed(1)} ${(a + 3).toFixed(1)}`;
+    }).join(' ');
+    return `<path d='${barbs}' fill='none' stroke-width='.7' stroke-linecap='round' stroke-opacity='.85'/><path d='M12 0 V30' stroke-width='1.6' stroke-opacity='.5'/>`;
+  })()],
+  circuit: [24, 44, `<path d='M10 0 V12 L16 18 V30 L10 36 V44' fill='none' stroke-width='1.3' stroke-linejoin='round'/><path d='M16 24 H21' fill='none' stroke-width='1.2'/>
+    <circle cx='21' cy='24' r='1.8' style='fill:var(--c2)'/><circle cx='10' cy='12' r='1.5'/><rect x='7.5' y='38' width='5' height='3' rx='.6'/>`],
+  elvenvine: [24, 56, `<path d='M12 0 C4 14 20 28 12 42 C8 49 10 53 12 56' fill='none' stroke-width='1'/>${LEAF(17, 12, 55, 0.6)}${LEAF(7, 34, -55, 0.6)}${LEAF(16, 46, 40, 0.45)}
+    <g style='fill:var(--c2)'>${SPARKLE(9, 22, 0.3)}</g>`],
+  thorns: [24, 52, `<path d='M12 0 C6 13 18 26 12 39 C9 45 11 49 12 52' fill='none' stroke-width='1.1'/><path d='M10.6 9 l-4 -1 l3 3z M14.8 21 l4 -1 l-3 3z M10.2 33 l-4 -1 l3 3z'/>
+    ${LEAF(17, 13, 50, 0.5)}${LEAF(7, 42, -50, 0.5)}<circle cx='12' cy='27' r='2.4' style='fill:var(--c2)'/>`],
 };
 
 export const resolveDecor = (inv, look) => ({
   corners: CORNER_OPTIONS.some(o => o.id === inv.dc && o.id !== 'look') ? inv.dc : look.corners || 'none',
   sides: SIDE_OPTIONS.some(o => o.id === inv.ds && o.id !== 'look') ? inv.ds : look.sides || 'none',
 });
+
+// A small drawing of a corner or side style, for the picker buttons.
+export function ornamentPreview(kind, id) {
+  if (kind === 'corners' && CORNERS[id]) {
+    return `<svg class='orn' viewBox='0 0 80 80' aria-hidden='true'><g fill='currentColor' stroke='currentColor'>${CORNERS[id].replace(/var\(--c2\)/g, 'currentColor')}</g></svg>`;
+  }
+  if (kind === 'sides' && SIDE_TILES[id]) {
+    const [w, h, body] = SIDE_TILES[id];
+    const tile = `<g fill='currentColor' stroke='currentColor'>${body.replace(/style='fill:var\(--c2\)'/g, "fill-opacity='.55'")}</g>`;
+    return `<svg class='orn' viewBox='0 0 ${w} ${h * 2}' aria-hidden='true'>${tile}<g transform='translate(0 ${h})'>${tile}</g></svg>`;
+  }
+  if (kind === 'sides' && (id === 'frame' || id === 'stitch')) {
+    return `<svg class='orn' viewBox='0 0 24 48' aria-hidden='true'><g fill='none' stroke='currentColor' stroke-width='2'>${id === 'frame' ? `<path d='M6 0 V48 M12 0 V48'/>` : `<path d='M10 0 V48' stroke-dasharray='5 4'/>`}</g></svg>`;
+  }
+  return '';
+}
 
 // Ornament markup for a card. Colors are the look's own (safe constants).
 export function decorHtml(inv, look) {
@@ -496,9 +679,9 @@ export function decorHtml(inv, look) {
     const [w, h, body] = SIDE_TILES[sides];
     const f = look.foil ? foilDef(look.foil.stops, 'f') : null;
     const color = f ? f.fill : look.accent2;
-    const bg = `${svgUrl(svgTile(w, h, `${f ? f.def : ''}<g fill='${color}' stroke='${color}'>${body}</g>`))} center top / ${w}px ${h}px repeat-y`;
+    const bg = `${svgUrl(svgTile(w, h, `${f ? f.def : ''}<g fill='${color}' stroke='${color}'>${body.replace(/var\(--c2\)/g, color2)}</g>`))} center top / ${w}px ${h}px repeat-y`;
     const style = esc(`background:${bg}`);
-    out += `<span class="side l" style="${style}"></span><span class="side r" style="${style}"></span>`;
+    out += `<span class="side l ${sides}" style="${style}"></span><span class="side r ${sides}" style="${style}"></span>`;
   }
   return out;
 }
