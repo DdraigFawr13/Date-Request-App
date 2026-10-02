@@ -78,6 +78,9 @@ const CONSTELLATION = (pts, links) => `<g fill='none' stroke-width='0.7' stroke-
 const WAND = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><path d='M0 10 L0 -4' fill='none' stroke-width='1.8' stroke-linecap='round'/>${SPARKLE(0, -8, 0.7)}<circle cx='-4' cy='-12' r='0.8'/><circle cx='4' cy='-11' r='0.6'/></g>`;
 const HAT = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><path d='M-9 4 C-4 2 4 2 9 4 C5 6 -5 6 -9 4Z M-5 3 L1 -12 C2 -13 3 -12 3 -11 L5 3Z'/></g>`;
 
+// An ostrich plume: a soft quill with feathery barbs.
+const PLUME = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><path d='M0 14 C-1 4 0 -6 3 -16 C9 -10 10 -2 6 6 C4 10 2 12 0 14Z'/>
+  <path d='M0 14 C-1 4 0 -6 3 -16 C-5 -10 -7 -2 -4 6 C-3 10 -1 12 0 14Z' fill-opacity='.6'/><path d='M0 18 C0 8 1 -4 3 -16' fill='none' stroke-width='.8'/></g>`;
 // Comedy and tragedy masks, eyes and mouths cut through (even-odd).
 const MASK = (x, y, r, s, happy) => `<path fill-rule='evenodd' transform='translate(${x} ${y}) rotate(${r}) scale(${s})' d='M0 -11 C7 -11 10 -7 10 -1 C10 7 5 12 0 12 C-5 12 -10 7 -10 -1 C-10 -7 -7 -11 0 -11Z
   ${happy ? 'M-7 -3 Q-4.5 -7 -2 -3 Q-4.5 -4.6 -7 -3Z M2 -3 Q4.5 -7 7 -3 Q4.5 -4.6 2 -3Z M-5.5 3 Q0 10 5.5 3 Q0 6 -5.5 3Z'
@@ -120,6 +123,8 @@ export const PATTERNS = {
   masks: { label: 'Theatre masks', size: [90, 90], draw: () => MASK(24, 26, -14, 1, true) + MASK(64, 62, 12, 0.9, false) + SPARKLE(68, 20, 0.45) + SPARKLE(20, 70, 0.4) + `<circle cx='46' cy='44' r='1.1'/>` },
   midsummer: { label: 'Moons & pansies', size: [90, 90], draw: () => CRESCENT(22, 24, 2.2) + FLOWER(64, 60, 0.8) + SPARKLE(66, 18, 0.5) + SPARKLE(22, 68, 0.35)
     + LEAF(44, 40, 60, 0.55) + `<circle cx='84' cy='38' r='1'/><circle cx='40' cy='84' r='0.9'/><circle cx='8' cy='46' r='0.8'/>` },
+  fishnet: { label: 'Fishnet', size: [22, 22], draw: () => `<path d='M0 0 L22 22 M22 0 L0 22' fill='none' stroke-width='1.6'/>` },
+  plumes: { label: 'Plumes & bats', size: [100, 100], draw: () => PLUME(22, 30, -25) + PLUME(70, 70, 30, 0.85) + BAT(72, 22, 8, 0.75) + SPARKLE(24, 80, 0.4) + `<circle cx='50' cy='50' r='1.1'/>` },
   confetti: { label: 'Confetti', size: [70, 70], draw: () => `<rect x='10' y='12' width='8' height='3' rx='1' transform='rotate(30 14 13)'/><circle cx='50' cy='16' r='2.5' style='fill:var(--c2)'/>
     <rect x='40' y='48' width='8' height='3' rx='1' transform='rotate(-40 44 49)' style='fill:var(--c2)'/><circle cx='18' cy='52' r='2'/><path d='M60 34 l3 5 l-6 0z'/>` },
 };
@@ -151,6 +156,7 @@ export const SCENES = [
   { id: 'curtain', label: 'Stage curtains' },
   { id: 'marquee', label: 'Marquee lights' },
   { id: 'moonwood', label: 'Moonlit wood' },
+  { id: 'burlesque', label: 'Burlesque stage' },
   ...Object.entries(PATTERNS).map(([id, p]) => ({ id, label: p.label })),
 ];
 
@@ -191,6 +197,54 @@ export function backdropCss(look, inv = {}) {
     + `radial-gradient(90% 55% at 50% 18%, rgba(255, 236, 200, ${dark ? 0.09 : 0.16}), transparent 70%), `
     + `radial-gradient(150% 110% at 50% 35%, transparent 52%, rgba(0, 0, 0, ${dark ? 0.32 : 0.14})), `
     + backdropLayers(look, inv);
+}
+
+// Pleated velvet curtains drawn to each side (width in %), with a swagged,
+// gold-fringed valance across the top. Returns background layers.
+function stageCurtains(velvet, width) {
+  const pleats = 'repeating-linear-gradient(90deg, rgba(0,0,0,.42) 0, rgba(255,255,255,.1) 11px, rgba(0,0,0,.18) 20px, rgba(255,255,255,.06) 28px, rgba(0,0,0,.42) 36px)';
+  const shade = side => `linear-gradient(to ${side}, rgba(0,0,0,.55), transparent 70%)`;
+  const valance = svgTile(160, 64, `<path d='M0 0 H160 V30 Q120 62 80 30 Q40 62 0 30Z' fill='${velvet}'/><path d='M0 0 H160 V30 Q120 62 80 30 Q40 62 0 30Z' fill='url(#s)'/>
+    <defs><linearGradient id='s' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#000' stop-opacity='.45'/><stop offset='.6' stop-color='#fff' stop-opacity='.06'/><stop offset='1' stop-color='#000' stop-opacity='.4'/></linearGradient></defs>
+    <path d='M0 30 Q40 62 80 30 Q120 62 160 30' fill='none' stroke='#d8b45a' stroke-width='3'/><path d='M0 33 Q40 65 80 33 Q120 65 160 33' fill='none' stroke='#e9c96e' stroke-width='5' stroke-dasharray='1 2'/>
+    <circle cx='80' cy='34' r='4' fill='#d8b45a'/><path d='M80 38 v10' stroke='#d8b45a' stroke-width='2'/><ellipse cx='80' cy='50' rx='3' ry='5' fill='#c9a24a'/>`);
+  const side = pos => `${shade(pos === 'left' ? 'right' : 'left')} ${pos} top / ${width}% 100% no-repeat, ${pleats} ${pos} top / ${width}% 100% no-repeat, linear-gradient(${velvet}, ${velvet}) ${pos} top / ${width}% 100% no-repeat`;
+  return `${svgUrl(valance)} 0 0 / 160px 64px repeat-x, ${side('left')}, ${side('right')}`;
+}
+
+// Burlesque props in silhouette, rim-lit: a vintage microphone on its stand,
+// and a tower of champagne coupes.
+function micStand(sil, rim) {
+  return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 300' width='120' height='300'><g fill='${sil}'>
+    <ellipse cx='60' cy='292' rx='34' ry='6'/><rect x='57' y='96' width='6' height='196'/><rect x='54' y='150' width='12' height='8' rx='2'/>
+    <path d='M60 96 C60 84 62 76 64 70' stroke='${sil}' stroke-width='5' fill='none'/>
+    <rect x='46' y='26' width='36' height='48' rx='18' transform='rotate(12 64 50)'/></g>
+    <g fill='none' stroke='${rim}' stroke-opacity='.55'><rect x='46' y='26' width='36' height='48' rx='18' transform='rotate(12 64 50)' stroke-width='1.2'/>
+    <path d='M50 40 H78 M48 48 H80 M48 56 H80 M50 64 H78' transform='rotate(12 64 50)' stroke-opacity='.3'/><path d='M63 96 V290' stroke-width='1'/></g></svg>`;
+}
+function coupeTower(sil, rim) {
+  const coupe = (x, y) => `<path d='M${x - 18} ${y} Q${x} ${y + 16} ${x + 18} ${y}Z M${x - 1.5} ${y + 8} h3 v14 h-3z M${x - 9} ${y + 22} h18 v2.5 h-18z'/>`;
+  const rims = (x, y) => `<path d='M${x - 18} ${y} Q${x} ${y + 16} ${x + 18} ${y}' />`;
+  const pos = [[30, 196], [70, 196], [110, 196], [50, 168], [90, 168], [70, 140]];
+  return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 230' width='140' height='230'>
+    <g fill='${sil}'>${pos.map(([x, y]) => coupe(x, y)).join('')}<rect x='6' y='221' width='128' height='6' rx='2'/></g>
+    <g fill='none' stroke='${rim}' stroke-opacity='.6' stroke-width='1.1'>${pos.map(([x, y]) => rims(x, y)).join('')}</g>
+    <g fill='${rim}' opacity='.8'><circle cx='64' cy='132' r='1.4'/><circle cx='78' cy='126' r='1'/><circle cx='70' cy='118' r='.8'/></g></svg>`;
+}
+// A feather boa swagged across the top: soft barbs along a drooping curve.
+function boaTile(color) {
+  let seed = 5;
+  const r = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const strokes = [];
+  for (let i = 0; i <= 80; i++) {
+    const t = i / 80, x = t * 160, y = 6 + 4 * 30 * t * (1 - t) * 1.2;
+    for (let k = 0; k < 3; k++) {
+      const a = r() * Math.PI * 2, l = 5 + r() * 7;
+      strokes.push(`M${x.toFixed(1)} ${y.toFixed(1)} q${(Math.cos(a) * l * 0.5 + 2).toFixed(1)} ${(Math.sin(a) * l * 0.5).toFixed(1)} ${(Math.cos(a) * l).toFixed(1)} ${(Math.sin(a) * l).toFixed(1)}`);
+    }
+  }
+  return svgTile(160, 70, `<path d='${strokes.join(' ')}' stroke='${color}' stroke-width='2.2' stroke-linecap='round' fill='none'/>
+    <path d='${strokes.filter((_, i) => i % 3 === 0).join(' ')}' stroke='#fff' stroke-opacity='.35' stroke-width='.8' stroke-linecap='round' fill='none'/>`);
 }
 
 function backdropLayers(look, inv = {}) {
@@ -240,22 +294,31 @@ function backdropLayers(look, inv = {}) {
       + `${patternCss('stars', '#ffffff', look.accent, 0.35)}, linear-gradient(175deg, ${c1}, ${c2})`;
   }
   if (scene === 'curtain') {
-    // Red-velvet stage: pleated curtains drawn to the sides, a swagged valance
-    // with gold fringe, a spotlight and the glow on the boards.
-    const velvet = look.dark ? look.accent2 : look.accent;
-    const pleats = 'repeating-linear-gradient(90deg, rgba(0,0,0,.42) 0, rgba(255,255,255,.1) 11px, rgba(0,0,0,.18) 20px, rgba(255,255,255,.06) 28px, rgba(0,0,0,.42) 36px)';
-    const shade = side => `linear-gradient(to ${side}, rgba(0,0,0,.55), transparent 70%)`;
-    const valance = svgTile(160, 64, `<path d='M0 0 H160 V30 Q120 62 80 30 Q40 62 0 30Z' fill='${velvet}'/><path d='M0 0 H160 V30 Q120 62 80 30 Q40 62 0 30Z' fill='url(#s)'/>
-      <defs><linearGradient id='s' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#000' stop-opacity='.45'/><stop offset='.6' stop-color='#fff' stop-opacity='.06'/><stop offset='1' stop-color='#000' stop-opacity='.4'/></linearGradient></defs>
-      <path d='M0 30 Q40 62 80 30 Q120 62 160 30' fill='none' stroke='#d8b45a' stroke-width='3'/><path d='M0 33 Q40 65 80 33 Q120 65 160 33' fill='none' stroke='#e9c96e' stroke-width='5' stroke-dasharray='1 2'/>
-      <circle cx='80' cy='34' r='4' fill='#d8b45a'/><path d='M80 38 v10' stroke='#d8b45a' stroke-width='2'/><ellipse cx='80' cy='50' rx='3' ry='5' fill='#c9a24a'/>`);
-    return `${svgUrl(valance)} 0 0 / 160px 64px repeat-x, `
-      + `${shade('right')} left top / 20% 100% no-repeat, ${shade('left')} right top / 20% 100% no-repeat, `
-      + `${pleats} left top / 20% 100% no-repeat, ${pleats} right top / 20% 100% no-repeat, `
-      + `linear-gradient(${velvet}, ${velvet}) left top / 20% 100% no-repeat, linear-gradient(${velvet}, ${velvet}) right top / 20% 100% no-repeat, `
+    // Red-velvet stage: curtains drawn to the sides, a spotlight and the glow on the boards.
+    return `${stageCurtains(look.dark ? look.accent2 : look.accent, 20)}, `
       + `radial-gradient(38% 12% at 50% 92%, rgba(255, 236, 190, 0.32), transparent 70%), `
       + `radial-gradient(28% 75% at 50% 0%, rgba(255, 240, 205, 0.16), transparent 75%), `
       + `linear-gradient(to top, rgba(60, 30, 10, 0.55), transparent 14%), ${vignette}, linear-gradient(175deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'burlesque') {
+    // A modern burlesque stage on Halloween night: velvet curtains under a
+    // feather-boa swag, a hazy spotlight, rhinestone sparkle, a faint fishnet
+    // texture, a mic stand and a coupe tower rim-lit at the edges, a harvest
+    // moon and bats overhead.
+    const sil = '#070306';
+    const bats = svgTile(400, 140, `<g fill='${sil}'>${BAT(250, 60, -10, 1.3)}${BAT(300, 36, 12, 0.9)}${BAT(150, 48, 8, 0.8)}${BAT(110, 80, -14, 0.6)}</g>`);
+    const net = svgTile(26, 26, `<path d='M0 0 L26 26 M26 0 L0 26' stroke='#000' stroke-opacity='.32' stroke-width='1.1'/><path d='M0 0 L26 26 M26 0 L0 26' stroke='#fff' stroke-opacity='.05' stroke-width='.6' transform='translate(.8 0)'/>`);
+    return `${svgUrl(boaTile(look.accent))} 0 -4px / 160px 70px repeat-x, `
+      + `${svgUrl(micStand(sil, look.accent2))} left 3% bottom 1% / auto min(34vh, 250px) no-repeat, `
+      + `${svgUrl(coupeTower(sil, look.accent2))} right 3% bottom 1% / auto min(22vh, 160px) no-repeat, `
+      + `${svgUrl(bats)} center 12% / min(100%, 560px) auto no-repeat, `
+      + `${patternCss('stars', '#ffffff', look.accent2, 0.5)}, `
+      + `radial-gradient(30% 85% at 50% 0%, rgba(255, 226, 210, 0.2), transparent 75%), `
+      + `radial-gradient(40% 12% at 50% 94%, rgba(255, 200, 190, 0.28), transparent 70%), `
+      + `${stageCurtains(look.accent, 12)}, `
+      + `${svgUrl(net)} 0 0 / 26px 26px repeat, `
+      + `radial-gradient(circle at 80% 20%, #fff1d6 0 26px, rgba(255, 200, 140, 0.45) 28px, rgba(255, 150, 90, 0.12) 80px, transparent 150px), `
+      + `linear-gradient(to top, rgba(40, 10, 10, 0.6), transparent 14%), ${vignette}, linear-gradient(175deg, ${c1}, ${c2})`;
   }
   if (scene === 'marquee') {
     // Rows of marquee bulbs top and bottom, crossing searchlights and sparkle.
