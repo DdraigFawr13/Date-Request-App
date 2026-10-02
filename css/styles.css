@@ -925,6 +925,8 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .ribbon-tail.l { left: calc(50% - var(--w) * 0.075); transform: rotate(14deg); }
 .ribbon-tail.r { left: 50%; transform: rotate(-14deg); }
 .scroll .seal-spot { left: calc(50% - var(--seal) / 2); top: calc(50% - var(--seal) / 2); }
+.scroll-ribbon::before, .ribbon-tail::before { content: ''; position: absolute; inset: 0; mix-blend-mode: soft-light;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(0, 0, 0, 0.25) 40%, rgba(255, 255, 255, 0.3) 70%, rgba(0, 0, 0, 0.3)); }
 .scroll.opening .scroll-ribbon { transform: translateY(70px) scaleY(0.6); opacity: 0; }
 .scroll.opening .ribbon-tail.l { transform: translate(-30px, 80px) rotate(50deg); opacity: 0; }
 .scroll.opening .ribbon-tail.r { transform: translate(30px, 80px) rotate(-50deg); opacity: 0; }
@@ -955,16 +957,17 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   mask-image: linear-gradient(to bottom, #000 50%, transparent);
 }
 .bottle-waves.back {
-  bottom: 9%; opacity: 0.75; animation-duration: 7s; animation-direction: reverse;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40'%3E%3Cpath d='M0 14 C14 4 26 4 40 14 S66 24 80 14 V40 H0Z' fill='%231f6f7a'/%3E%3Cpath d='M0 14 C14 4 26 4 40 14 S66 24 80 14' fill='none' stroke='%23a8e3e0' stroke-width='1.5' opacity='.6'/%3E%3C/svg%3E") 0 0 / 80px 100% repeat-x;
+  bottom: 9%; opacity: 0.85; animation-duration: 9s; animation-direction: reverse;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='44'%3E%3Cdefs%3E%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233f9aa0'/%3E%3Cstop offset='1' stop-color='%230f4d58'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeGaussianBlur stdDeviation='1.4'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M0 16 C20 8 40 8 60 16 S100 24 120 16 V44 H0Z' fill='url%28%23w%29'/%3E%3Cpath d='M0 16 C20 8 40 8 60 16 S100 24 120 16' fill='none' stroke='%23cfeeed' stroke-width='2.4' opacity='.35' filter='url%28%23s%29'/%3E%3C/svg%3E") 0 0 / 120px 100% repeat-x;
 }
 .bottle-waves.front {
   bottom: -3%; z-index: 2;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='44'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2346b3b8'/%3E%3Cstop offset='1' stop-color='%23176273'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 14 C18 2 32 2 50 14 S82 26 100 14 V44 H0Z' fill='url(%23s)'/%3E%3Cpath d='M0 14 C18 2 32 2 50 14 S82 26 100 14' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' opacity='.85'/%3E%3Cpath d='M8 20 C16 16 24 16 30 19 M60 22 C70 19 78 20 86 23' fill='none' stroke='%23ffffff' stroke-width='1.2' opacity='.45'/%3E%3Ccircle cx='38' cy='8' r='1.6' fill='%23fff' opacity='.8'/%3E%3Ccircle cx='44' cy='5' r='1' fill='%23fff' opacity='.7'/%3E%3C/svg%3E") 0 0 / 100px 100% repeat-x;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='50'%3E%3Cdefs%3E%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2356b6bb'/%3E%3Cstop offset='.35' stop-color='%232a8f97'/%3E%3Cstop offset='1' stop-color='%230d4552'/%3E%3C/linearGradient%3E%3Cfilter id='f'%3E%3CfeGaussianBlur stdDeviation='.9'/%3E%3C/filter%3E%3Cfilter id='c'%3E%3CfeGaussianBlur stdDeviation='.5'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M0 18 C22 7 45 7 75 18 S128 29 150 18 V50 H0Z' fill='url%28%23w%29'/%3E%3Cpath d='M0 18 C22 7 45 7 75 18 S128 29 150 18' fill='none' stroke='%23f4fbfa' stroke-width='3.2' opacity='.75' filter='url%28%23f%29'/%3E%3Cpath d='M8 22 C24 15 40 15 56 20 M84 23 C100 26 118 26 136 21' fill='none' stroke='%23e6f7f6' stroke-width='1.4' opacity='.45' filter='url%28%23c%29'/%3E%3Cpath d='M14 32 C30 29 44 30 58 33 M90 36 C106 33 120 33 134 35' fill='none' stroke='%23bfe7e7' stroke-width='.9' opacity='.35' filter='url%28%23c%29'/%3E%3Cg fill='%23fff' opacity='.7'%3E%3Ccircle cx='38' cy='12.5' r='.9'/%3E%3Ccircle cx='42' cy='11' r='.6'/%3E%3Ccircle cx='110' cy='22.5' r='.7'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 150px 100% repeat-x;
+  filter: drop-shadow(0 -2px 4px rgba(0, 40, 50, 0.25));
 }
-@keyframes waves { to { background-position: 400px 0; } }
+@keyframes waves { to { background-position: 600px 0; } }
 .bottle-glints { left: -10%; right: -10%; bottom: 2%; height: 14%; z-index: 3; pointer-events: none; }
-.bottle-glints i { position: absolute; width: 6px; height: 6px; background: #fff; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); animation: twinkle 2.6s ease-in-out infinite; }
+.bottle-glints i { position: absolute; width: 5px; height: 5px; background: #fff; opacity: 0.8; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); animation: twinkle 2.6s ease-in-out infinite; }
 .bottle-glints i:nth-child(1) { left: 12%; top: 30%; }
 .bottle-glints i:nth-child(2) { left: 64%; top: 55%; animation-delay: 0.9s; }
 .bottle-glints i:nth-child(3) { left: 86%; top: 20%; animation-delay: 1.7s; }
@@ -1038,10 +1041,15 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .gift { --exit: 1.45s; height: calc(var(--w) * 0.98); }
 .gift-box, .gift-lid {
   background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0, transparent 5%, transparent 95%, rgba(0, 0, 0, 0.22) 100%),
+    linear-gradient(125deg, rgba(255, 255, 255, 0.28) 0, rgba(255, 255, 255, 0.06) 30%, transparent 45%, rgba(255, 255, 255, 0.12) 62%, transparent 75%),
+    var(--paper-grain),
     var(--wrap-pattern),
-    linear-gradient(160deg, color-mix(in srgb, var(--wrap-paper) 92%, #fff), color-mix(in srgb, var(--wrap-paper) 82%, #000));
+    linear-gradient(160deg, color-mix(in srgb, var(--wrap-paper) 92%, #fff), color-mix(in srgb, var(--wrap-paper) 80%, #000));
   box-shadow: inset 0 -12px 22px rgba(0, 0, 0, 0.2), 0 16px 30px rgba(0, 0, 0, 0.32);
 }
+/* The lid's overhang casts a soft shadow onto the box. */
+.gift-box { box-shadow: inset 0 14px 12px -8px rgba(0, 0, 0, 0.4), inset 0 -12px 22px rgba(0, 0, 0, 0.2), 0 16px 30px rgba(0, 0, 0, 0.32); }
 .gift-box { left: 9%; right: 9%; bottom: 0; height: 54%; border-radius: 2px 2px 4px 4px; z-index: 2; }
 .gift-lid {
   left: 4%; right: 4%; bottom: 52%; height: 19%;
@@ -1054,7 +1062,11 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .ribbon-v, .ribbon-h { background: linear-gradient(90deg, color-mix(in srgb, var(--ribbon) 70%, #000), var(--ribbon) 22%, color-mix(in srgb, var(--ribbon) 65%, #fff) 48%, var(--ribbon) 74%, color-mix(in srgb, var(--ribbon) 70%, #000)); }
 .ribbon-v { top: 0; bottom: 0; left: calc(50% - var(--w) * 0.055); width: calc(var(--w) * 0.11); }
 .ribbon-h { left: 0; right: 0; top: calc(45% - var(--w) * 0.04); height: calc(var(--w) * 0.08); background: linear-gradient(to bottom, color-mix(in srgb, var(--ribbon) 70%, #000), var(--ribbon) 25%, color-mix(in srgb, var(--ribbon) 65%, #fff) 50%, var(--ribbon) 75%, color-mix(in srgb, var(--ribbon) 70%, #000)); }
-.ribbon-v::after, .ribbon-h::after { content: ''; position: absolute; border: 1px dashed rgba(255, 255, 255, 0.45); }
+.ribbon-v::after, .ribbon-h::after { content: ''; position: absolute; border: 1px dashed rgba(255, 255, 255, 0.22); }
+/* Satin catches light in soft bands along its length. */
+.ribbon-v::before, .ribbon-h::before { content: ''; position: absolute; inset: 0; mix-blend-mode: soft-light; }
+.ribbon-v::before { background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.25) 35%, rgba(255, 255, 255, 0.35) 60%, rgba(0, 0, 0, 0.3)); }
+.ribbon-h::before { background: linear-gradient(90deg, rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.4) 30%, rgba(0, 0, 0, 0.15) 55%, rgba(255, 255, 255, 0.35) 75%, rgba(0, 0, 0, 0.3)); }
 .ribbon-v::after { top: 0; bottom: 0; left: 12%; right: 12%; border-top: 0; border-bottom: 0; }
 .ribbon-h::after { left: 0; right: 0; top: 18%; bottom: 18%; border-left: 0; border-right: 0; }
 .gift-bow { left: 50%; bottom: 100%; width: 0; height: 0; z-index: 2; }

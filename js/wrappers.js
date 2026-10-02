@@ -71,6 +71,9 @@ function rollSvg(withTassels) {
     </defs>
     <rect x="10" y="21" width="300" height="10" rx="3" fill="url(#${id}w)"/>
     <rect x="40" y="3" width="240" height="46" rx="3" fill="url(#${id}p)"/>
+    <filter id="${id}a" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".035 .12" numOctaves="3" seed="${svgId}"/>
+      <feColorMatrix values="0 0 0 0 .42  0 0 0 0 .28  0 0 0 0 .1  0 0 0 1.3 -.55"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+    <rect x="40" y="3" width="240" height="46" rx="3" fill="#000" filter="url(#${id}a)" opacity=".5"/>
     <g fill="${gold}" opacity=".9"><rect x="47" y="3" width="2.2" height="46"/><rect x="51" y="3" width=".9" height="46"/><rect x="270.8" y="3" width="2.2" height="46"/><rect x="268.1" y="3" width=".9" height="46"/></g>
     <rect x="40" y="9" width="240" height="3.5" rx="1.7" fill="#fff" opacity=".35"/>
     ${ROLL_END(40)}${ROLL_END(280)}
