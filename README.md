@@ -48,13 +48,15 @@ override any of them:
 
 - **Colors:** the page (card) color and the background colors can each be
   changed on their own. A custom page color keeps text and titles readable.
+- **Neon glow:** make the title, headings and card edge glow in hot pink,
+  electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
 - **Background:** a soft glow, a moonlit sky, a velvet curtain, bokeh lights,
   a neon grid, a sunburst, or a pattern (damask, stars, snowfall, blossoms,
   leaves, hearts, paw prints, waves, castle stone, gingham, plaid, lace, bats,
   spiderwebs, stripes, cocktails, dice, checkerboard, disco tiles, music notes, confetti), in the look's
   colors or two of your own.
 - **Paper:** smooth card, handmade cotton, aged parchment, linen weave,
-  watercolor wash or marble.
+  watercolor wash, marble, kraft, vellum, silk, leather, speckled or shimmer.
 - **Ornaments:** corner pieces (filigree, gothic, floral vine, art deco,
   celestial, paw prints), side borders (double frame, climbing vine, pearls,
   stitching, paw trail) and script lines between sections (swash, flourish,

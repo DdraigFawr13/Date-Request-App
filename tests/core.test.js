@@ -180,3 +180,19 @@ test('page color is independent of the background and stays readable', async () 
   assert.equal(resolveTheme(both).card, '#141018');
   assert.match(backdropCss(resolveTheme(both), both), /#112233/);
 });
+
+test('neon glow follows the look, can be turned off, and only takes real colors', async () => {
+  const { resolveGlow } = await import('../js/decor.js');
+  const { THEMES } = await import('../js/themes.js');
+  assert.equal(resolveGlow({}, THEMES.neon), THEMES.neon.glow);
+  assert.equal(resolveGlow({}, THEMES.candlelit), null);
+  assert.equal(resolveGlow({ gl: 'none' }, THEMES.neon), null);
+  assert.equal(resolveGlow({ gl: '#2ee6ff' }, THEMES.candlelit), '#2ee6ff');
+  assert.equal(resolveGlow({ gl: 'red;}' }, THEMES.candlelit), null);
+});
+
+test('emoji in italic lines are wrapped so they stay upright, and text is still escaped', async () => {
+  const { escEmoji } = await import('../js/util.js');
+  assert.equal(escEmoji('🌕 Beneath the <full> moon'), '<span class="emo">🌕</span> Beneath the &lt;full&gt; moon');
+  assert.match(escEmoji('✨ It falls on Samhain itself ✨'), /^<span class="emo">✨<\/span>.*<span class="emo">✨<\/span>$/);
+});

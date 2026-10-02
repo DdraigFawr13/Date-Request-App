@@ -168,6 +168,18 @@ export function backdropCss(look, inv = {}) {
   return `${vignette}, ${patternCss(scene, motif, look.accent, dark ? 0.1 : 0.22)}, ${base}`;
 }
 
+// ── Neon glow ─────────────────────────────────────────────────────────
+export const GLOW_COLORS = [
+  { hex: '#ff3fd8', name: 'Hot pink' }, { hex: '#2ee6ff', name: 'Electric blue' }, { hex: '#7dff3a', name: 'Lime' },
+  { hex: '#b14cff', name: 'Ultraviolet' }, { hex: '#ff8a1f', name: 'Tangerine' }, { hex: '#ffe62e', name: 'Lemon' },
+  { hex: '#ff2e4d', name: 'Red' }, { hex: '#ffffff', name: 'White' },
+];
+// The glow color for an invite: '' = the look's own, 'none' = off, or a color.
+export function resolveGlow(inv, look) {
+  if (inv.gl === 'none') return null;
+  return safeHex(inv.gl) || look.glow || null;
+}
+
 // ── Paper textures (drawn by CSS; see [data-paper] in styles.css) ────
 export const PAPERS = [
   { id: 'look', label: 'Look’s pick' },
@@ -177,6 +189,12 @@ export const PAPERS = [
   { id: 'linen', label: 'Linen weave' },
   { id: 'watercolor', label: 'Watercolor wash' },
   { id: 'marble', label: 'Marble' },
+  { id: 'kraft', label: 'Kraft paper' },
+  { id: 'vellum', label: 'Vellum' },
+  { id: 'silk', label: 'Silk' },
+  { id: 'leather', label: 'Leather' },
+  { id: 'speckled', label: 'Speckled' },
+  { id: 'glitter', label: 'Shimmer' },
 ];
 export const resolvePaper = (inv, look) =>
   (PAPERS.some(p => p.id === inv.pp && p.id !== 'look') ? inv.pp : look.paper || 'smooth');

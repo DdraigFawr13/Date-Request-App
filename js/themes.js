@@ -168,7 +168,7 @@ export const THEMES = {
   neon: {
     name: 'Neon Club', cat: 'party', tagline: 'Hot pink & electric blue', glyph: '★',
     bg: ['#07040f', '#1a0533'], card: '#120a24', ink: '#f4ecff', accent: '#ff3fd8', accent2: '#2ee6ff', onAccent: '#120a24', dark: true,
-    particles: ['💃', '🪩', '✨', '🎧', '💜'], seal: '★', divider: '✦ ★ ✦', wrap: 'gift',
+    particles: ['💃', '🪩', '✨', '🎧', '💜'], seal: '★', divider: '✦ ★ ✦', wrap: 'gift', glow: '#ff3fd8',
     pattern: 'disco', scene: 'neon', wax: 'black', waxFace: 'silver', paper: 'smooth', corners: 'deco', rule: 'swash',
   },
   disco: {
