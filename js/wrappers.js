@@ -6,7 +6,7 @@ import { esc } from './util.js';
 import { cornerSvg, patternCss } from './decor.js';
 import { breakableSealHtml, shade } from './seal.js';
 import {
-  bottleBack, bottleFront, bowHalf, bowKnot, chestBase, chestLid, chestPlate, corkArt, envelopeFlap,
+  bottleBack, bottleFront, bowHalf, bowKnot, chestBase, chestLid, chestLining, chestPlate, corkArt, envelopeFlap,
   envelopeFront, giftTag, pageHtml, rolledNote, sprig, tissue, treasure,
 } from './wrapper-art.js';
 
@@ -137,7 +137,7 @@ const PARTS = {
   chest: (seal, glyph, look) => `
     <span class="chest-rays"></span>
     <span class="chest-glow"></span>
-    <span class="chest-lining"></span>
+    <span class="chest-lining">${chestLining()}</span>
     <span class="chest-letter">${pageHtml(glyph, look)}</span>
     <span class="chest-treasure">${treasure()}</span>
     <span class="chest-base">${chestBase()}</span>

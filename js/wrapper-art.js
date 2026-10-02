@@ -176,6 +176,29 @@ export function chestLid() {
     <path d="${dome}" fill="none" stroke="#2e1704" stroke-width="3"/>`, 'chest-art');
 }
 
+// The underside of the lid, seen once it has swung open: wood frame, gold straps, tufted velvet.
+export function chestLining() {
+  const w = nextId('iw'), g = nextId('ig'), v = nextId('iv');
+  const shape = 'M0 128 V30 C0 12 60 2 160 2 C260 2 320 12 320 30 V128Z';
+  const inner = 'M14 118 V36 C14 22 70 14 160 14 C250 14 306 22 306 36 V118Z';
+  const tufts = [];
+  for (let y = 34; y < 118; y += 20) for (let x = 30 + ((y / 20) % 2) * 16; x < 300; x += 32) tufts.push([x, y]);
+  return svg('0 0 320 128', `
+    <defs>${goldGrad(g)}
+      <linearGradient id="${w}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a2a10"/><stop offset="1" stop-color="#7d4a20"/></linearGradient>
+      <radialGradient id="${v}" cx="50%" cy="80%" r="80%"><stop offset="0" style="stop-color:color-mix(in srgb, var(--gem) 85%, #fff)"/><stop offset="1" style="stop-color:color-mix(in srgb, var(--gem) 45%, #000)"/></radialGradient></defs>
+    <path d="${shape}" fill="url(#${w})"/>
+    <path d="${inner}" fill="url(#${v})"/>
+    <g fill="#fff" opacity=".1">${tufts.map(([x, y]) => `<ellipse cx="${x}" cy="${y - 6}" rx="11" ry="5"/>`).join('')}</g>
+    <g fill="#000" opacity=".16">${tufts.map(([x, y]) => `<ellipse cx="${x}" cy="${y + 1}" rx="6" ry="4"/>`).join('')}</g>
+    <g fill="url(#${g})">${tufts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2"/>`).join('')}</g>
+    <path d="${inner}" fill="none" stroke="url(#${g})" stroke-width="3"/>
+    <g fill="url(#${g})"><rect x="42" y="4" width="20" height="124"/><rect x="258" y="4" width="20" height="124"/><rect y="118" width="320" height="10"/></g>
+    <g stroke="#6e4a0c" stroke-width=".8" opacity=".7"><path d="M42 4 V128 M62 4 V128 M258 4 V128 M278 4 V128"/></g>
+    ${[30, 62, 94].map(y => RIVET(52, y) + RIVET(268, y)).join('')}
+    <path d="${shape}" fill="none" stroke="#2e1704" stroke-width="3"/>`, 'lining-art');
+}
+
 export function chestPlate() {
   const g = nextId('pg');
   return svg('0 0 80 96', `
