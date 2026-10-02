@@ -982,26 +982,40 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .bottle.opening .bottle-note { transform: translateY(-105%) rotate(6deg) scale(1.05); opacity: 0; }
 
 /* Treasure chest: planked wood, gilded straps and brackets, a jewelled lid, a pile of coins inside. */
-.chest { --exit: 1.75s; height: calc(var(--w) * 0.86); perspective: 900px; perspective-origin: 50% 20%; }
+.chest { --exit: 1.75s; height: calc(var(--w) * 0.86); perspective: 700px; perspective-origin: 50% 12%; }
 .chest-art, .plate-art, .treasure-art { display: block; width: 100%; height: 100%; overflow: visible; }
 .chest-base, .chest-lid { left: 0; right: 0; }
 .chest-base { filter: drop-shadow(0 14px 16px rgba(0, 0, 0, 0.4)); }
 .chest-base { bottom: 0; height: 56%; z-index: 3; }
-/* The lid is one hinged piece with an outside and an inside. It lifts at the
-   front, swings up and back over the hinge and comes to rest standing behind
-   the open chest, its lined underside facing out. (Rotating about the lid's
-   top edge while the hinge settles to the rim keeps it on the chest.) */
+/* The lid is a real hinged box: a domed front face and a top panel whose
+   underside is the lining. It turns on the hinge at the back of the rim
+   (a depth --cd behind the front), so it stays attached the whole way: the
+   front lifts, the lid swings up and back, and it comes to rest standing on
+   the back edge of the chest with its lining facing out. */
+.chest { --cd: calc(var(--w) * 0.27); }
 .chest-lid {
   bottom: 56%; height: 36%;
-  transform-origin: 50% 0;
   transform-style: preserve-3d;
-  transform: translateY(0) rotateX(0deg);
+  transform-origin: 50% 100% calc(-1 * var(--cd));
   z-index: 4;
-  transition: transform 0.95s 0.38s cubic-bezier(.45, .05, .3, 1), z-index 0s 0.8s;
+  transition: transform 1s 0.38s cubic-bezier(.45, .05, .3, 1), z-index 0s 0.75s;
 }
-.lid-out, .lid-in { inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.lid-in { top: 0; bottom: -45%; transform: rotateX(180deg); filter: brightness(0.55); transition: filter 0.6s 0.75s; }
-.lid-out { transition: filter 0.5s 0.38s; }
+.lid-front { inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: filter 0.6s 0.38s; }
+.lid-top { left: 7%; right: 7%; top: 12%; height: var(--cd); transform-origin: 50% 0; transform: rotateX(-90deg); transform-style: preserve-3d; }
+.lid-top-out, .lid-top-in { inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.lid-top-out { transform: rotateX(180deg); border-radius: 0 0 30% 30% / 0 0 40% 40%;
+  background: linear-gradient(90deg, transparent 13%, #b08a3a 13% 19%, transparent 19% 81%, #b08a3a 81% 87%, transparent 87%), var(--paper-grain), linear-gradient(#6a4019, #8a5a2b); }
+.lid-top-in, .lid-front-in { filter: brightness(0.5); transition: filter 0.6s 0.8s; }
+.lid-front-in { inset: 0; transform: rotateX(180deg); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+/* The lid's end caps, seen from inside: they join the front to the hinge. */
+.lid-side { top: 24%; bottom: 0; width: var(--cd); backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.6)), var(--paper-grain), #5a3414;
+  box-shadow: inset 0 0 0 2px #b08a3a; border-radius: 0 6px 0 0; }
+.lid-side.l { left: 0; transform-origin: 0 50%; transform: rotateY(90deg); }
+.lid-side.r { right: 0; transform-origin: 100% 50%; transform: rotateY(-90deg); border-radius: 6px 0 0 0; }
+/* The open top of the chest: a dark interior between the front rim and the hinge. */
+.chest-mouth { left: 2%; right: 2%; bottom: 56%; height: var(--cd); transform-origin: 50% 100%; transform: rotateX(90deg); z-index: 1;
+  background: radial-gradient(70% 90% at 50% 100%, #3a2410, #120903); box-shadow: inset 0 0 0 3px #6a4019; }
 .lining-art { display: block; width: 100%; height: 100%; }
 .chest-plate {
   width: calc(var(--w) * 0.24); height: calc(var(--w) * 0.29);
@@ -1039,9 +1053,9 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   transition: transform 0.75s 0.85s cubic-bezier(.2, .8, .2, 1), opacity 0.3s 0.8s;
 }
 .chest .seal-spot { left: calc(50% - var(--seal) / 2); bottom: calc(56% - var(--seal) * 0.55); }
-.chest.opening .chest-lid { transform: translateY(100%) rotateX(-168deg); z-index: 1; }
-.chest.opening .lid-out { filter: brightness(0.5); }
-.chest.opening .lid-in { filter: brightness(1); }
+.chest.opening .chest-lid { transform: rotateX(104deg); z-index: 1; }
+.chest.opening .lid-front { filter: brightness(0.5); }
+.chest.opening .lid-top-in, .chest.opening .lid-front-in { filter: brightness(1); }
 .chest.opening .chest-glow { opacity: 1; transform: scale(1.6) translateY(-20%); }
 .chest.opening .chest-letter { opacity: 1; transform: translateY(-58%); }
 .chest.opening .chest-plate { opacity: 0; }
