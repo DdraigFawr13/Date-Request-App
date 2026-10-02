@@ -62,7 +62,13 @@ const MARTINI = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate($
 const COUPE = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})' fill='none' stroke-width='1.4' stroke-linecap='round'><path d='M-8 -6 C-8 2 8 2 8 -6Z M0 -2 V9 M-5 9 H5'/></g>`;
 const NOTE = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><ellipse cx='-3' cy='6' rx='3.6' ry='2.6' transform='rotate(-20 -3 6)'/><path d='M0 6 V-9 C3 -7 7 -6 8 -2' fill='none' stroke-width='1.5'/></g>`;
 
-const BAT = (x, y, r, s = 1) => `<path transform='translate(${x} ${y}) rotate(${r}) scale(${s})' d='M0 -2 C1.5 -4 3 -4 3.5 -2 C6 -5 10 -5 13 -2 C10 -1.5 9 1 9 3 C7 1 5 1.5 4 3.5 C2.5 1.5 1 1.5 0 3 C-1 1.5 -2.5 1.5 -4 3.5 C-5 1.5 -7 1 -9 3 C-9 1 -10 -1.5 -13 -2 C-10 -5 -6 -5 -3.5 -2 C-3 -4 -1.5 -4 0 -2Z'/>`;
+// A bat: rounded body and head, pointed ears, wings with a raised leading edge
+// and a scalloped trailing edge. Drawn at roughly 42 × 20 units.
+export const BAT_PATH = 'M3 -2.6 C5.5 -6.8 9 -9.6 12.6 -9.4 C15.6 -9.2 18.4 -7.2 21.4 -4.4 C19 -3.6 17.8 -1.6 17.6 1.2 C16 -0.4 13.9 -0.5 12.7 2.6 C11.3 0.8 9.2 0.6 7.8 3.6 C6.4 2.2 4.8 2.4 3.2 4.6 Z '
+  + 'M-3 -2.6 C-5.5 -6.8 -9 -9.6 -12.6 -9.4 C-15.6 -9.2 -18.4 -7.2 -21.4 -4.4 C-19 -3.6 -17.8 -1.6 -17.6 1.2 C-16 -0.4 -13.9 -0.5 -12.7 2.6 C-11.3 0.8 -9.2 0.6 -7.8 3.6 C-6.4 2.2 -4.8 2.4 -3.2 4.6 Z '
+  + 'M0 -6.4 C2.3 -6.4 3.6 -4.4 3.6 -1.4 C3.6 2.6 2 6.4 0 7.6 C-2 6.4 -3.6 2.6 -3.6 -1.4 C-3.6 -4.4 -2.3 -6.4 0 -6.4 Z '
+  + 'M-2.7 -5 L-2.4 -9.4 L-0.8 -6.2 Z M2.7 -5 L2.4 -9.4 L0.8 -6.2 Z';
+const BAT = (x, y, r, s = 1) => `<path transform='translate(${x} ${y}) rotate(${r}) scale(${s})' d='${BAT_PATH}'/>`;
 const WEB = (x, y, s = 1) => `<g transform='translate(${x} ${y}) scale(${s})' fill='none' stroke-width='0.8'>${[0, 45, 90, 135].map(a => `<path transform='rotate(${a})' d='M-14 0 H14'/>`).join('')}
   ${[5, 9.5, 14].map(r => `<path d='${Array.from({ length: 9 }, (_, i) => { const a = i * Math.PI / 4; return `${i ? 'Q0 0 ' : 'M'}${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`; }).join(' ').replace(/Q0 0 /g, (m, off) => 'L')}'/>`).join('')}</g>`;
 
@@ -114,6 +120,7 @@ export const SCENES = [
   { id: 'plain', label: 'Plain glow' },
   { id: 'moonlit', label: 'Moonlit' },
   { id: 'velvet', label: 'Velvet curtain' },
+  { id: 'haunted', label: 'Haunted night' },
   { id: 'bokeh', label: 'Bokeh lights' },
   { id: 'neon', label: 'Neon grid' },
   { id: 'sunburst', label: 'Sunburst' },
@@ -149,6 +156,20 @@ export function backdropCss(look, inv = {}) {
   if (scene === 'velvet') {
     return `linear-gradient(to bottom, rgba(0,0,0,.35), transparent 18%), `
       + `repeating-linear-gradient(90deg, rgba(0,0,0,.32) 0, rgba(255,255,255,.07) 22px, rgba(0,0,0,.22) 46px, rgba(255,255,255,.04) 64px, rgba(0,0,0,.32) 80px), ${vignette}, linear-gradient(170deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'haunted') {
+    const sil = '#08050c';
+    const bats = svgTile(400, 160, `<g fill='${sil}'>${BAT(300, 40, -12, 1.5)}${BAT(250, 62, 8, 1.1)}${BAT(338, 78, 16, 0.9)}${BAT(210, 30, -6, 0.75)}${BAT(120, 54, 10, 0.6)}</g>`);
+    const yard = svgTile(400, 160, `<g fill='${sil}'>
+      <path d='M0 160 V112 C50 96 110 104 160 116 C220 130 290 94 400 108 V160Z'/>
+      <g stroke='${sil}' stroke-linecap='round' fill='none'><path d='M70 118 C72 96 68 78 60 60' stroke-width='7'/><path d='M66 92 C54 84 44 82 32 72' stroke-width='3.5'/><path d='M64 78 C74 68 86 66 98 56' stroke-width='3'/><path d='M61 66 C58 54 62 44 70 34' stroke-width='2.5'/><path d='M38 76 C34 70 34 64 28 60 M90 62 C94 54 102 52 106 46' stroke-width='1.6'/></g>
+      <rect x='238' y='104' width='18' height='26' rx='9'/><rect x='272' y='112' width='14' height='20' rx='7'/><path d='M318 96 h4 v8 h8 v4 h-8 v22 h-4 v-22 h-8 v-4 h8z'/>
+      <path d='M150 126 v-14 l3 -4 l3 4 v14 M166 128 v-14 l3 -4 l3 4 v14 M182 128 v-14 l3 -4 l3 4 v14 M198 126 v-14 l3 -4 l3 4 v14' stroke='${sil}' stroke-width='3'/><path d='M146 118 H210' stroke='${sil}' stroke-width='2.5'/></g>`);
+    return `${svgUrl(bats)} center 6% / min(100%, 640px) auto no-repeat, `
+      + `linear-gradient(to top, rgba(180, 160, 200, 0.28), transparent 18%), `
+      + `${svgUrl(yard)} center bottom / max(100%, 520px) auto no-repeat, `
+      + `radial-gradient(circle at 74% 18%, #fff3d6 0 46px, rgba(255, 214, 150, 0.55) 48px, rgba(255, 170, 80, 0.18) 110px, transparent 200px), `
+      + `${patternCss('stars', '#ffffff', look.accent, 0.35)}, linear-gradient(175deg, ${c1}, ${c2})`;
   }
   if (scene === 'bokeh') {
     const dot = (x, y, r, c, o) => `radial-gradient(circle at ${x}% ${y}%, ${c}${o} 0, ${c}${o} ${r - 4}px, transparent ${r}px)`;
@@ -220,9 +241,9 @@ const CORNERS = {
   celestial: `<path d='M24 8 A16 16 0 1 0 40 30 A12 12 0 1 1 24 8Z' transform='translate(-6 -2)'/>
     ${SPARKLE(52, 12, 0.8)}${SPARKLE(12, 52, 0.8)}${SPARKLE(40, 38, 0.5)}
     <g fill='none' stroke-width='1' stroke-dasharray='1 4' stroke-linecap='round'><path d='M6 76 C6 36 36 6 76 6'/></g><circle cx='68' cy='22' r='1.2'/><circle cx='22' cy='68' r='1.2'/>`,
-  web: `<g fill='none' stroke-width='0.9'><path d='M2 2 L78 6 M2 2 L60 40 M2 2 L40 60 M2 2 L6 78'/>
-    <path d='M22 3 Q20 12 18 12 Q14 14 12 18 Q12 20 3 22'/><path d='M44 4 Q38 20 34 24 Q26 30 22 36 Q20 40 4 44'/><path d='M66 5 Q56 28 50 34 Q40 44 34 50 Q28 58 5 66'/></g>
-    <path d='M44 52 v10' stroke-width='0.8' fill='none'/><circle cx='44' cy='64' r='2.6'/><circle cx='44' cy='60.5' r='1.7'/>`,
+  web: `<g fill='none' stroke-linecap='round'><path d='M2 2 L82.0 2.0 M2 2 L75.9 32.6 M2 2 L58.6 58.6 M2 2 L32.6 75.9 M2 2 L2.0 82.0' stroke-width='0.9'/><path d='M18.0 2.0 Q14.6 4.5 16.8 8.1 Q12.6 9.1 13.3 13.3 Q9.1 12.6 8.1 16.8 Q4.5 14.6 2.0 18.0' stroke-width='0.90'/><path d='M32.0 2.0 Q25.5 6.7 29.7 13.5 Q22.0 15.3 23.2 23.2 Q15.3 22.0 13.5 29.7 Q6.7 25.5 2.0 32.0' stroke-width='0.82'/><path d='M47.0 2.0 Q37.3 9.0 43.6 19.2 Q31.9 22.0 33.8 33.8 Q22.0 31.9 19.2 43.6 Q9.0 37.3 2.0 47.0' stroke-width='0.74'/><path d='M62.0 2.0 Q49.1 11.4 57.4 25.0 Q41.9 28.7 44.4 44.4 Q28.7 41.9 25.0 57.4 Q11.4 49.1 2.0 62.0' stroke-width='0.66'/><path d='M76.0 2.0 Q60.1 13.5 70.4 30.3 Q51.2 34.9 54.3 54.3 Q34.9 51.2 30.3 70.4 Q13.5 60.1 2.0 76.0' stroke-width='0.58'/>
+    <path d='M46 46 V64' stroke-width='0.7'/></g>
+    <g transform='translate(46 68)'><ellipse rx='3.2' ry='3.8'/><circle cy='-4.4' r='2.2'/><g fill='none' stroke-width='0.9' stroke-linecap='round'><path d='M-2.6 -1 L-6.5 -4 M-2.8 1 L-7 0.5 M-2.6 2.6 L-6 5.5 M2.6 -1 L6.5 -4 M2.8 1 L7 0.5 M2.6 2.6 L6 5.5'/></g></g>`,
   paws: `${PAW(14, 15, 135, 1.35)}${PAW(36, 33, 135, 1.1)}${PAW(54, 55, 140, 0.85)}`,
 };
 // One corner ornament as SVG markup (for use outside the card, e.g. the scroll).

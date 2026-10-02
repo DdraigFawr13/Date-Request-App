@@ -35,12 +35,12 @@ their calendar, and texts their answer back to you.
 | Tab | Looks |
 |---|---|
 | 🌹 Romantic | Candlelit · Blush & Gold · Midnight Velvet |
-| 🍂 Seasonal | the eight sabbats: Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon |
+| 🍂 Seasonal | the eight sabbats (Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon) · Halloween |
 | 🌿 Nature | Garden Picnic · Wild Adventure · Enchanted Forest · Seaside |
 | 🏰 Medieval | Royal Court · Castle Keep · Illuminated |
 | 🐈‍⬛ Cats | Black Cat · Calico · Kitten Pastel · Cat Café |
 | 🎉 Parties | Speakeasy · Neon Club · Disco Fever · Game Night · Birthday Bash · Tiki Bar · Celebration |
-| 🖤 Dark side | Gothic · Emo · Halloween · Kinky |
+| 🖤 Dark side | Gothic · Emo · Kinky |
 | ✨ Night & glam | Starlit Night · Night at the Show · Cozy Night In |
 
 Each look also picks sensible defaults for everything below, and you can
@@ -50,7 +50,7 @@ override any of them:
   changed on their own. A custom page color keeps text and titles readable.
 - **Neon glow:** make the title, headings and card edge glow in hot pink,
   electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
-- **Background:** a soft glow, a moonlit sky, a velvet curtain, bokeh lights,
+- **Background:** a soft glow, a moonlit sky, a haunted night, a velvet curtain, bokeh lights,
   a neon grid, a sunburst, or a pattern (damask, stars, snowfall, blossoms,
   leaves, hearts, paw prints, waves, castle stone, gingham, plaid, lace, bats,
   spiderwebs, stripes, cocktails, dice, checkerboard, disco tiles, music notes, confetti), in the look's
@@ -94,7 +94,7 @@ bronze and silver, or any color), the emblem's finish (pressed into the wax,
 gold leaf, silver, copper, rose gold, bronze, pearl, jet, or any color), and
 the emblem: regal (crown, fleur-de-lis, shield, crossed swords, castle,
 laurel, key, chalice, knight, lion, dragon…), love, celestial, nature, party, dark (bat,
-broken heart, skull, kiss…)
+jack-o’-lantern, broken heart, skull, kiss…)
 (martini, die, music, disco ball, cake…) or cats (sitting cat, cat face,
 paw print…). Or press your own initials or symbol (up
 to 4 characters, emoji included).

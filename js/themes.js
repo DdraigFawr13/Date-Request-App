@@ -86,6 +86,13 @@ export const THEMES = {
     pattern: 'leaves', wax: 'copper', waxFace: 'gold', paper: 'parchment', corners: 'floral', rule: 'flourish',
   },
 
+  halloween: {
+    name: 'Halloween', cat: 'seasonal', tagline: 'Jack-o’-lanterns & haunted moons', glyph: '🎃',
+    bg: ['#0d0716', '#2b1240'], card: '#161019', ink: '#f6e9d8', accent: '#ff7a1a', accent2: '#a07ad6', onAccent: '#1a0d05', dark: true,
+    particles: ['🎃', '🦇', '👻', '🕸️', '🍬', '🌕'], seal: '@pumpkin', divider: '🦇 🎃 🦇', wrap: 'chest', glow: '#ff7a1a',
+    pattern: 'bats', scene: 'haunted', wax: 'black', waxFace: 'copper', paper: 'speckled', corners: 'web', rule: 'swash',
+  },
+
   // ── Nature ───────────────────────────────────────────────────────────
   picnic: {
     name: 'Garden Picnic', cat: 'nature', tagline: 'Sunshine & strawberries', glyph: '🧺',
@@ -208,12 +215,6 @@ export const THEMES = {
     bg: ['#0b0b0e', '#1d1022'], card: '#151318', ink: '#f2eef3', accent: '#ff2e88', accent2: '#8a8a96', onAccent: '#ffffff', dark: true,
     particles: ['🖤', '💔', '⛓️', '🎸', '✖️'], seal: '@brokenheart', divider: '✖ 🖤 ✖', wrap: 'envelope',
     pattern: 'stripes', scene: 'stripes', wax: 'black', waxFace: 'rosegold', paper: 'smooth', corners: 'none', sides: 'stitch', rule: 'rule',
-  },
-  halloween: {
-    name: 'Halloween', cat: 'dark', tagline: 'Pumpkins, bats & cobwebs', glyph: '🎃',
-    bg: ['#120a1c', '#3a1650'], card: '#fff4e2', ink: '#2a1430', accent: '#e8650f', accent2: '#6a3d8a', onAccent: '#ffffff',
-    particles: ['🎃', '🦇', '👻', '🕷️', '🍬'], seal: '@bat', divider: '🦇 🎃 🦇', wrap: 'chest',
-    pattern: 'bats', scene: 'bats', wax: 'copper', waxFace: 'black', paper: 'parchment', corners: 'web', rule: 'swash',
   },
   kinky: {
     name: 'Kinky', cat: 'dark', tagline: 'Lace, leather & a little danger', glyph: '❦',
