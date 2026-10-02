@@ -495,6 +495,10 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   word-spacing: 0.12em;
 }
 [data-font=rustic] .title, [data-font=handwritten] .title { font-size: clamp(2.5rem, 10vw, 3.6rem); }
+[data-font=neon] .title { font-size: clamp(1.6rem, 6.6vw, 2.3rem); font-weight: 400; line-height: 1.25; }
+[data-font=deco] .title { font-weight: 400; letter-spacing: 0.03em; }
+[data-theme=neon] .title, [data-theme=neon] .panel-title { text-shadow: 0 0 6px var(--accent), 0 0 18px color-mix(in srgb, var(--accent) 60%, transparent); }
+[data-theme=neon] .card { box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px color-mix(in srgb, var(--accent2) 60%, transparent), 0 0 24px color-mix(in srgb, var(--accent2) 30%, transparent); }
 [data-font=script] .title { font-size: clamp(2.3rem, 9vw, 3.3rem); font-weight: 400; }
 .message { white-space: pre-line; margin: 0.4rem auto; max-width: 30em; }
 .divider { color: var(--accent2); letter-spacing: 0.5em; margin: 1rem 0; font-size: 1.05em; font-style: normal; }

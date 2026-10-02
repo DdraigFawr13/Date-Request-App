@@ -8,6 +8,7 @@ export const LOOK_CATEGORIES = [
   { id: 'nature', label: 'Nature', icon: '🌿' },
   { id: 'medieval', label: 'Medieval', icon: '🏰' },
   { id: 'cats', label: 'Cats', icon: '🐈‍⬛' },
+  { id: 'party', label: 'Parties', icon: '🎉' },
   { id: 'night', label: 'Night & glam', icon: '✨' },
 ];
 
@@ -156,6 +157,44 @@ export const THEMES = {
     pattern: 'paws', wax: 'bronze', waxFace: 'gold', paper: 'cotton', corners: 'paws', rule: 'flourish',
   },
 
+  // ── Parties & nights out ─────────────────────────────────────────────
+  speakeasy: {
+    name: 'Speakeasy', cat: 'party', tagline: 'Emerald, brass & jazz', glyph: '🍸',
+    bg: ['#0c1c17', '#1d3b30'], card: '#f4ecd8', ink: '#1d2b24', accent: '#1f5c45', accent2: '#b8902a', onAccent: '#fff8e6',
+    particles: ['🍸', '🥃', '🎷', '✦', '🍒'], seal: '🍸', divider: '✦ 🍸 ✦',
+    pattern: 'cocktails', scene: 'sunburst', wax: 'forest', waxFace: 'gold', paper: 'cotton', corners: 'deco', sides: 'frame', rule: 'rule',
+  },
+  neon: {
+    name: 'Neon Club', cat: 'party', tagline: 'Hot pink & electric blue', glyph: '★',
+    bg: ['#07040f', '#1a0533'], card: '#120a24', ink: '#f4ecff', accent: '#ff3fd8', accent2: '#2ee6ff', onAccent: '#120a24', dark: true,
+    particles: ['💃', '🪩', '✨', '🎧', '💜'], seal: '★', divider: '✦ ★ ✦', wrap: 'gift',
+    pattern: 'disco', scene: 'neon', wax: 'black', waxFace: 'silver', paper: 'smooth', corners: 'deco', rule: 'swash',
+  },
+  disco: {
+    name: 'Disco Fever', cat: 'party', tagline: 'Mirror balls & sequins', glyph: '✧',
+    bg: ['#2a0a4a', '#7a1fa2'], card: '#fdf7ff', ink: '#3a1450', accent: '#c2187a', accent2: '#8d95ab', onAccent: '#ffffff',
+    particles: ['🪩', '✨', '💃', '🕺', '⭐'], seal: '✦', divider: '✧ 🪩 ✧', wrap: 'gift',
+    pattern: 'disco', scene: 'bokeh', wax: 'silver', waxFace: 'pressed', paper: 'smooth', corners: 'deco', rule: 'swash',
+  },
+  gamenight: {
+    name: 'Game Night', cat: 'party', tagline: 'Dice, cards & snacks', glyph: '♟',
+    bg: ['#13233f', '#24467a'], card: '#fffaf0', ink: '#1d2a44', accent: '#d23f2e', accent2: '#e0a91c', onAccent: '#ffffff',
+    particles: ['🎲', '♟️', '🃏', '🧩', '⭐'], seal: '@die', divider: '♠ ♥ ♣ ♦', wrap: 'chest',
+    pattern: 'dice', scene: 'dice', wax: 'royal', waxFace: 'gold', paper: 'smooth', corners: 'none', sides: 'frame', rule: 'rule',
+  },
+  birthday: {
+    name: 'Birthday Bash', cat: 'party', tagline: 'Cake, candles & balloons', glyph: '🎂',
+    bg: ['#ffd1e8', '#c9e7ff'], card: '#ffffff', ink: '#4a2a5c', accent: '#e2457a', accent2: '#3fa7d6', onAccent: '#ffffff',
+    particles: ['🎂', '🎈', '🎁', '🎉', '✨'], seal: '🎂', divider: '🎈 ✦ 🎈', wrap: 'gift',
+    pattern: 'confetti', scene: 'confetti', wax: 'rose', waxFace: 'gold', paper: 'watercolor', corners: 'none', rule: 'swash',
+  },
+  tiki: {
+    name: 'Tiki Bar', cat: 'party', tagline: 'Rum, hibiscus & palms', glyph: '🌺',
+    bg: ['#ff8a4c', '#1f9e90'], card: '#fff8ec', ink: '#3b2414', accent: '#d9502b', accent2: '#1f8a6e', onAccent: '#ffffff',
+    particles: ['🍹', '🌺', '🌴', '🍍', '🥥'], seal: '🌺', divider: '🌺 ✦ 🌺', wrap: 'bottle',
+    pattern: 'leaves', scene: 'sunburst', wax: 'teal', waxFace: 'pearl', paper: 'linen', corners: 'floral', rule: 'vine',
+  },
+
   // ── Night & glam ─────────────────────────────────────────────────────
   starlit: {
     name: 'Starlit Night', cat: 'night', tagline: 'Wish upon it', glyph: '✦',
@@ -170,7 +209,7 @@ export const THEMES = {
     pattern: 'stars', scene: 'velvet', wax: 'black', waxFace: 'silver', paper: 'smooth', corners: 'deco', rule: 'rule',
   },
   party: {
-    name: 'Celebration', cat: 'night', tagline: 'Let’s make some noise', glyph: '🎉',
+    name: 'Celebration', cat: 'party', tagline: 'Let’s make some noise', glyph: '🎉',
     bg: ['#2b1055', '#d53369'], card: '#ffffff', ink: '#2b1055', accent: '#e93d82', accent2: '#e0a800', onAccent: '#ffffff',
     particles: ['🎉', '✨', '🎈', '🥂', '🎊'], seal: '✦', wrap: 'gift', divider: '✨ 🎉 ✨',
     pattern: 'confetti', scene: 'confetti', wax: 'gold', waxFace: 'pressed', paper: 'smooth', corners: 'deco', rule: 'swash',

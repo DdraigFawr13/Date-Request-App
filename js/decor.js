@@ -36,6 +36,11 @@ const HEART = (x, y, s = 1, r = 0) => `<path transform='translate(${x} ${y}) rot
 const FLAKE = (x, y, s = 1) => `<g transform='translate(${x} ${y}) scale(${s})' fill='none' stroke-width='1' stroke-linecap='round'>${[0, 60, 120].map(a =>
   `<path transform='rotate(${a})' d='M0 -6 V6 M-2 -4.5 L0 -3 L2 -4.5 M-2 4.5 L0 3 L2 4.5'/>`).join('')}</g>`;
 
+const DIE = (x, y, r, pips) => `<g transform='translate(${x} ${y}) rotate(${r})'><rect x='-10' y='-10' width='20' height='20' rx='4.5' fill='none' stroke-width='1.6'/>${pips.map(([px, py]) => `<circle cx='${px}' cy='${py}' r='1.9'/>`).join('')}</g>`;
+const MARTINI = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})' fill='none' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><path d='M-8 -9 H8 L0 0Z M0 0 V9 M-5 9 H5'/><circle cx='-2' cy='-5' r='1.6' style='fill:var(--c2)' stroke='none'/><path d='M-2 -5 L4 -12'/></g>`;
+const COUPE = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})' fill='none' stroke-width='1.4' stroke-linecap='round'><path d='M-8 -6 C-8 2 8 2 8 -6Z M0 -2 V9 M-5 9 H5'/></g>`;
+const NOTE = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><ellipse cx='-3' cy='6' rx='3.6' ry='2.6' transform='rotate(-20 -3 6)'/><path d='M0 6 V-9 C3 -7 7 -6 8 -2' fill='none' stroke-width='1.5'/></g>`;
+
 export const PATTERNS = {
   damask: { label: 'Damask', size: [56, 64], draw: () => DAMASK(28, 18, 1) + DAMASK(0, 50, 0.8) + DAMASK(56, 50, 0.8) },
   stars: { label: 'Stars', size: [90, 90], draw: () => SPARKLE(20, 22, 0.9) + SPARKLE(66, 60, 0.6) + SPARKLE(70, 14, 0.35)
@@ -51,6 +56,11 @@ export const PATTERNS = {
   gingham: { label: 'Gingham', size: [24, 24], draw: () => `<rect x='0' y='0' width='12' height='24' fill-opacity='.45'/><rect x='0' y='0' width='24' height='12' fill-opacity='.45'/>` },
   plaid: { label: 'Plaid', size: [48, 48], draw: () => `<rect x='0' y='8' width='48' height='10' fill-opacity='.5'/><rect x='8' y='0' width='10' height='48' fill-opacity='.5'/>
     <rect x='0' y='32' width='48' height='2' style='fill:var(--c2)'/><rect x='32' y='0' width='2' height='48' style='fill:var(--c2)'/>` },
+  cocktails: { label: 'Cocktails', size: [80, 80], draw: () => MARTINI(20, 22, -10) + COUPE(58, 58, 12, 0.9) + `<circle cx='62' cy='16' r='1.2'/><circle cx='16' cy='64' r='1'/>` },
+  dice: { label: 'Dice', size: [80, 80], draw: () => DIE(22, 22, -12, [[-5, -5], [0, 0], [5, 5]]) + DIE(58, 56, 18, [[-5, -5], [5, -5], [0, 0], [-5, 5], [5, 5]]) },
+  checker: { label: 'Checkerboard', size: [40, 40], draw: () => `<rect width='20' height='20' fill-opacity='.55'/><rect x='20' y='20' width='20' height='20' fill-opacity='.55'/>` },
+  disco: { label: 'Disco tiles', size: [36, 36], draw: () => `<rect x='1' y='1' width='16' height='16' fill-opacity='.5'/><rect x='19' y='1' width='16' height='16' fill-opacity='.2'/><rect x='1' y='19' width='16' height='16' fill-opacity='.25'/><rect x='19' y='19' width='16' height='16' fill-opacity='.6'/>${SPARKLE(27, 27, 0.5)}` },
+  notes: { label: 'Music notes', size: [80, 80], draw: () => NOTE(20, 24, -10) + NOTE(58, 58, 12, 0.85) + `<circle cx='60' cy='18' r='1.2'/><circle cx='20' cy='62' r='1'/>` },
   confetti: { label: 'Confetti', size: [70, 70], draw: () => `<rect x='10' y='12' width='8' height='3' rx='1' transform='rotate(30 14 13)'/><circle cx='50' cy='16' r='2.5' style='fill:var(--c2)'/>
     <rect x='40' y='48' width='8' height='3' rx='1' transform='rotate(-40 44 49)' style='fill:var(--c2)'/><circle cx='18' cy='52' r='2'/><path d='M60 34 l3 5 l-6 0z'/>` },
 };
@@ -74,6 +84,9 @@ export const SCENES = [
   { id: 'plain', label: 'Plain glow' },
   { id: 'moonlit', label: 'Moonlit' },
   { id: 'velvet', label: 'Velvet curtain' },
+  { id: 'bokeh', label: 'Bokeh lights' },
+  { id: 'neon', label: 'Neon grid' },
+  { id: 'sunburst', label: 'Sunburst' },
   ...Object.entries(PATTERNS).map(([id, p]) => ({ id, label: p.label })),
 ];
 
@@ -106,6 +119,21 @@ export function backdropCss(look, inv = {}) {
   if (scene === 'velvet') {
     return `linear-gradient(to bottom, rgba(0,0,0,.35), transparent 18%), `
       + `repeating-linear-gradient(90deg, rgba(0,0,0,.32) 0, rgba(255,255,255,.07) 22px, rgba(0,0,0,.22) 46px, rgba(255,255,255,.04) 64px, rgba(0,0,0,.32) 80px), ${vignette}, linear-gradient(170deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'bokeh') {
+    const dot = (x, y, r, c, o) => `radial-gradient(circle at ${x}% ${y}%, ${c}${o} 0, ${c}${o} ${r - 4}px, transparent ${r}px)`;
+    return [dot(12, 18, 46, look.accent, '55'), dot(78, 12, 30, look.accent2, '66'), dot(64, 40, 58, look.accent, '33'), dot(22, 62, 34, look.accent2, '44'),
+      dot(86, 72, 50, look.accent, '44'), dot(40, 88, 28, '#ffffff', '22'), dot(50, 24, 18, '#ffffff', '33'), vignette, `linear-gradient(170deg, ${c1}, ${c2})`].join(', ');
+  }
+  if (scene === 'neon') {
+    return `linear-gradient(to bottom, ${c1} 0%, transparent 58%), `
+      + `repeating-linear-gradient(90deg, ${look.accent2}55 0 1.5px, transparent 1.5px 44px) 0 100% / 100% 42% no-repeat, `
+      + `repeating-linear-gradient(0deg, ${look.accent}66 0 1.5px, transparent 1.5px 26px) 0 100% / 100% 42% no-repeat, `
+      + `radial-gradient(80% 30% at 50% 58%, ${look.accent}88, transparent 70%), linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'sunburst') {
+    return `repeating-conic-gradient(from 0deg at 50% 30%, rgba(255,255,255,${dark ? 0.06 : 0.22}) 0 7deg, transparent 7deg 18deg), `
+      + `radial-gradient(circle at 50% 30%, rgba(255,255,255,${dark ? 0.18 : 0.5}), transparent 45%), ${vignette}, linear-gradient(170deg, ${c1}, ${c2})`;
   }
   return `${vignette}, ${patternCss(scene, motif, look.accent, dark ? 0.1 : 0.22)}, ${base}`;
 }

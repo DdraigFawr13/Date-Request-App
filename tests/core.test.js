@@ -136,3 +136,27 @@ test('custom backgrounds only accept real colors', async () => {
   assert.ok(!css.includes('evil'));
   assert.ok(backdropCss(THEMES.royal, { bs: 'nonsense' }).includes('data:image/svg+xml'), 'unknown scene falls back to the look’s');
 });
+
+test('every look and occasion only references things that exist', async () => {
+  const { THEMES, LOOK_CATEGORIES } = await import('../js/themes.js');
+  const { TEMPLATES, FONTS } = await import('../js/occasions.js');
+  const { PATTERNS, SCENES, PAPERS, CORNER_OPTIONS, SIDE_OPTIONS, RULE_OPTIONS } = await import('../js/decor.js');
+  const { WAX_BY_ID, FACE_BY_ID, SVG_EMBLEMS } = await import('../js/seal.js');
+  const { WRAPPERS } = await import('../js/wrappers.js');
+  const has = (list, id) => list.some(o => o.id === id);
+  for (const [id, t] of Object.entries(THEMES)) {
+    assert.ok(has(LOOK_CATEGORIES, t.cat), `${id}: category`);
+    assert.ok(PATTERNS[t.pattern], `${id}: pattern ${t.pattern}`);
+    if (t.scene) assert.ok(has(SCENES, t.scene), `${id}: scene ${t.scene}`);
+    assert.ok(WAX_BY_ID[t.wax], `${id}: wax ${t.wax}`);
+    assert.ok(FACE_BY_ID[t.waxFace], `${id}: finish ${t.waxFace}`);
+    assert.ok(has(PAPERS, t.paper), `${id}: paper ${t.paper}`);
+    assert.ok(has(CORNER_OPTIONS, t.corners), `${id}: corners ${t.corners}`);
+    if (t.sides) assert.ok(has(SIDE_OPTIONS, t.sides), `${id}: sides ${t.sides}`);
+    assert.ok(has(RULE_OPTIONS, t.rule), `${id}: rule ${t.rule}`);
+    if (t.wrap) assert.ok(WRAPPERS[t.wrap], `${id}: wrap ${t.wrap}`);
+    if (t.seal.startsWith('@')) assert.ok(SVG_EMBLEMS[t.seal.slice(1)], `${id}: seal ${t.seal}`);
+  }
+  for (const c of LOOK_CATEGORIES) assert.ok(Object.values(THEMES).some(t => t.cat === c.id), `empty tab ${c.id}`);
+  for (const t of TEMPLATES) assert.ok(FONTS[t.font], `${t.id}: font ${t.font}`);
+});
