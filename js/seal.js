@@ -75,6 +75,25 @@ export const SVG_EMBLEMS = {
     <g fill='none' stroke='#000' stroke-width='1.2' opacity='.35'><path d='M43 32 C40 44 40 62 43 74'/><path d='M57 32 C60 44 60 62 57 74'/></g>`,
   brokenheart: `<path d='M50 76 C30 62 22 52 22 41 C22 32 29 26 37 26 C43 26 47 29 50 33 L46 42 L53 49 L48 58 L54 66Z'/>
     <path d='M52 76 L58 66 L52 58 L57 49 L50 42 L53 33 C56 29 60 26 64 26 C72 26 78 32 78 41 C78 52 70 62 52 76Z' transform='translate(2 0)'/>`,
+  wizardhat: `<path d='M20 70 C32 64 68 64 80 70 C70 76 30 76 20 70Z'/><path d='M32 68 C38 52 44 36 54 22 C58 17 66 18 70 24 C64 24 60 28 60 34 C62 46 66 58 68 68Z'/>
+    <g fill='#000'><path d='M33 62 C44 59 56 59 67 62 L68 66 C56 63 44 63 32 66Z'/><path d='M50 48 l1.6 3.4 3.6 .5 -2.6 2.5 .6 3.6 -3.2 -1.7 -3.2 1.7 .6 -3.6 -2.6 -2.5 3.6 -.5Z'/><circle cx='58' cy='38' r='1.6'/><circle cx='45' cy='56' r='1.2'/></g>`,
+  wand: `<rect x='47.5' y='38' width='5' height='46' rx='2' transform='rotate(30 50 62)'/><path transform='translate(-2 8)' d='M62 18 L65.5 27 L75 28 L67.8 34.3 L70 43.6 L62 38.6 L54 43.6 L56.2 34.3 L49 28 L58.5 27Z'/>
+    <circle cx='30' cy='30' r='2.4'/><circle cx='78' cy='52' r='2'/><circle cx='40' cy='20' r='1.6'/>`,
+  dragon: `<path d='M54 50 L34 14 C40 19 45 21 50 21 L54 9 C56 16 59 20 64 22 L70 13 C70 22 71 28 68 34 L66 48Z'/>
+    <path d='M68 44 C60 42 46 46 36 55 C33 60 37 65 44 63 C53 61 62 59 70 55Z'/>
+    <path d='M64 46 C67 40 70 34 76 30 C80 27 87 29 90 33 L84 36 C82 37 80 39 81 42 C77 45 73 49 70 55Z'/>
+    <path d='M77 30 L72 21 L80 27Z M82 29 L84 20 L86 29Z'/>
+    <path d='M38 58 C27 61 20 69 24 77 C27 83 35 81 34 75' fill='none' stroke='#fff' stroke-width='4' stroke-linecap='round'/>
+    <path d='M34 75 L28 72 L31 79Z'/>
+    <path d='M45 61 L43 70 L48 70Z M59 58 L60 67 L64 66Z'/>
+    <g fill='#000'><circle cx='83' cy='32.5' r='1.4'/><path d='M60 30 L58 44 M52 26 L54 44' stroke='#000' stroke-width='1.2' opacity='.45'/></g>`,
+  acorn: `<path d='M33 48 C33 66 42 78 50 82 C58 78 67 66 67 48Z'/><path d='M28 48 C28 32 72 32 72 48 C60 52 40 52 28 48Z'/><rect x='48' y='24' width='4' height='12' rx='2'/>
+    <g fill='#000' opacity='.55'><circle cx='38' cy='42' r='1.4'/><circle cx='46' cy='39' r='1.4'/><circle cx='54' cy='39' r='1.4'/><circle cx='62' cy='42' r='1.4'/><circle cx='42' cy='46' r='1.2'/><circle cx='50' cy='44' r='1.2'/><circle cx='58' cy='46' r='1.2'/></g>`,
+  teacup: `<path d='M26 46 H66 C66 62 58 72 46 72 C34 72 26 62 26 46Z'/><path d='M66 50 C76 48 80 56 74 62 C71 65 66 64 63 63' fill='none' stroke='#fff' stroke-width='4.5'/>
+    <ellipse cx='46' cy='76' rx='26' ry='4.5'/><g fill='none' stroke='#fff' stroke-width='2.4' stroke-linecap='round'><path d='M38 40 C34 34 42 30 38 24'/><path d='M50 40 C46 34 54 30 50 22'/></g>
+    <path d='M40 56 C44 52 48 52 52 56 C48 60 44 60 40 56Z' fill='#000' opacity='.5'/>`,
+  constellation: `<g fill='none' stroke='#fff' stroke-width='1.8'><path d='M24 64 L36 44 L52 50 L64 30 L78 40 L70 62 L52 50'/></g>
+    <circle cx='24' cy='64' r='4'/><circle cx='36' cy='44' r='3.2'/><circle cx='52' cy='50' r='4.4'/><circle cx='64' cy='30' r='3.6'/><circle cx='78' cy='40' r='3'/><circle cx='70' cy='62' r='3.6'/>`,
   die: `<g transform='rotate(-10 50 52)'><rect x='28' y='30' width='44' height='44' rx='10'/>
     <g fill='#000'><circle cx='39' cy='41' r='4.2'/><circle cx='61' cy='41' r='4.2'/><circle cx='50' cy='52' r='4.2'/><circle cx='39' cy='63' r='4.2'/><circle cx='61' cy='63' r='4.2'/></g></g>`,
   paw: `<g transform='translate(50 52) scale(2.6)'><ellipse cx='0' cy='4' rx='5.2' ry='4.4'/><ellipse cx='-6' cy='-3' rx='2.1' ry='2.7' transform='rotate(-20 -6 -3)'/>
@@ -97,8 +116,13 @@ export const EMBLEM_GROUPS = [
     { s: '@moonstar', name: 'Moon & star' }, { s: '☾', name: 'Crescent' }, { s: '✦', name: 'Star' }, { s: '☀︎', name: 'Sun' },
     { s: '✺', name: 'Sunburst' }, { s: '⛤', name: 'Pentacle' }, { s: '❄', name: 'Snowflake' },
   ] },
+  { id: 'magic', label: 'Magic', items: [
+    { s: '@wizardhat', name: 'Wizard’s hat' }, { s: '@wand', name: 'Wand' }, { s: '@dragon', name: 'Dragon' }, { s: '@constellation', name: 'Constellation' },
+    { s: '@moonstar', name: 'Moon & star' }, { s: '🔮', name: 'Crystal ball' }, { s: '🧪', name: 'Potion' }, { s: '📜', name: 'Scroll' },
+  ] },
   { id: 'nature', label: 'Nature', items: [
-    { s: '☘︎', name: 'Clover' }, { s: '🍂', name: 'Leaf' }, { s: '🍄', name: 'Mushroom' }, { s: '🐝', name: 'Bee' },
+    { s: '@acorn', name: 'Acorn' }, { s: '@teacup', name: 'Teacup' }, { s: '☘︎', name: 'Clover' },
+ { s: '🍂', name: 'Leaf' }, { s: '🍄', name: 'Mushroom' }, { s: '🐝', name: 'Bee' },
     { s: '🦋', name: 'Butterfly' }, { s: '🦉', name: 'Owl' }, { s: '🐚', name: 'Shell' }, { s: '🌾', name: 'Wheat' }, { s: '🍓', name: 'Strawberry' },
   ] },
   { id: 'party', label: 'Party', items: [

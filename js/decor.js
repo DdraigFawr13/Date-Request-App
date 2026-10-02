@@ -72,6 +72,12 @@ const BAT = (x, y, r, s = 1) => `<path transform='translate(${x} ${y}) rotate(${
 const WEB = (x, y, s = 1) => `<g transform='translate(${x} ${y}) scale(${s})' fill='none' stroke-width='0.8'>${[0, 45, 90, 135].map(a => `<path transform='rotate(${a})' d='M-14 0 H14'/>`).join('')}
   ${[5, 9.5, 14].map(r => `<path d='${Array.from({ length: 9 }, (_, i) => { const a = i * Math.PI / 4; return `${i ? 'Q0 0 ' : 'M'}${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r).toFixed(1)}`; }).join(' ').replace(/Q0 0 /g, (m, off) => 'L')}'/>`).join('')}</g>`;
 
+const ACORN = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><path d='M-5 -1 C-5 5 -2 9 0 10 C2 9 5 5 5 -1Z'/><path d='M-6 -1 C-6 -5 6 -5 6 -1Z' style='fill:var(--c2)'/><path d='M0 -4 V-7' fill='none' stroke-width='1.2'/></g>`;
+const MUSHROOM = (x, y, s = 1) => `<g transform='translate(${x} ${y}) scale(${s})'><path d='M-8 0 C-8 -7 8 -7 8 0Z'/><path d='M-2.5 0 H2.5 L2 7 H-2Z' style='fill:var(--c2)'/><circle cx='-3' cy='-3' r='1.1' style='fill:var(--c2)'/><circle cx='3' cy='-2.5' r='0.9' style='fill:var(--c2)'/></g>`;
+const CONSTELLATION = (pts, links) => `<g fill='none' stroke-width='0.7' stroke-opacity='.7'>${links.map(([a, b]) => `<path d='M${pts[a][0]} ${pts[a][1]} L${pts[b][0]} ${pts[b][1]}'/>`).join('')}</g>${pts.map(([x, y], i) => `<circle cx='${x}' cy='${y}' r='${i % 3 ? 1.2 : 1.9}'/>`).join('')}`;
+const WAND = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><path d='M0 10 L0 -4' fill='none' stroke-width='1.8' stroke-linecap='round'/>${SPARKLE(0, -8, 0.7)}<circle cx='-4' cy='-12' r='0.8'/><circle cx='4' cy='-11' r='0.6'/></g>`;
+const HAT = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><path d='M-9 4 C-4 2 4 2 9 4 C5 6 -5 6 -9 4Z M-5 3 L1 -12 C2 -13 3 -12 3 -11 L5 3Z'/></g>`;
+
 export const PATTERNS = {
   damask: { label: 'Damask', size: [56, 64], draw: () => DAMASK(28, 18, 1) + DAMASK(0, 50, 0.8) + DAMASK(56, 50, 0.8) },
   stars: { label: 'Stars', size: [90, 90], draw: () => SPARKLE(20, 22, 0.9) + SPARKLE(66, 60, 0.6) + SPARKLE(70, 14, 0.35)
@@ -92,6 +98,14 @@ export const PATTERNS = {
   checker: { label: 'Checkerboard', size: [40, 40], draw: () => `<rect width='20' height='20' fill-opacity='.55'/><rect x='20' y='20' width='20' height='20' fill-opacity='.55'/>` },
   disco: { label: 'Disco tiles', size: [36, 36], draw: () => `<rect x='1' y='1' width='16' height='16' fill-opacity='.5'/><rect x='19' y='1' width='16' height='16' fill-opacity='.2'/><rect x='1' y='19' width='16' height='16' fill-opacity='.25'/><rect x='19' y='19' width='16' height='16' fill-opacity='.6'/>${SPARKLE(27, 27, 0.5)}` },
   notes: { label: 'Music notes', size: [80, 80], draw: () => NOTE(20, 24, -10) + NOTE(58, 58, 12, 0.85) + `<circle cx='60' cy='18' r='1.2'/><circle cx='20' cy='62' r='1'/>` },
+  magic: { label: 'Wands & hats', size: [90, 90], draw: () => WAND(22, 30, -20) + HAT(64, 64, 10, 1.1) + SPARKLE(66, 18, 0.5) + SPARKLE(18, 72, 0.4) + `<path transform='translate(46 44)' d='M0 -4 A4 4 0 1 0 3 2.5 A3 3 0 1 1 0 -4Z'/>` },
+  scales: { label: 'Dragon scales', size: [20, 16], draw: () => `<g fill='none' stroke-width='1.2'><path d='M0 0 a10 10 0 0 0 20 0'/><path d='M-10 8 a10 10 0 0 0 20 0'/><path d='M10 8 a10 10 0 0 0 20 0'/><path d='M0 16 a10 10 0 0 0 20 0'/></g>
+    <path d='M4 2 a6 6 0 0 0 12 0' fill='none' stroke-width='0.6' stroke-opacity='.6'/>` },
+  constellations: { label: 'Constellations', size: [120, 110], draw: () =>
+    CONSTELLATION([[12, 20], [30, 14], [44, 26], [58, 18], [72, 30], [64, 44]], [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 2]])
+    + CONSTELLATION([[78, 70], [92, 62], [104, 76], [96, 92], [82, 88]], [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0]])
+    + `<circle cx='20' cy='82' r='0.8'/><circle cx='110' cy='20' r='0.9'/><circle cx='48' cy='96' r='0.7'/>` },
+  woodland: { label: 'Acorns & mushrooms', size: [90, 90], draw: () => ACORN(20, 22, -15) + MUSHROOM(64, 60, 1) + LEAF(66, 18, 50, 0.8) + LEAF(18, 66, -30, 0.7) },
   lace: { label: 'Lace', size: [40, 40], draw: () => `<g fill='none' stroke-width='1'><circle cx='20' cy='20' r='9'/><circle cx='20' cy='20' r='5'/><circle cx='0' cy='0' r='9'/><circle cx='40' cy='0' r='9'/><circle cx='0' cy='40' r='9'/><circle cx='40' cy='40' r='9'/></g>
     <circle cx='20' cy='20' r='1.6'/><circle cx='20' cy='6' r='1.1'/><circle cx='20' cy='34' r='1.1'/><circle cx='6' cy='20' r='1.1'/><circle cx='34' cy='20' r='1.1'/>` },
   bats: { label: 'Bats', size: [110, 100], draw: () => BAT(30, 26, -8, 1.9) + BAT(80, 70, 10, 1.45) + `<circle cx='88' cy='20' r='1.4'/><circle cx='20' cy='78' r='1.2'/>` },
@@ -121,6 +135,7 @@ export const SCENES = [
   { id: 'moonlit', label: 'Moonlit' },
   { id: 'velvet', label: 'Velvet curtain' },
   { id: 'haunted', label: 'Haunted night' },
+  { id: 'aurora', label: 'Aurora' },
   { id: 'bokeh', label: 'Bokeh lights' },
   { id: 'neon', label: 'Neon grid' },
   { id: 'sunburst', label: 'Sunburst' },
@@ -156,6 +171,20 @@ export function backdropCss(look, inv = {}) {
   if (scene === 'velvet') {
     return `linear-gradient(to bottom, rgba(0,0,0,.35), transparent 18%), `
       + `repeating-linear-gradient(90deg, rgba(0,0,0,.32) 0, rgba(255,255,255,.07) 22px, rgba(0,0,0,.22) 46px, rgba(255,255,255,.04) 64px, rgba(0,0,0,.32) 80px), ${vignette}, linear-gradient(170deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'aurora') {
+    const pines = svgTile(400, 120, `<g fill='#04130f'><path d='M0 120 V96 C80 86 160 92 220 98 C300 106 350 90 400 94 V120Z'/>${[[20, 70], [48, 58], [80, 74], [300, 62], [330, 50], [362, 66], [388, 76]].map(([x, h]) => `<path d='M${x} ${120 - h - 30} L${x + 12} ${96} L${x - 12} ${96}Z M${x} ${120 - h - 10} L${x + 15} ${104} L${x - 15} ${104}Z'/>`).join('')}</g>`);
+    return `${svgUrl(pines)} center bottom / max(100%, 480px) auto no-repeat, `
+      + `repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 2px, transparent 2px 13px), `
+      + `radial-gradient(42% 9% at 18% 34%, rgba(95, 242, 194, 0.5), transparent 70%), `
+      + `radial-gradient(38% 8% at 44% 26%, rgba(95, 242, 194, 0.5), transparent 70%), `
+      + `radial-gradient(40% 9% at 70% 32%, rgba(95, 242, 194, 0.5), transparent 70%), `
+      + `radial-gradient(36% 8% at 92% 24%, rgba(95, 242, 194, 0.5), transparent 70%), `
+      + `radial-gradient(40% 8% at 30% 20%, rgba(170, 130, 255, 0.42), transparent 70%), `
+      + `radial-gradient(36% 7% at 60% 14%, rgba(170, 130, 255, 0.42), transparent 70%), `
+      + `radial-gradient(34% 8% at 86% 16%, rgba(170, 130, 255, 0.42), transparent 70%), `
+      + `radial-gradient(70% 22% at 50% 26%, rgba(60, 220, 190, 0.18), transparent 70%), `
+      + `${patternCss('stars', '#ffffff', look.accent, 0.4)}, linear-gradient(180deg, ${c1}, ${c2})`;
   }
   if (scene === 'haunted') {
     const sil = '#08050c';
@@ -241,6 +270,9 @@ const CORNERS = {
   celestial: `<path d='M24 8 A16 16 0 1 0 40 30 A12 12 0 1 1 24 8Z' transform='translate(-6 -2)'/>
     ${SPARKLE(52, 12, 0.8)}${SPARKLE(12, 52, 0.8)}${SPARKLE(40, 38, 0.5)}
     <g fill='none' stroke-width='1' stroke-dasharray='1 4' stroke-linecap='round'><path d='M6 76 C6 36 36 6 76 6'/></g><circle cx='68' cy='22' r='1.2'/><circle cx='22' cy='68' r='1.2'/>`,
+  stars: `${CONSTELLATION([[6, 30], [16, 14], [32, 8], [50, 12], [64, 6]], [[0, 1], [1, 2], [2, 3], [3, 4]])}${CONSTELLATION([[10, 46], [8, 62], [14, 76]], [[0, 1], [1, 2]])}${SPARKLE(28, 28, 0.55)}`,
+  branch: `<g fill='none' stroke-linecap='round'><path d='M4 76 C6 44 18 22 40 10 C52 4 64 4 76 6' stroke-width='1.6'/><path d='M18 34 C12 30 8 24 8 18 M40 10 C40 4 44 2 48 0' stroke-width='1'/></g>
+    ${LEAF(24, 22, 40, 0.75)}${LEAF(10, 48, -10, 0.7)}${LEAF(56, 8, 100, 0.65)}${ACORN(20, 40, -30, 0.8)}${ACORN(46, 18, 20, 0.7)}`,
   web: `<g fill='none' stroke-linecap='round'><path d='M2 2 L82.0 2.0 M2 2 L75.9 32.6 M2 2 L58.6 58.6 M2 2 L32.6 75.9 M2 2 L2.0 82.0' stroke-width='0.9'/><path d='M18.0 2.0 Q14.6 4.5 16.8 8.1 Q12.6 9.1 13.3 13.3 Q9.1 12.6 8.1 16.8 Q4.5 14.6 2.0 18.0' stroke-width='0.90'/><path d='M32.0 2.0 Q25.5 6.7 29.7 13.5 Q22.0 15.3 23.2 23.2 Q15.3 22.0 13.5 29.7 Q6.7 25.5 2.0 32.0' stroke-width='0.82'/><path d='M47.0 2.0 Q37.3 9.0 43.6 19.2 Q31.9 22.0 33.8 33.8 Q22.0 31.9 19.2 43.6 Q9.0 37.3 2.0 47.0' stroke-width='0.74'/><path d='M62.0 2.0 Q49.1 11.4 57.4 25.0 Q41.9 28.7 44.4 44.4 Q28.7 41.9 25.0 57.4 Q11.4 49.1 2.0 62.0' stroke-width='0.66'/><path d='M76.0 2.0 Q60.1 13.5 70.4 30.3 Q51.2 34.9 54.3 54.3 Q34.9 51.2 30.3 70.4 Q13.5 60.1 2.0 76.0' stroke-width='0.58'/>
     <path d='M46 46 V64' stroke-width='0.7'/></g>
     <g transform='translate(46 68)'><ellipse rx='3.2' ry='3.8'/><circle cy='-4.4' r='2.2'/><g fill='none' stroke-width='0.9' stroke-linecap='round'><path d='M-2.6 -1 L-6.5 -4 M-2.8 1 L-7 0.5 M-2.6 2.6 L-6 5.5 M2.6 -1 L6.5 -4 M2.8 1 L7 0.5 M2.6 2.6 L6 5.5'/></g></g>`,
@@ -254,7 +286,7 @@ export function cornerSvg(id, color, color2) {
 export const CORNER_OPTIONS = [
   { id: 'look', label: 'Look’s pick' }, { id: 'none', label: 'None' },
   { id: 'filigree', label: 'Filigree' }, { id: 'gothic', label: 'Gothic' }, { id: 'floral', label: 'Floral vine' },
-  { id: 'deco', label: 'Art deco' }, { id: 'celestial', label: 'Celestial' }, { id: 'web', label: 'Spiderweb' }, { id: 'paws', label: 'Paw prints' },
+  { id: 'deco', label: 'Art deco' }, { id: 'celestial', label: 'Celestial' }, { id: 'web', label: 'Spiderweb' }, { id: 'stars', label: 'Constellation' }, { id: 'branch', label: 'Acorn branch' }, { id: 'paws', label: 'Paw prints' },
 ];
 
 // ── Side borders ─────────────────────────────────────────────────────

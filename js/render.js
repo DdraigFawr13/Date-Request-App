@@ -106,6 +106,9 @@ export function sectionRule(inv, theme, small = false) {
   return small ? html.replace(/class="(rule|divider)/, 'class="$1 small') : html;
 }
 
+// Titles with long words shrink a little so a word never splits across lines.
+const longestWord = t => Math.max(0, ...String(t || '').split(/\s+/).map(w => [...w].length));
+
 export const mapUrl = inv =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([inv.loc, inv.addr].filter(Boolean).join(', '))}`;
 
@@ -134,7 +137,7 @@ export function renderCard(inv, theme, words = wordsFor(inv)) {
       ${words.badge ? `<div class="card-badge">${esc(words.badge)}</div>` : ''}
       ${words.dear ? `<p class="dear">${escEmoji(words.dear)}</p>` : ''}
       ${words.greet ? `<p class="greeting">${escEmoji(words.greet)}</p>` : ''}
-      <h1 class="title">${esc(inv.title || 'A little bit of magic')}</h1>
+      <h1 class="title${longestWord(inv.title) > 10 ? ' long-words' : longestWord(inv.title) > 7 ? ' longish-words' : ''}">${esc(inv.title || 'A little bit of magic')}</h1>
       ${inv.msg ? `<p class="message">${esc(inv.msg)}</p>` : ''}
       ${divide()}
       <ul class="when">
