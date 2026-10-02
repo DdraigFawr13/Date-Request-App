@@ -5,6 +5,10 @@
 import { esc } from './util.js';
 import { cornerSvg, patternCss } from './decor.js';
 import { breakableSealHtml, shade } from './seal.js';
+import {
+  bottleBack, bottleFront, bowHalf, bowKnot, chestBase, chestLid, chestPlate, corkArt, envelopeFlap,
+  envelopeFront, giftTag, pageHtml, rolledNote, sprig, tissue, treasure,
+} from './wrapper-art.js';
 
 export const WRAPPERS = {
   envelope: { label: 'Envelope', icon: '✉️', openMs: 1750 },
@@ -36,6 +40,8 @@ function materials(look) {
     '--wrap-paper': look.dark ? shade(look.bg[1], 0.08) : mix(look.accent2, look.card, 0.35),
     '--wrap-pattern': patternCss(look.pattern, look.dark ? look.accent2 : '#ffffff', look.accent, look.dark ? 0.55 : 0.6),
     '--ribbon': look.accent,
+    '--sprig': look.accent2,
+    '--gem': look.accent,
   };
   return Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(';');
 }
@@ -101,15 +107,14 @@ const scrollPage = (glyph, look) => {
     </span>`;
 };
 
-const letter = glyph => `<span class="letter-glyph">${glyph}</span><span class="letter-lines"></span>`;
-
 const PARTS = {
-  envelope: (seal, glyph) => `
+  envelope: (seal, glyph, look) => `
     <span class="env-back"></span>
     <span class="env-liner"></span>
-    <span class="env-letter">${letter(glyph)}</span>
-    <span class="env-front"></span>
-    <span class="env-flap"><span class="flap-out"></span><span class="flap-in"></span></span>
+    <span class="env-letter">${pageHtml(glyph, look)}</span>
+    <span class="env-front">${envelopeFront()}</span>
+    <span class="env-flap"><span class="flap-out">${envelopeFlap()}</span><span class="flap-in"></span></span>
+    <span class="env-sprig">${sprig()}</span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
   scroll: (seal, glyph, look) => `
     <span class="scroll-paper">${scrollPage(glyph, look)}</span>
@@ -118,30 +123,35 @@ const PARTS = {
     <span class="scroll-ribbon"></span>
     <span class="ribbon-tail l"></span><span class="ribbon-tail r"></span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
-  bottle: (seal, glyph) => `
+  bottle: seal => `
     <span class="bottle-waves back"></span>
     <span class="bottle-body">
-      <span class="bottle-note"><span class="note-glyph">${glyph}</span></span>
-      <span class="bottle-glass"></span>
-      <span class="bottle-neck"></span>
-      <span class="bottle-cork"></span>
+      <span class="bottle-glass">${bottleBack()}</span>
+      <span class="bottle-note">${rolledNote()}</span>
+      <span class="bottle-glass front">${bottleFront()}</span>
+      <span class="bottle-cork">${corkArt()}</span>
       <span class="seal-spot">${seal}${sparks()}</span>
     </span>
-    <span class="bottle-waves front"></span>`,
-  chest: (seal, glyph) => `
+    <span class="bottle-waves front"></span>
+    <span class="bottle-glints"><i></i><i></i><i></i></span>`,
+  chest: (seal, glyph, look) => `
     <span class="chest-rays"></span>
     <span class="chest-glow"></span>
-    <span class="chest-letter">${letter(glyph)}</span>
-    <span class="chest-base"><span class="chest-bands"></span></span>
-    <span class="chest-lid"><span class="chest-bands"></span></span>
-    <span class="chest-plate"></span>
+    <span class="chest-lining"></span>
+    <span class="chest-letter">${pageHtml(glyph, look)}</span>
+    <span class="chest-treasure">${treasure()}</span>
+    <span class="chest-base">${chestBase()}</span>
+    <span class="chest-lid">${chestLid()}</span>
+    <span class="chest-plate">${chestPlate()}</span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
-  gift: (seal, glyph) => `
+  gift: (seal, glyph, look) => `
     <span class="gift-glow"></span>
-    <span class="gift-letter">${letter(glyph)}</span>
-    <span class="gift-box"><span class="ribbon-v"></span></span>
-    <span class="gift-lid"><span class="ribbon-v"></span><span class="ribbon-h"></span>
-      <span class="gift-bow"><span class="loop l"></span><span class="loop r"></span><span class="knot"></span></span></span>
+    <span class="gift-letter">${pageHtml(glyph, look)}</span>
+    <span class="gift-tissue">${tissue()}</span>
+    <span class="gift-box"><span class="ribbon-v"></span><span class="ribbon-h"></span></span>
+    <span class="gift-lid"><span class="ribbon-v"></span>
+      <span class="gift-bow"><span class="bow-half l">${bowHalf()}</span><span class="bow-half r">${bowHalf()}</span><span class="knot">${bowKnot()}</span>
+        <span class="gift-tag">${giftTag(glyph)}</span></span></span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
 };
 

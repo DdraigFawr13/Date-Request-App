@@ -604,7 +604,6 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .wrapper.opening .twinkles { display: none; }
 
 /* Shared letter face */
-.letter-glyph { left: 0; right: 0; top: 14%; text-align: center; font-size: calc(var(--w) * 0.11); color: var(--accent); font-family: var(--font-display); font-style: normal; line-height: 1; }
 .letter-lines {
   left: 20%; right: 20%; top: 48%; height: 34%;
   background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--ink) 22%, transparent) 0 2px, transparent 2px 10px);
@@ -613,28 +612,49 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 }
 :root { --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .2 0 0 0 .35 -.08'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-/* Envelope */
-.envelope { --exit: 1.4s; height: calc(var(--w) * 0.66); perspective: 1100px; }
-.env-back, .env-front, .env-liner { inset: 0; border-radius: 9px; }
-.env-back { background: var(--paper-grain), linear-gradient(170deg, var(--paper), var(--paper-dark)); box-shadow: 0 22px 40px rgba(0, 0, 0, 0.42); }
-.env-liner { inset: 3% 3% 45% !important; border-radius: 6px; background: var(--liner-pattern), var(--liner); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 0.95; }
-.env-letter {
-  inset: 7% 7% 6%; border-radius: 6px;
+/* A letter page (envelope, chest, gift): gilded frame, filigree corners, roundel, script lines. */
+.page {
+  inset: 0; border-radius: 5px; overflow: hidden;
+  container-type: inline-size;
   background: var(--paper-grain), var(--card);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
-  z-index: 1;
-  transition: transform 0.75s 0.95s cubic-bezier(.2, .9, .25, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-.env-front {
-  z-index: 2;
-  clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%);
-  background:
-    linear-gradient(to top right, transparent calc(50% - 1px), rgba(0, 0, 0, 0.12) 50%, transparent calc(50% + 1.5px)),
-    linear-gradient(to top left, transparent calc(50% - 1px), rgba(0, 0, 0, 0.12) 50%, transparent calc(50% + 1.5px)),
-    var(--paper-grain),
-    linear-gradient(to top, var(--paper-dark), var(--paper) 70%);
-  filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.12));
+.page-frame {
+  inset: 6cqw 5cqw;
+  border: 1px solid #b08a2e;
+  box-shadow: inset 0 0 0 2px var(--card), inset 0 0 0 3px rgba(176, 138, 46, 0.55);
 }
+.page-corner { width: 17cqw; aspect-ratio: 1; }
+.page-corner svg { display: block; width: 100%; height: 100%; }
+.page-corner.tl { left: 2.5cqw; top: 3cqw; }
+.page-corner.tr { right: 2.5cqw; top: 3cqw; transform: scaleX(-1); }
+.page-corner.bl { left: 2.5cqw; bottom: 3cqw; transform: scaleY(-1); }
+.page-corner.br { right: 2.5cqw; bottom: 3cqw; transform: scale(-1, -1); }
+.page-roundel {
+  left: calc(50% - 11cqw); top: 11cqw;
+  width: 22cqw; aspect-ratio: 1; border-radius: 50%;
+  display: grid !important; place-items: center;
+  background: radial-gradient(circle at 50% 45%, var(--card) 55%, transparent 57%), radial-gradient(circle at 35% 30%, #fff1c4, #d8ad45 45%, #8a6514);
+  box-shadow: 0 1px 3px rgba(90, 55, 15, 0.4);
+}
+.page-roundel span { position: static !important; font-size: 10cqw; color: var(--accent); line-height: 1; font-family: var(--font-display); }
+.page .letter-lines { left: 24%; right: 24%; top: calc(38cqw); height: 22cqw; }
+.page-flourish { left: 32%; right: 32%; top: calc(66cqw); height: 1px; background: linear-gradient(90deg, transparent, #b08a2e 25%, #b08a2e 75%, transparent); }
+.page-flourish::after {
+  content: '❦'; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -54%);
+  padding: 0 0.3em; background: var(--card); color: var(--accent); font-size: 6cqw; line-height: 1;
+}
+
+/* Envelope: gold-foil edged paper, patterned liner, a botanical sprig under the seal. */
+.envelope { --exit: 1.4s; height: calc(var(--w) * 0.66); perspective: 1100px; }
+.env-back, .env-liner { inset: 0; border-radius: 9px; }
+.env-back { background: var(--paper-grain), linear-gradient(170deg, var(--paper), var(--paper-dark)); box-shadow: 0 22px 40px rgba(0, 0, 0, 0.42); }
+.env-liner { inset: 3% 3% 45% !important; border-radius: 6px; background: var(--liner-pattern), var(--liner); opacity: 0.95; }
+.env-letter { inset: 7% 7% 6%; z-index: 1; transition: transform 0.75s 0.95s cubic-bezier(.2, .9, .25, 1); }
+.env-front { inset: 0; z-index: 2; filter: drop-shadow(0 -2px 3px rgba(0, 0, 0, 0.12)); }
+.env-front-art, .flap-art { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.env-front::after { content: ''; position: absolute; inset: 0; border-radius: 9px; background: var(--paper-grain); opacity: 0.6; pointer-events: none;
+  clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%); }
 .env-flap {
   left: 0; right: 0; top: 0; height: 60%;
   transform-origin: 50% 0;
@@ -642,12 +662,21 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   z-index: 3;
   transition: transform 0.75s 0.3s cubic-bezier(.45, .05, .3, 1), z-index 0s 0.68s;
 }
-.flap-out, .flap-in { inset: 0; clip-path: polygon(0 0, 100% 0, 50% 100%); backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 9px 9px 0 0; }
-.flap-out { background: var(--paper-grain), linear-gradient(to bottom, var(--paper), color-mix(in srgb, var(--paper-dark) 70%, var(--paper))); filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.18)); }
-.flap-in { transform: rotateX(180deg); background: var(--liner-pattern), var(--liner); }
+.flap-out, .flap-in { inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flap-out { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.2)); }
+.flap-in { transform: rotateX(180deg); clip-path: polygon(0 0, 100% 0, 50% 100%); background: var(--liner-pattern), var(--liner); border-radius: 9px 9px 0 0; }
+.env-sprig {
+  width: calc(var(--seal) * 2.2); height: calc(var(--seal) * 1.1);
+  left: calc(50% - var(--seal) * 1.1); top: calc(60% - var(--seal) * 0.67);
+  z-index: 9;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+  transition: transform 0.6s 0.2s ease-in, opacity 0.4s 0.3s;
+}
+.sprig-art { display: block; width: 100%; height: 100%; }
 .envelope .seal-spot { left: calc(50% - var(--seal) / 2); top: calc(60% - var(--seal) * 0.62); }
 .envelope.opening .env-flap { transform: rotateX(178deg); z-index: 0; }
 .envelope.opening .env-letter { transform: translateY(-58%) scale(1.04); }
+.envelope.opening .env-sprig { transform: translateY(40px) rotate(8deg); opacity: 0; }
 
 /* Scroll: parchment rolled on gilded dowels, tied with a satin ribbon. */
 @property --unroll { syntax: '<number>'; inherits: true; initial-value: 0; }
@@ -750,101 +779,88 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .scroll.opening .ribbon-tail.l { transform: translate(-30px, 80px) rotate(50deg); opacity: 0; }
 .scroll.opening .ribbon-tail.r { transform: translate(30px, 80px) rotate(-50deg); opacity: 0; }
 
-/* Message in a bottle */
+/* Message in a bottle: sea glass with sand, a starfish, twine on the neck and a ribboned note. */
 .bottle { --w: min(62vw, 230px); --seal: calc(var(--w) * 0.21); --exit: 1.5s; height: calc(var(--w) * 1.75); }
 .bottle-body { inset: 0 0 8%; transform: rotate(-10deg); transform-origin: 50% 80%; z-index: 1; }
-.bottle-glass {
-  left: 12%; right: 12%; bottom: 0; height: 64%;
-  border-radius: 34% 34% 20% 20% / 22% 22% 10% 10%;
-  background:
-    linear-gradient(90deg, transparent 14%, rgba(255, 255, 255, 0.55) 18%, rgba(255, 255, 255, 0.1) 26%, transparent 34%),
-    linear-gradient(90deg, rgba(60, 140, 125, 0.5), rgba(170, 230, 215, 0.22) 45%, rgba(40, 110, 100, 0.55));
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  box-shadow: inset -12px -6px 22px rgba(10, 60, 55, 0.35), inset 6px 0 10px rgba(255, 255, 255, 0.25), 0 16px 30px rgba(0, 0, 0, 0.3);
-}
-.bottle-glass::after { content: ''; position: absolute; left: 10%; right: 10%; bottom: 4%; height: 12%; border-radius: 50%; background: radial-gradient(ellipse, rgba(230, 200, 140, 0.8), rgba(200, 160, 90, 0.4) 60%, transparent 70%); }
-.bottle-neck {
-  left: 37%; right: 37%; bottom: 62%; height: 20%;
-  background: linear-gradient(90deg, rgba(60, 140, 125, 0.55), rgba(255, 255, 255, 0.55) 30%, rgba(40, 110, 100, 0.55));
-  border: 2px solid rgba(255, 255, 255, 0.5); border-bottom: 0;
-  border-radius: 6px 6px 0 0;
+.bottle-glass { inset: 0; z-index: 1; }
+.bottle-glass.front { z-index: 3; }
+.bottle-art, .note-art, .cork-art { display: block; width: 100%; height: 100%; overflow: visible; }
+.bottle-glass:not(.front) { filter: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.28)); }
+.bottle-note {
+  left: 34%; right: 34%; top: 42%; bottom: 7%;
+  z-index: 2;
+  transform: rotate(-4deg);
+  transition: transform 0.95s 0.55s cubic-bezier(.2, .8, .2, 1), opacity 0.35s 1.25s;
 }
 .bottle-cork {
-  left: 38%; right: 38%; bottom: 79%; height: 11%;
-  border-radius: 5px 5px 3px 3px;
-  background: radial-gradient(circle at 30% 30%, rgba(0, 0, 0, 0.18) 1.5px, transparent 2px) 0 0 / 7px 7px, linear-gradient(90deg, #8f6232, #d6a86c 45%, #8c5d2c);
+  left: 37%; width: 26%; top: 4.6%; height: 12.4%;
+  z-index: 4;
   transition: transform 0.65s 0.35s cubic-bezier(.3, 1.4, .5, 1), opacity 0.4s 0.75s;
 }
-.bottle-note {
-  left: 31%; right: 31%; bottom: 10%; height: 56%;
-  border-radius: 6px;
-  background:
-    linear-gradient(to bottom, transparent 42%, var(--ribbon) 42% 52%, transparent 52%),
-    var(--paper-grain),
-    linear-gradient(90deg, #c9ad78, #f3e3bf 30%, #f9eed3 55%, #d4b47c);
-  transform: rotate(-4deg);
-  display: grid !important; place-items: start center;
-  transition: transform 0.9s 0.55s cubic-bezier(.2, .8, .2, 1), opacity 0.35s 1.2s;
-}
-.note-glyph { position: static !important; margin-top: 15%; font-size: calc(var(--w) * 0.11); color: var(--accent); }
-.bottle .seal-spot { left: calc(50% - var(--seal) / 2); bottom: calc(71% - var(--seal) / 2); }
+.bottle .seal-spot { left: calc(50% - var(--seal) / 2); top: calc(26% - var(--seal) / 2); }
 .bottle-waves {
-  left: -25%; right: -25%; height: 16%;
-  background: radial-gradient(circle at 20px -6px, transparent 18px, color-mix(in srgb, var(--accent2) 70%, #fff 10%) 19px) 0 0 / 40px 100% repeat-x;
-  animation: waves 4s linear infinite;
-  opacity: 0.9;
-  -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent);
-  mask-image: linear-gradient(to bottom, #000 45%, transparent);
+  left: -25%; right: -25%; height: 22%;
+  animation: waves 5s linear infinite;
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent);
 }
-.bottle-waves.back { bottom: 8%; opacity: 0.5; animation-duration: 6s; animation-direction: reverse; }
-.bottle-waves.front { bottom: -2%; z-index: 2; }
-@keyframes waves { to { background-position: 40px 0; } }
-.bottle.opening .bottle-cork { transform: translateY(-160px) rotate(-280deg); opacity: 0; }
-.bottle.opening .bottle-note { transform: translateY(-112%) rotate(4deg) scale(0.8, 1); opacity: 0; }
+.bottle-waves.back {
+  bottom: 9%; opacity: 0.75; animation-duration: 7s; animation-direction: reverse;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40'%3E%3Cpath d='M0 14 C14 4 26 4 40 14 S66 24 80 14 V40 H0Z' fill='%231f6f7a'/%3E%3Cpath d='M0 14 C14 4 26 4 40 14 S66 24 80 14' fill='none' stroke='%23a8e3e0' stroke-width='1.5' opacity='.6'/%3E%3C/svg%3E") 0 0 / 80px 100% repeat-x;
+}
+.bottle-waves.front {
+  bottom: -3%; z-index: 2;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='44'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2346b3b8'/%3E%3Cstop offset='1' stop-color='%23176273'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 14 C18 2 32 2 50 14 S82 26 100 14 V44 H0Z' fill='url(%23s)'/%3E%3Cpath d='M0 14 C18 2 32 2 50 14 S82 26 100 14' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' opacity='.85'/%3E%3Cpath d='M8 20 C16 16 24 16 30 19 M60 22 C70 19 78 20 86 23' fill='none' stroke='%23ffffff' stroke-width='1.2' opacity='.45'/%3E%3Ccircle cx='38' cy='8' r='1.6' fill='%23fff' opacity='.8'/%3E%3Ccircle cx='44' cy='5' r='1' fill='%23fff' opacity='.7'/%3E%3C/svg%3E") 0 0 / 100px 100% repeat-x;
+}
+@keyframes waves { to { background-position: 400px 0; } }
+.bottle-glints { left: -10%; right: -10%; bottom: 2%; height: 14%; z-index: 3; pointer-events: none; }
+.bottle-glints i { position: absolute; width: 6px; height: 6px; background: #fff; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); animation: twinkle 2.6s ease-in-out infinite; }
+.bottle-glints i:nth-child(1) { left: 12%; top: 30%; }
+.bottle-glints i:nth-child(2) { left: 64%; top: 55%; animation-delay: 0.9s; }
+.bottle-glints i:nth-child(3) { left: 86%; top: 20%; animation-delay: 1.7s; }
+.bottle.opening .bottle-cork { transform: translateY(-170px) rotate(-300deg); opacity: 0; }
+.bottle.opening .bottle-note { transform: translateY(-105%) rotate(6deg) scale(1.05); opacity: 0; }
 
-/* Treasure chest */
-.chest { --exit: 1.5s; height: calc(var(--w) * 0.86); perspective: 800px; }
-.chest-base, .chest-lid {
-  left: 0; right: 0;
-  background:
-    var(--paper-grain),
-    repeating-linear-gradient(to bottom, transparent 0 calc(var(--w) * 0.075), rgba(0, 0, 0, 0.35) calc(var(--w) * 0.075) calc(var(--w) * 0.08)),
-    repeating-linear-gradient(97deg, rgba(255, 220, 170, 0.06) 0 3px, transparent 3px 11px, rgba(0, 0, 0, 0.08) 11px 13px, transparent 13px 22px),
-    linear-gradient(to bottom, #8a5428, #6a3c19);
-  border: 3px solid #4a2a0f;
-  box-shadow: inset 0 -14px 22px rgba(0, 0, 0, 0.38), inset 0 6px 10px rgba(255, 220, 160, 0.1), 0 16px 30px rgba(0, 0, 0, 0.4);
-}
-.chest-base { bottom: 0; height: 56%; border-radius: 4px 4px 12px 12px; z-index: 3; }
+/* Treasure chest: planked wood, gilded straps and brackets, a jewelled lid, a pile of coins inside. */
+.chest { --exit: 1.6s; height: calc(var(--w) * 0.86); perspective: 800px; }
+.chest-art, .plate-art, .treasure-art { display: block; width: 100%; height: 100%; overflow: visible; }
+.chest-base, .chest-lid { left: 0; right: 0; }
+.chest-base { filter: drop-shadow(0 14px 16px rgba(0, 0, 0, 0.4)); }
+.chest-base { bottom: 0; height: 56%; z-index: 3; }
 .chest-lid {
   bottom: 56%; height: 36%;
-  border-radius: 50% 50% 4px 4px / 80% 80% 4px 4px;
   transform-origin: 50% 100%;
   z-index: 4;
-  transition: transform 0.8s 0.4s cubic-bezier(.3, 1.25, .5, 1), filter 0.8s 0.4s;
+  transition: transform 0.5s 0.4s cubic-bezier(.5, 0, .7, .4), opacity 0.1s 0.85s;
 }
-.chest-bands {
-  inset: 0; border-radius: inherit;
+/* The inside of the lid, which unfolds upward once the lid has tipped back. */
+.chest-lining {
+  left: 2%; right: 2%; bottom: 55%; height: 30%;
+  border-radius: 46% 46% 6px 6px / 60% 60% 6px 6px;
   background:
-    radial-gradient(circle, #fff1c4 0 1px, #c9962e 1.5px 3px, transparent 3.5px) 13.5% 20% / 100% 30% repeat-y,
-    radial-gradient(circle, #fff1c4 0 1px, #c9962e 1.5px 3px, transparent 3.5px) 86.5% 20% / 100% 30% repeat-y,
-    linear-gradient(90deg, transparent 10%, #7a5413 10%, #e6bd5c 12%, #b0821f 15%, #7a5413 17%, transparent 17% 83%, #7a5413 83%, #e6bd5c 85%, #b0821f 88%, #7a5413 90%, transparent 90%);
-  background-repeat: no-repeat;
+    repeating-linear-gradient(45deg, transparent 0 12px, rgba(255, 255, 255, 0.13) 12px 13px),
+    repeating-linear-gradient(-45deg, transparent 0 12px, rgba(255, 255, 255, 0.13) 12px 13px),
+    radial-gradient(ellipse at 50% 85%, color-mix(in srgb, var(--gem) 80%, #fff), color-mix(in srgb, var(--gem) 50%, #000));
+  box-shadow: inset 0 0 0 4px #b8861f, inset 0 0 0 6px #6e4a0c, inset 0 -10px 18px rgba(0, 0, 0, 0.45), 0 -4px 12px rgba(0, 0, 0, 0.3);
+  transform-origin: 50% 100%; transform: scaleY(0);
+  z-index: 1;
+  transition: transform 0.45s 0.85s cubic-bezier(.2, 1.3, .5, 1);
 }
 .chest-plate {
-  left: calc(50% - var(--w) * 0.14); width: calc(var(--w) * 0.28);
-  bottom: calc(56% - var(--w) * 0.16); height: calc(var(--w) * 0.26);
-  border-radius: 8px 8px 50% 50% / 8px 8px 40% 40%;
-  background: radial-gradient(circle at 35% 30%, #fff1c4, #e2b24e 30%, #a37218 70%, #6e4a0c);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(110, 74, 12, 0.6);
+  width: calc(var(--w) * 0.24); height: calc(var(--w) * 0.29);
+  left: calc(50% - var(--w) * 0.12);
+  bottom: calc(56% - var(--seal) * 0.05 - var(--w) * 0.145);
   z-index: 5;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.45));
   transition: opacity 0.4s 0.4s;
 }
+.chest-treasure { left: 10%; right: 10%; bottom: 51%; height: calc(var(--w) * 0.18); z-index: 2; }
 .chest-glow {
   left: 8%; right: 8%; bottom: 46%; height: 34%;
   border-radius: 50%;
   background: radial-gradient(ellipse at 50% 70%, #fff8d8, #ffd66b 40%, transparent 70%);
   opacity: 0; transform: scale(0.4);
-  z-index: 1;
+  z-index: 0;
   transition: opacity 0.6s 0.6s, transform 0.9s 0.6s;
 }
 .chest-rays {
@@ -858,70 +874,73 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .chest-letter {
-  left: 24%; right: 24%; bottom: 30%; height: 44%;
-  background: var(--paper-grain), var(--card); border-radius: 5px;
-  box-shadow: 0 0 20px rgba(255, 214, 107, 0.6);
-  z-index: 2; opacity: 0;
+  left: 27%; right: 27%; bottom: 34%; height: 46%;
+  z-index: 1; opacity: 0;
+  filter: drop-shadow(0 0 14px rgba(255, 214, 107, 0.7));
   transition: transform 0.75s 0.85s cubic-bezier(.2, .8, .2, 1), opacity 0.3s 0.8s;
 }
 .chest .seal-spot { left: calc(50% - var(--seal) / 2); bottom: calc(56% - var(--seal) * 0.55); }
-.chest.opening .chest-lid { transform: rotateX(58deg) translateY(-6px); filter: brightness(0.75); }
+.chest.opening .chest-lid { transform: rotateX(88deg); opacity: 0; }
+.chest.opening .chest-lining { transform: scaleY(1); }
 .chest.opening .chest-glow { opacity: 1; transform: scale(1.6) translateY(-20%); }
 .chest.opening .chest-rays { opacity: 1; }
-.chest.opening .chest-letter { opacity: 1; transform: translateY(-62%); }
-.chest.opening .chest-plate { opacity: 0.0; }
+.chest.opening .chest-letter { opacity: 1; transform: translateY(-58%); }
+.chest.opening .chest-plate { opacity: 0; }
 
-/* Gift box */
-.gift { --exit: 1.45s; height: calc(var(--w) * 0.95); }
+/* Gift box: patterned wrap, satin ribbons with stitched edges, a full bow, a tag, tissue inside. */
+.gift { --exit: 1.45s; height: calc(var(--w) * 0.98); }
 .gift-box, .gift-lid {
   background:
     var(--wrap-pattern),
     linear-gradient(160deg, color-mix(in srgb, var(--wrap-paper) 92%, #fff), color-mix(in srgb, var(--wrap-paper) 82%, #000));
   box-shadow: inset 0 -12px 22px rgba(0, 0, 0, 0.2), 0 16px 30px rgba(0, 0, 0, 0.32);
 }
-.gift-box { left: 9%; right: 9%; bottom: 0; height: 56%; border-radius: 3px 3px 10px 10px; z-index: 2; }
+.gift-box { left: 9%; right: 9%; bottom: 0; height: 54%; border-radius: 3px 3px 10px 10px; z-index: 2; }
 .gift-lid {
-  left: 4%; right: 4%; bottom: 54%; height: 20%;
+  left: 4%; right: 4%; bottom: 52%; height: 19%;
   border-radius: 6px;
   z-index: 3;
-  box-shadow: inset 0 -8px 12px rgba(0, 0, 0, 0.18), 0 6px 10px rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 -8px 12px rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 6px 10px rgba(0, 0, 0, 0.25);
   transition: transform 0.85s 0.55s cubic-bezier(.3, .9, .4, 1), opacity 0.5s 0.85s;
 }
-.ribbon-v, .ribbon-h { background: linear-gradient(90deg, color-mix(in srgb, var(--ribbon) 75%, #000), var(--ribbon) 25%, color-mix(in srgb, var(--ribbon) 70%, #fff) 50%, var(--ribbon) 75%, color-mix(in srgb, var(--ribbon) 75%, #000)); }
-.ribbon-v { top: 0; bottom: 0; left: calc(50% - var(--w) * 0.05); width: calc(var(--w) * 0.1); }
-.ribbon-h { left: 0; right: 0; top: calc(50% - var(--w) * 0.035); height: calc(var(--w) * 0.07); background: linear-gradient(to bottom, color-mix(in srgb, var(--ribbon) 75%, #000), var(--ribbon) 30%, color-mix(in srgb, var(--ribbon) 70%, #fff) 50%, var(--ribbon) 70%, color-mix(in srgb, var(--ribbon) 75%, #000)); }
-.gift-bow { left: 50%; bottom: 100%; width: 0; height: 0; }
-.gift-bow .loop {
-  bottom: -4px;
-  width: calc(var(--w) * 0.22); height: calc(var(--w) * 0.15);
-  border: calc(var(--w) * 0.035) solid var(--ribbon);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.3), 0 2px 3px rgba(0, 0, 0, 0.25);
-  transition: transform 0.6s 0.3s cubic-bezier(.3, .1, .5, 1), opacity 0.5s 0.45s;
+.gift-lid::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; border-radius: 0 0 6px 6px; background: linear-gradient(90deg, #8a6514, #f2d27a 30%, #c9962e 60%, #8a6514); opacity: 0.8; }
+.ribbon-v, .ribbon-h { background: linear-gradient(90deg, color-mix(in srgb, var(--ribbon) 70%, #000), var(--ribbon) 22%, color-mix(in srgb, var(--ribbon) 65%, #fff) 48%, var(--ribbon) 74%, color-mix(in srgb, var(--ribbon) 70%, #000)); }
+.ribbon-v { top: 0; bottom: 0; left: calc(50% - var(--w) * 0.055); width: calc(var(--w) * 0.11); }
+.ribbon-h { left: 0; right: 0; top: calc(45% - var(--w) * 0.04); height: calc(var(--w) * 0.08); background: linear-gradient(to bottom, color-mix(in srgb, var(--ribbon) 70%, #000), var(--ribbon) 25%, color-mix(in srgb, var(--ribbon) 65%, #fff) 50%, var(--ribbon) 75%, color-mix(in srgb, var(--ribbon) 70%, #000)); }
+.ribbon-v::after, .ribbon-h::after { content: ''; position: absolute; border: 1px dashed rgba(255, 255, 255, 0.45); }
+.ribbon-v::after { top: 0; bottom: 0; left: 12%; right: 12%; border-top: 0; border-bottom: 0; }
+.ribbon-h::after { left: 0; right: 0; top: 18%; bottom: 18%; border-left: 0; border-right: 0; }
+.gift-bow { left: 50%; bottom: 100%; width: 0; height: 0; z-index: 2; }
+.bow-half { bottom: calc(var(--w) * -0.17); width: calc(var(--w) * 0.3); height: calc(var(--w) * 0.345); filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3)); transition: transform 0.6s 0.3s cubic-bezier(.3, .1, .5, 1), opacity 0.5s 0.45s; }
+.bow-art, .knot-art, .tag-art, .tissue-art { display: block; width: 100%; height: 100%; }
+.bow-half.l { right: 0; transform-origin: 100% 50%; }
+.bow-half.r { left: 0; transform: scaleX(-1); }
+.gift-bow .knot { left: calc(var(--w) * -0.06); bottom: calc(var(--w) * -0.05); width: calc(var(--w) * 0.12); height: calc(var(--w) * 0.105); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3)); transition: opacity 0.4s 0.45s; }
+.gift-tag {
+  left: calc(var(--w) * 0.12); top: calc(var(--w) * -0.005);
+  width: calc(var(--w) * 0.12); height: calc(var(--w) * 0.2);
+  transform-origin: 50% 0; transform: rotate(-14deg);
+  animation: tag-sway 3.4s ease-in-out infinite;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3));
+  z-index: 3;
 }
-.gift-bow .loop.l { right: -2px; transform: rotate(-22deg); transform-origin: right bottom; }
-.gift-bow .loop.r { left: -2px; transform: rotate(22deg); transform-origin: left bottom; }
-.gift-bow .knot { left: calc(var(--w) * -0.045); bottom: -6px; width: calc(var(--w) * 0.09); height: calc(var(--w) * 0.08); border-radius: 40%; background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--ribbon) 60%, #fff), var(--ribbon) 60%, color-mix(in srgb, var(--ribbon) 70%, #000)); }
-.gift-letter {
-  left: 22%; right: 22%; bottom: 14%; height: 54%;
-  background: var(--paper-grain), var(--card); border-radius: 5px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  transition: transform 0.75s 0.8s cubic-bezier(.2, .8, .2, 1);
-}
+@keyframes tag-sway { 50% { transform: rotate(-6deg); } }
+.gift-letter { left: 23%; right: 23%; bottom: 14%; height: 54%; z-index: 1; transition: transform 0.75s 0.8s cubic-bezier(.2, .8, .2, 1); }
+.gift-tissue { left: 11%; right: 11%; bottom: 50%; height: calc(var(--w) * 0.1); z-index: 1; }
 .gift-glow {
   left: 5%; right: 5%; bottom: 40%; height: 40%; border-radius: 50%;
   background: radial-gradient(ellipse at 50% 70%, rgba(255, 248, 216, 0.95), rgba(255, 214, 107, 0.5) 40%, transparent 70%);
   opacity: 0; transform: scale(0.5); z-index: 0;
   transition: opacity 0.6s 0.7s, transform 0.9s 0.7s;
 }
-/* The seal sits on the lid, right where the ribbons cross. */
-.gift .seal-spot { left: calc(50% - var(--seal) / 2); bottom: calc(64% - var(--seal) / 2); }
-.gift.opening .gift-bow .loop.l { transform: translate(-40px, -50px) rotate(-80deg); opacity: 0; }
-.gift.opening .gift-bow .loop.r { transform: translate(40px, -50px) rotate(80deg); opacity: 0; }
+/* The seal sits on the lid, on the ribbon, under the bow. */
+.gift .seal-spot { left: calc(50% - var(--seal) / 2); bottom: calc(61.5% - var(--seal) / 2); }
+.gift.opening .bow-half.l { transform: translate(-40px, -50px) rotate(-60deg); opacity: 0; }
+.gift.opening .bow-half.r { transform: translate(40px, -50px) scaleX(-1) rotate(-60deg); opacity: 0; transform-origin: 50% 50%; }
+.gift.opening .gift-bow .knot { opacity: 0; }
 .gift.opening .gift-lid { transform: translate(18%, -190%) rotate(24deg); opacity: 0; }
 .gift.opening .gift-glow { opacity: 1; transform: scale(1.4); }
-.gift.opening .gift-letter { transform: translateY(-82%); }
+.gift.opening .gift-letter { transform: translateY(-80%); }
 
 /* Celebration burst */
 .burst { position: fixed; left: 50%; top: 45%; z-index: 50; pointer-events: none; }

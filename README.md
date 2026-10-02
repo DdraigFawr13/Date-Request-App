@@ -75,11 +75,11 @@ sparks when tapped:
 
 | | Opening |
 |---|---|
-| ✉️ Envelope | the seal cracks, the patterned flap swings open, and the letter slides out |
-| 📜 Scroll | the ribbon slips away and the parchment unrolls between its rods |
-| 🍾 Message in a bottle | the bottle bobs on the waves, the cork pops, and the note rises out |
-| 🧰 Treasure chest | the seal is the lock; the lid swings open in golden rays |
-| 🎁 Gift box | the bow unties, the lid tumbles off, and the letter rises up |
+| ✉️ Envelope | gold-foil edged paper with a patterned liner and a botanical sprig under the seal; the flap swings open and an illuminated letter slides out |
+| 📜 Scroll | parchment rolled on dowels with gilded finials, tassels and a satin ribbon; it unrolls into an illuminated page |
+| 🍾 Message in a bottle | sea glass with sand, a starfish and twine on the neck, bobbing on foamy waves; the cork pops and the ribboned note rises out |
+| 🧰 Treasure chest | planked wood with gilded straps, brackets and a jewelled lid; the seal is the lock, and the lid tips back to reveal velvet, gold coins and gems |
+| 🎁 Gift box | patterned wrap, stitched satin ribbons, a full bow and a gift tag; the bow unties, the lid tumbles off, and the letter rises from tissue paper |
 
 **Wax seal:** an SVG seal with an irregular wax spill, a raised rim and a
 stamped emblem. Choose the wax (16 shades including metallic gold, copper,
@@ -158,6 +158,7 @@ js/occasions.js     occasions (wording, lettering), font pairings, editable line
 js/decor.js         backgrounds, patterns, paper, corner/side ornaments, script lines
 js/seal.js          the SVG wax seal, wax colors, finishes and emblems
 js/wrappers.js      delivery styles (envelope, scroll…) and their animations
+js/wrapper-art.js   hand-drawn SVG detail for the envelope, bottle, chest and gift
 js/shorten.js       short links via is.gd / v.gd
 js/modules.js       detail modules and questions
 js/calendar.js      .ics / Google / Outlook calendar links
