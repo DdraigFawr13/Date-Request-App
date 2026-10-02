@@ -69,7 +69,7 @@ keeps a running headcount.
 | 🏰 Medieval | Royal Court · Castle Keep · Illuminated |
 | 🐈‍⬛ Cats | Black Cat · Calico · Kitten Pastel · Cat Café |
 | 🎉 Parties | Speakeasy · Neon Club · Disco Fever · Game Night · Birthday Bash · Tiki Bar · Celebration |
-| 🗝️ After dark | Kinky · Boudoir (blush silk, black lace, pearls, satin-bow seal) · Masquerade (black velvet and gold, masquerade-mask seal, opens as the pop-up theatre) · Noir (smoky rooftops and a red lip, typed out on a typewriter) |
+| 🗝️ After dark | Kinky · Boudoir (blush silk, black lace, pearls, satin-bow seal) · Masquerade (black velvet and gold, masquerade-mask seal) · Noir (smoky rooftops and a red lip, typed out on a typewriter) |
 | 🎭 Stage | A Midsummer Night’s Dream (moonlit wood with fairy lights, a seal of Bottom's donkey head crowned with flowers) · Theatre Night (red-velvet curtains, masks seal) · Broadway Musical (marquee lights, music-note seal) · The Nocturne (a Halloween burlesque soirée: velvet curtains under a feather-boa swag, spotlight haze, fishnet texture, a vintage mic and coupe tower, moon and bats, kiss seal, rhinestone corners and feather-boa sides) |
 | 🖤 Dark side | Gothic · Emo |
 | ✨ Night & glam | Cyberpunk (a neon megacity skyline over a holo-grid, circuit-trace corners and sides, microchip seal, cyan glow) · Night at the Show · Cozy Night In |
@@ -78,7 +78,14 @@ Every look is dressed to the same standard: its own illustrated scene
 (candlelight, a blossom garden, snowy pines with a lit cottage, a harvest
 field, standing stones by moon- or sunlight, a seashore or tropical sunset,
 a fireside with fairy lights, moonlit rooftops with a cat on the chimney, a
-mountain trail…), side borders, an opening and a drawn wax-seal emblem. A
+mountain trail…), side borders and a drawn wax-seal emblem. Most looks
+arrive in an envelope; the other openings are kept for the looks they belong
+to: Dragon's Hoard's treasure chest, the treasure map for Wild Adventure and
+The Fellowship, Seaside's message in a bottle, the scroll for Royal Court and
+Illuminated, Wizard's Academy's owl post, the pop-up book for Enchanted
+Forest, Theatre Night and The Nocturne, the gift box for Birthday Bash and
+Yule, and the telegram for Noir and Speakeasy. Anyone can still pick any
+opening for their own invitation. A
 test keeps it that way for every new look. Each look also picks sensible
 defaults for everything below, and you can override any of them:
 
