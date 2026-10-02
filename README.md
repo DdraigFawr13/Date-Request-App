@@ -74,8 +74,13 @@ keeps a running headcount.
 | 🖤 Dark side | Gothic · Emo |
 | ✨ Night & glam | Cyberpunk (a neon megacity skyline over a holo-grid, circuit-trace corners and sides, microchip seal, cyan glow) · Night at the Show · Cozy Night In |
 
-Each look also picks sensible defaults for everything below, and you can
-override any of them:
+Every look is dressed to the same standard: its own illustrated scene
+(candlelight, a blossom garden, snowy pines with a lit cottage, a harvest
+field, standing stones by moon- or sunlight, a seashore or tropical sunset,
+a fireside with fairy lights, moonlit rooftops with a cat on the chimney, a
+mountain trail…), side borders, an opening and a drawn wax-seal emblem. A
+test keeps it that way for every new look. Each look also picks sensible
+defaults for everything below, and you can override any of them:
 
 - **Colors:** the page (card) color and the background colors can each be
   changed on their own. A custom page color keeps text and titles readable.
@@ -84,7 +89,9 @@ override any of them:
   optionally the title too.
 - **Neon glow:** make the title, headings and card edge glow in hot pink,
   electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
-- **Background:** a soft glow, a moonlit sky, a haunted night, an aurora, a velvet curtain, bokeh lights,
+- **Background:** a soft glow, a moonlit sky, candlelight, a blossom garden,
+  snowy pines, a harvest field, standing stones, a seashore, a tropical sunset,
+  a fireside, moonlit rooftops, a mountain trail, a haunted night, an aurora, a velvet curtain, bokeh lights,
   a neon grid, a sunburst, stage curtains, marquee lights, a moonlit wood, a burlesque stage, a neon city, misty mountains, noir rooftops, or a pattern (damask, stars, snowfall, blossoms,
   leaves, hearts, paw prints, waves, castle stone, gingham, plaid, lace, bats, wands & hats, dragon scales,
   constellations, acorns & mushrooms, theatre masks, moons & pansies, fishnet, plumes & bats, circuit traces, leaves & stars,
@@ -136,12 +143,18 @@ wax or raised in a metallic finish. Choose the wax (16 shades including metallic
 bronze and silver, or any color), the emblem's finish (pressed into the wax,
 gold leaf, silver, copper, rose gold, bronze, pearl, jet, or any color), and
 the emblem: regal (crown, fleur-de-lis, shield, crossed swords, castle,
-laurel, key, chalice, knight, lion, dragon…), love, celestial, magic (wizard’s hat, wand, dragon, constellation…),
-nature (acorn, teacup…), party, dark (bat,
+laurel, key, chalice, knight, lion, dragon…), love (heart, rose, blossom…),
+celestial (crescent, star, sun, snowflake, candle, flame…), magic (wizard’s hat, wand, dragon, constellation…),
+nature (acorn, teacup, maple leaf, mushroom, shell, wheat, strawberry,
+holly, painted egg, compass…), party (martini, disco ball, cake, hibiscus,
+cozy mug…), dark (bat,
 jack-o’-lantern, broken heart, skull, kiss…)
 (martini, die, music, disco ball, cake…) or cats (sitting cat, cat face,
 paw print…). Or press your own initials or symbol (up
 to 4 characters, emoji included).
+Every emblem, drawn or typed, is sized to sit inside the seal's pressed
+face, clear of the raised ring (`node scripts/fit-emblems.mjs` re-fits the
+drawn ones after adding or changing one; a browser test checks it).
 
 ## Detail modules
 

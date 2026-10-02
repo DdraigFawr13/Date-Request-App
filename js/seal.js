@@ -137,7 +137,151 @@ export const SVG_EMBLEMS = {
     <g fill='none' stroke='#000' stroke-width='1.3' opacity='.45' stroke-linecap='round'><path d='M46 50 C38 44 30 40 25 44 M54 50 C62 44 70 40 75 44 M24 52 C30 56 38 56 44 53 M76 52 C70 56 62 56 56 53'/></g>`,
   paw: `<g transform='translate(50 52) scale(2.6)'><ellipse cx='0' cy='4' rx='5.2' ry='4.4'/><ellipse cx='-6' cy='-3' rx='2.1' ry='2.7' transform='rotate(-20 -6 -3)'/>
     <ellipse cx='-2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='6' cy='-3' rx='2.1' ry='2.7' transform='rotate(20 6 -3)'/></g>`,
+
+  // ── Drawn emblems for the earlier looks (romance, the sabbats, nature, parties) ──
+  heart: `<path d='M50 79 C38 69 21 57 21 41 C21 31 29 23 39 23 C45 23 48 27 50 31 C52 27 55 23 61 23 C71 23 79 31 79 41 C79 57 62 69 50 79Z'/>
+    <path d='M29 41 C29 35 33 30 39 30' fill='none' stroke='#000' stroke-width='2' stroke-linecap='round' opacity='.35'/>`,
+  rose: `<g transform='translate(50 40)'><path d='M-21 2 C-23 -12 -12 -22 0 -22 C12 -22 23 -12 21 2 C19 14 9 21 0 21 C-9 21 -19 14 -21 2Z'/>
+    <g fill='none' stroke='#000' stroke-width='1.8' stroke-linecap='round' opacity='.7'><path d='M-3 -6 C-1 -10 6 -9 6 -4 C6 1 -1 3 -5 0 C-9 -4 -6 -13 2 -14 C10 -15 15 -7 13 0'/>
+    <path d='M-16 4 C-10 13 9 14 16 5'/><path d='M-18 -6 C-14 -1 -9 1 -4 1'/><path d='M18 -8 C15 -3 12 -1 8 0'/></g></g>
+    <path d='M49 61 C48 69 49 77 51 87' stroke='#fff' stroke-width='3.4' fill='none' stroke-linecap='round'/>
+    <path d='M49 71 C40 65 32 67 28 73 C36 75 43 75 49 71Z'/><path d='M50 77 C58 71 66 71 71 76 C64 80 57 80 50 77Z'/>`,
+  blossom: `<g transform='translate(50 51)'>${[0, 72, 144, 216, 288].map(a => `<path transform='rotate(${a})' d='M0 -4 C-13 -12 -13 -28 -5 -31 L0 -26 L5 -31 C13 -28 13 -12 0 -4Z'/>`).join('')}
+    <circle r='6.5' fill='#000' opacity='.5'/><g fill='#000' opacity='.45'>${[36, 108, 180, 252, 324].map(a => `<circle cx='${(11 * Math.sin(a * Math.PI / 180)).toFixed(1)}' cy='${(-11 * Math.cos(a * Math.PI / 180)).toFixed(1)}' r='1.6'/>`).join('')}</g></g>`,
+  snowflake: `<g transform='translate(50 50)' stroke='#fff' stroke-linecap='round' fill='none'>${[0, 60, 120, 180, 240, 300].map(a => `<g transform='rotate(${a})'><path d='M0 0 V-31' stroke-width='4'/><path d='M0 -13 L-8 -20 M0 -13 L8 -20 M0 -23 L-5 -28 M0 -23 L5 -28' stroke-width='3'/></g>`).join('')}</g>
+    <circle cx='50' cy='50' r='6'/><circle cx='50' cy='50' r='2.4' fill='#000' opacity='.45'/>`,
+  holly: `${[-52, 52].map(a => `<g transform='translate(50 60) rotate(${a})'><path d='M0 0 L-6 -4 L-11 -2 L-10 -10 L-14 -14 L-9 -18 L-11 -26 L-5 -26 L0 -35 L5 -26 L11 -26 L9 -18 L14 -14 L10 -10 L11 -2 L6 -4Z'/><path d='M0 -2 V-30' stroke='#000' stroke-width='1.4' opacity='.5'/></g>`).join('')}
+    <g stroke='#000' stroke-width='1.2' stroke-opacity='.45'><circle cx='43' cy='60' r='7'/><circle cx='57' cy='60' r='7'/><circle cx='50' cy='50' r='7'/></g>
+    <g fill='#000' opacity='.35'><circle cx='41' cy='58' r='1.6'/><circle cx='55' cy='58' r='1.6'/><circle cx='48' cy='48' r='1.6'/></g>`,
+  sun: `<circle cx='50' cy='50' r='15'/>${[...Array(12)].map((_, i) => `<path transform='rotate(${i * 30} 50 50)' d='M50 ${i % 2 ? 23 : 15} L54.5 32 L45.5 32Z'/>`).join('')}
+    <g fill='#000' opacity='.45'><circle cx='45' cy='47' r='1.8'/><circle cx='55' cy='47' r='1.8'/></g><path d='M44 54 Q50 59 56 54' fill='none' stroke='#000' stroke-width='1.8' stroke-linecap='round' opacity='.45'/>`,
+  flame: `<path d='M50 84 C34 84 26 72 28 60 C30 50 38 44 40 33 C46 39 47 47 46 52 C52 46 55 34 50 16 C62 25 73 42 72 58 C72 74 64 84 50 84Z'/>
+    <path d='M50 80 C42 80 38 74 40 66 C42 60 46 58 48 51 C52 58 59 62 59 70 C59 76 55 80 50 80Z' fill='#000' opacity='.4'/>`,
+  wheat: `${[-18, 0, 18].map(a => `<g transform='rotate(${a} 50 86)'><path d='M50 86 V44' stroke='#fff' stroke-width='2.4'/>${[0, 1, 2, 3, 4].map(i => { const y = 22 + i * 7.5; return `<ellipse cx='45.6' cy='${y}' rx='3.1' ry='6' transform='rotate(-28 45.6 ${y})'/><ellipse cx='54.4' cy='${y}' rx='3.1' ry='6' transform='rotate(28 54.4 ${y})'/>`; }).join('')}<ellipse cx='50' cy='16' rx='3' ry='6'/></g>`).join('')}
+    <path d='M42 70 C46 73 54 73 58 70' fill='none' stroke='#fff' stroke-width='3'/>`,
+  mapleleaf: `<path d='M50 14 L55 27 L62 22 L60 37 L71 30 L69 39 L81 37 L75 47 L79 51 L64 59 L66 65 L53 61 L52 66 L48 66 L47 61 L34 65 L36 59 L21 51 L25 47 L19 37 L31 39 L29 30 L40 37 L38 22 L45 27Z'/>
+    <path d='M50 64 C50 72 51 80 54 86' stroke='#fff' stroke-width='3' fill='none' stroke-linecap='round'/>
+    <path d='M50 62 V22 M50 52 L71 36 M50 52 L29 36 M50 58 L67 56 M50 58 L33 56' fill='none' stroke='#000' stroke-width='1.4' opacity='.5' stroke-linecap='round'/>`,
+  egg: `<path d='M50 17 C64 17 74 42 74 58 C74 74 63 84 50 84 C37 84 26 74 26 58 C26 42 36 17 50 17Z'/>
+    <g fill='none' stroke='#000' stroke-width='2' opacity='.5' stroke-linejoin='round' stroke-linecap='round'><path d='M28 50 L34 44 L40 50 L45 44 L50 50 L55 44 L60 50 L66 44 L72 50'/><path d='M27 65 Q33 61 39 65 T51 65 T63 65 T74 65'/></g>
+    <g fill='#000' opacity='.45'><circle cx='43' cy='33' r='2'/><circle cx='50' cy='29' r='2'/><circle cx='57' cy='33' r='2'/><circle cx='40' cy='75' r='1.6'/><circle cx='50' cy='77' r='1.6'/><circle cx='60' cy='75' r='1.6'/></g>`,
+  candle: `<rect x='41' y='42' width='18' height='38' rx='2'/><ellipse cx='50' cy='81' rx='22' ry='4.5'/>
+    <path d='M50 16 C57 25 59 32 54 38 C52 41 48 41 46 38 C41 32 43 25 50 16Z'/><rect x='49.2' y='38' width='1.6' height='5' fill='#000' opacity='.6'/>
+    <path d='M41 46 C45 47 45 54 47 54 C49 54 49 47 52 47 C55 47 55 51 59 50' fill='none' stroke='#000' stroke-width='1.4' opacity='.45'/>
+    <g stroke='#fff' stroke-width='2.2' stroke-linecap='round'><path d='M33 22 L37 26 M67 22 L63 26 M29 34 H35 M65 34 H71'/></g>`,
+  crescent: `<path d='M56 18 A32 32 0 1 0 76 72 A26 26 0 1 1 56 18Z'/>
+    ${[[70, 28, 1], [80, 44, 0.7], [64, 44, 0.55]].map(([x, y, k]) => `<path transform='translate(${x} ${y}) scale(${k})' d='M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2Z'/>`).join('')}`,
+  strawberry: `<path d='M50 85 C36 77 26 61 28 47 C30 37 40 33 50 35 C60 33 70 37 72 47 C74 61 64 77 50 85Z'/>
+    <g fill='#000' opacity='.5'>${[[40, 48], [50, 46], [60, 48], [36, 59], [46, 58], [56, 58], [64, 60], [42, 69], [52, 69], [60, 70], [48, 78]].map(([x, y]) => `<ellipse cx='${x}' cy='${y}' rx='1.3' ry='2'/>`).join('')}</g>
+    <path d='M50 37 L39 27 L45 35 L33 33 L44 39 L50 41 L56 39 L67 33 L55 35 L61 27Z' stroke='#000' stroke-width='1.2' stroke-opacity='.5'/>
+    <path d='M50 31 C50 25 52 21 56 17' stroke='#fff' stroke-width='3' fill='none' stroke-linecap='round'/>`,
+  compass: `<circle cx='50' cy='50' r='29' fill='none' stroke='#fff' stroke-width='3'/>
+    <path d='M50 44 L64 36 L56 50 L64 64 L50 56 L36 64 L44 50 L36 36Z'/>
+    <path d='M50 13 L56 44 L87 50 L56 56 L50 87 L44 56 L13 50 L44 44Z'/>
+    <path d='M50 13 L56 44 L50 50Z M87 50 L56 56 L50 50Z M50 87 L44 56 L50 50Z M13 50 L44 44 L50 50Z' fill='#000' opacity='.35'/>
+    <circle cx='50' cy='50' r='3' fill='#000' opacity='.6'/>`,
+  mushroom: `<path d='M17 55 C17 34 32 22 50 22 C68 22 83 34 83 55 C70 59 30 59 17 55Z'/>
+    <path d='M40 57 C40 67 38 76 36 82 H64 C62 76 60 67 60 57Z'/>
+    <g fill='#000' opacity='.5'><circle cx='35' cy='38' r='5'/><circle cx='54' cy='31' r='4'/><circle cx='67' cy='44' r='5'/><circle cx='47' cy='47' r='3'/><circle cx='25' cy='49' r='2.6'/></g>
+    <path d='M24 56 C40 62 60 62 76 56' fill='none' stroke='#000' stroke-width='1.4' opacity='.45'/><path d='M28 85 H72' stroke='#fff' stroke-width='3' stroke-linecap='round'/>`,
+  shell: `<path d='M50 78 L21 50 C21 30 35 19 50 19 C65 19 79 30 79 50Z'/><path d='M37 72 L50 78 L63 72 L66 84 H34Z'/>
+    <g fill='none' stroke='#000' stroke-width='1.6' opacity='.5' stroke-linecap='round'>${[-56, -40, -24, -8, 8, 24, 40, 56].map(a => `<path d='M50 76 L${(50 + 28 * Math.sin(a * Math.PI / 180)).toFixed(1)} ${(48 - 28 * Math.cos(a * Math.PI / 180)).toFixed(1)}'/>`).join('')}</g>`,
+  star: `<path d='${[...Array(10)].map((_, i) => { const r = i % 2 ? 13 : 33, a = (i * 36 - 90) * Math.PI / 180; return `${i ? 'L' : 'M'}${(50 + r * Math.cos(a)).toFixed(1)} ${(53 + r * Math.sin(a)).toFixed(1)}`; }).join(' ')}Z'/>
+    <path d='${[0, 1, 2, 3, 4].map(i => { const a = (i * 72 - 90) * Math.PI / 180, b = (i * 72 - 54) * Math.PI / 180; return `M50 53 L${(50 + 33 * Math.cos(a)).toFixed(1)} ${(53 + 33 * Math.sin(a)).toFixed(1)} L${(50 + 13 * Math.cos(b)).toFixed(1)} ${(53 + 13 * Math.sin(b)).toFixed(1)}Z`; }).join(' ')}' fill='#000' opacity='.3'/>`,
+  martini: `<path d='M23 26 H77 L50 55Z'/><rect x='48.5' y='54' width='3' height='24'/><ellipse cx='50' cy='79' rx='15' ry='3.6'/>
+    <path d='M30 32 H70' stroke='#000' stroke-width='1.6' opacity='.5'/><path d='M72 13 L60 34' stroke='#fff' stroke-width='2.2' stroke-linecap='round'/>
+    <circle cx='58' cy='38' r='5' fill='#000' opacity='.55'/>`,
+  cake: `<ellipse cx='50' cy='82' rx='33' ry='4.5'/><rect x='23' y='58' width='54' height='23' rx='3'/><rect x='32' y='40' width='36' height='19' rx='3'/>
+    <g fill='none' stroke='#000' stroke-width='1.6' opacity='.5'><path d='M23 64 Q27 69 31 64 T39 64 T47 64 T55 64 T63 64 T71 64 T77 64'/><path d='M32 46 Q36 51 40 46 T48 46 T56 46 T64 46 T68 46'/></g>
+    ${[40, 50, 60].map(x => `<rect x='${x - 1.5}' y='27' width='3' height='12'/><path d='M${x} 17 C${x + 3.5} 21 ${x + 3} 25 ${x} 25 C${x - 3} 25 ${x - 3.5} 21 ${x} 17Z'/>`).join('')}`,
+  hibiscus: `<g transform='translate(47 53)'>${[0, 72, 144, 216, 288].map(a => `<path transform='rotate(${a})' d='M0 0 C-15 -6 -19 -27 -7 -31 C-2 -32.5 2 -32.5 7 -31 C19 -27 15 -6 0 0Z'/>`).join('')}
+    <g fill='none' stroke='#000' stroke-width='1.2' opacity='.4'>${[0, 72, 144, 216, 288].map(a => `<path transform='rotate(${a})' d='M0 -3 V-22 M0 -9 L-5 -18 M0 -9 L5 -18'/>`).join('')}</g><circle r='5' fill='#000' opacity='.45'/></g>
+    <path d='M47 53 L75 25' stroke='#000' stroke-width='2.2' opacity='.6'/><g><circle cx='76' cy='24' r='2.4'/><circle cx='79.5' cy='28' r='2'/><circle cx='72' cy='20.5' r='2'/></g>`,
+  discoball: `<path d='M50 10 V24' stroke='#fff' stroke-width='2'/><circle cx='50' cy='52' r='28'/>
+    <g fill='none' stroke='#000' stroke-width='1.2' opacity='.45'>${[-20, -12, -4, 4, 12, 20].map(dy => { const w = Math.sqrt(28 * 28 - dy * dy); return `<path d='M${(50 - w).toFixed(1)} ${52 + dy} H${(50 + w).toFixed(1)}'/>`; }).join('')}
+    ${[9, 18, 25].map(rx => `<ellipse cx='50' cy='52' rx='${rx}' ry='28'/>`).join('')}<path d='M50 24 V80'/></g>
+    <g fill='#000' opacity='.28'><rect x='56' y='56' width='8' height='8'/><rect x='38' y='64' width='9' height='8'/><rect x='64' y='40' width='7' height='8'/><rect x='30' y='44' width='7' height='8'/></g>
+    ${[[82, 24, 0.9], [19, 74, 0.7], [84, 76, 0.5]].map(([x, y, k]) => `<path transform='translate(${x} ${y}) scale(${k})' d='M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2Z'/>`).join('')}`,
+  mug: `<path d='M27 40 H64 V70 C64 77 58 82 51 82 H40 C33 82 27 77 27 70Z'/><path d='M64 46 C77 44 79 61 66 64' fill='none' stroke='#fff' stroke-width='5'/>
+    <path d='M45.5 72 C39 67 35 63 35 58.5 C35 55.5 37 53 40.5 53 C42.5 53 44.5 54 45.5 56 C46.5 54 48.5 53 50.5 53 C54 53 56 55.5 56 58.5 C56 63 52 67 45.5 72Z' fill='#000' opacity='.5'/>
+    <g fill='none' stroke='#fff' stroke-width='2.6' stroke-linecap='round'><path d='M38 33 C34 27 42 23 38 15'/><path d='M50 33 C46 27 54 23 50 15'/></g>`,
 };
+
+// EMBLEM_FIT:start (generated by scripts/fit-emblems.mjs — don't edit by hand)
+export const EMBLEM_FIT = {
+  crown: [0.768, 50.0, 49.1],
+  shield: [0.749, 50.0, 51.5],
+  swords: [0.711, 50.0, 48.5],
+  castle: [0.683, 50.0, 51.0],
+  laurel: [0.757, 50.0, 62.3],
+  key: [0.846, 50.5, 49.0],
+  chalice: [0.838, 50.0, 52.0],
+  fleur: [0.787, 50.0, 50.0],
+  moonstar: [0.834, 45.9, 51.0],
+  cat: [0.842, 54.3, 53.5],
+  catface: [0.781, 50.0, 46.4],
+  bat: [0.647, 50.0, 51.4],
+  pumpkin: [0.748, 50.0, 46.5],
+  brokenheart: [0.751, 51.0, 51.0],
+  wizardhat: [0.645, 50.0, 46.6],
+  wand: [0.709, 53.8, 50.0],
+  dragon: [0.525, 53.6, 47.5],
+  acorn: [0.848, 50.0, 53.0],
+  teacup: [0.626, 49.6, 50.6],
+  constellation: [0.692, 50.5, 47.1],
+  die: [0.909, 50.0, 52.0],
+  masks: [0.770, 49.5, 51.6],
+  note: [0.643, 55.0, 47.9],
+  pansy: [0.790, 50.0, 50.6],
+  lips: [0.813, 50.0, 55.8],
+  donkey: [0.525, 56.8, 46.5],
+  chip: [0.784, 50.0, 52.0],
+  ring: [0.906, 50.0, 53.0],
+  leaf: [0.643, 50.0, 53.1],
+  tree: [0.593, 50.0, 46.5],
+  mask: [0.520, 48.9, 45.0],
+  bow: [0.657, 50.0, 59.9],
+  paw: [1.018, 50.0, 50.8],
+  heart: [0.743, 50.0, 51.0],
+  rose: [0.693, 49.6, 53.4],
+  blossom: [0.752, 50.0, 49.6],
+  snowflake: [0.743, 50.0, 50.0],
+  holly: [0.811, 50.0, 51.4],
+  sun: [0.704, 50.0, 50.0],
+  flame: [0.720, 49.9, 50.0],
+  wheat: [0.586, 50.0, 48.3],
+  mapleleaf: [0.666, 50.0, 50.9],
+  egg: [0.730, 50.5, 50.5],
+  candle: [0.645, 50.0, 50.8],
+  crescent: [0.720, 53.1, 49.9],
+  strawberry: [0.695, 50.0, 50.3],
+  compass: [0.669, 50.0, 50.0],
+  mushroom: [0.624, 50.0, 54.3],
+  shell: [0.679, 50.0, 51.5],
+  star: [0.692, 50.0, 50.0],
+  martini: [0.586, 50.0, 47.3],
+  cake: [0.545, 50.0, 51.8],
+  hibiscus: [0.600, 48.4, 50.6],
+  discoball: [0.514, 51.3, 45.4],
+  mug: [0.652, 52.1, 47.9],
+};
+// EMBLEM_FIT:end
+
+// Initials and symbols are sized so even wide letters (W, M) or a round
+// emoji stay inside the pressed face, like the drawn emblems.
+export function textEmblemSize(emblem) {
+  const text = String(emblem).replace(/\uFE0E|\uFE0F/g, '');
+  const n = typeof Intl.Segmenter === 'function' ? [...new Intl.Segmenter().segment(text)].length : Array.from(text).length;
+  return [30, 30, 23, 16, 13][Math.min(n, 4)];
+}
+
+// An emblem centered and scaled to sit inside the seal's pressed face, clear
+// of the raised ring (see EMBLEM_FIT above).
+export function fittedEmblem(id) {
+  const art = SVG_EMBLEMS[id];
+  const [k, cx, cy] = EMBLEM_FIT[id] || [1, 50, 50];
+  return `<g transform='translate(50 50) scale(${k}) translate(${-cx} ${-cy})'>${art}</g>`;
+}
 
 // The picker, grouped. `s` is stored in the link: text, or '@id' for an SVG emblem.
 export const EMBLEM_GROUPS = [
@@ -148,12 +292,12 @@ export const EMBLEM_GROUPS = [
     { s: '🦁', name: 'Lion' }, { s: '🐉', name: 'Dragon' }, { s: '🦅', name: 'Eagle' }, { s: '🦄', name: 'Unicorn' },
   ] },
   { id: 'love', label: 'Love', items: [
-    { s: '♥︎', name: 'Heart' }, { s: '∞', name: 'Infinity' }, { s: '❦', name: 'Floral heart' }, { s: '🌹', name: 'Rose' },
-    { s: '❀', name: 'Blossom' }, { s: '🕊️', name: 'Dove' }, { s: '💍', name: 'Ring' },
+    { s: '@heart', name: 'Heart' }, { s: '∞', name: 'Infinity' }, { s: '❦', name: 'Floral heart' }, { s: '@rose', name: 'Rose' },
+    { s: '@blossom', name: 'Blossom' }, { s: '🕊️', name: 'Dove' }, { s: '💍', name: 'Ring' },
   ] },
   { id: 'sky', label: 'Celestial', items: [
-    { s: '@moonstar', name: 'Moon & star' }, { s: '☾', name: 'Crescent' }, { s: '✦', name: 'Star' }, { s: '☀︎', name: 'Sun' },
-    { s: '✺', name: 'Sunburst' }, { s: '⛤', name: 'Pentacle' }, { s: '❄', name: 'Snowflake' },
+    { s: '@moonstar', name: 'Moon & star' }, { s: '@crescent', name: 'Crescent' }, { s: '@star', name: 'Star' }, { s: '@sun', name: 'Sun' },
+    { s: '✺', name: 'Sunburst' }, { s: '⛤', name: 'Pentacle' }, { s: '@snowflake', name: 'Snowflake' }, { s: '@candle', name: 'Candle' }, { s: '@flame', name: 'Flame' },
   ] },
   { id: 'magic', label: 'Magic', items: [
     { s: '@wizardhat', name: 'Wizard’s hat' }, { s: '@wand', name: 'Wand' }, { s: '@dragon', name: 'Dragon' }, { s: '@constellation', name: 'Constellation' },
@@ -161,12 +305,13 @@ export const EMBLEM_GROUPS = [
   ] },
   { id: 'nature', label: 'Nature', items: [
     { s: '@acorn', name: 'Acorn' }, { s: '@teacup', name: 'Teacup' }, { s: '☘︎', name: 'Clover' },
- { s: '🍂', name: 'Leaf' }, { s: '🍄', name: 'Mushroom' }, { s: '🐝', name: 'Bee' },
-    { s: '🦋', name: 'Butterfly' }, { s: '🦉', name: 'Owl' }, { s: '🐚', name: 'Shell' }, { s: '🌾', name: 'Wheat' }, { s: '🍓', name: 'Strawberry' },
+ { s: '@mapleleaf', name: 'Maple leaf' }, { s: '@mushroom', name: 'Mushroom' }, { s: '🐝', name: 'Bee' },
+    { s: '🦋', name: 'Butterfly' }, { s: '🦉', name: 'Owl' }, { s: '@shell', name: 'Shell' }, { s: '@wheat', name: 'Wheat' }, { s: '@strawberry', name: 'Strawberry' },
+    { s: '@holly', name: 'Holly' }, { s: '@egg', name: 'Painted egg' }, { s: '@compass', name: 'Compass' },
   ] },
   { id: 'stage', label: 'Stage', items: [
     { s: '@masks', name: 'Theatre masks' }, { s: '@lips', name: 'Kiss' }, { s: '@note', name: 'Music notes' }, { s: '@donkey', name: 'Donkey head' }, { s: '@pansy', name: 'Pansy' }, { s: '♪', name: 'Note' },
-    { s: '🎭', name: 'Masks' }, { s: '🎟️', name: 'Ticket' }, { s: '🎤', name: 'Microphone' }, { s: '🎻', name: 'Violin' }, { s: '🌹', name: 'Rose' },
+    { s: '@star', name: 'Star of the show' }, { s: '🎟️', name: 'Ticket' }, { s: '🎤', name: 'Microphone' }, { s: '🎻', name: 'Violin' }, { s: '@rose', name: 'Rose' },
   ] },
   { id: 'worlds', label: 'Worlds', items: [
     { s: '@ring', name: 'The ring' }, { s: '@leaf', name: 'Elven leaf' }, { s: '@tree', name: 'White tree' }, { s: '@chip', name: 'Microchip' },
@@ -174,12 +319,12 @@ export const EMBLEM_GROUPS = [
   ] },
   { id: 'afterdark', label: 'After dark', items: [
     { s: '@lips', name: 'Kiss' }, { s: '@mask', name: 'Masquerade mask' }, { s: '@bow', name: 'Satin bow' }, { s: '🗝️', name: 'Key' },
-    { s: '🥂', name: 'Champagne' }, { s: '🌹', name: 'Rose' }, { s: '♠', name: 'Spade' },
+    { s: '🥂', name: 'Champagne' }, { s: '@rose', name: 'Rose' }, { s: '♠', name: 'Spade' },
   ] },
   { id: 'party', label: 'Party', items: [
-    { s: '🍸', name: 'Martini' }, { s: '🥂', name: 'Cheers' }, { s: '@die', name: 'Die' }, { s: '♫', name: 'Music' },
-    { s: '🪩', name: 'Disco ball' }, { s: '🎂', name: 'Cake' }, { s: '🎈', name: 'Balloon' }, { s: '★', name: 'Star' },
-    { s: '♠︎', name: 'Spade' }, { s: '🌺', name: 'Hibiscus' },
+    { s: '@martini', name: 'Martini' }, { s: '🥂', name: 'Cheers' }, { s: '@die', name: 'Die' }, { s: '♫', name: 'Music' },
+    { s: '@discoball', name: 'Disco ball' }, { s: '@cake', name: 'Cake' }, { s: '🎈', name: 'Balloon' }, { s: '@star', name: 'Star' },
+    { s: '♠︎', name: 'Spade' }, { s: '@hibiscus', name: 'Hibiscus' }, { s: '@mug', name: 'Cozy mug' },
   ] },
   { id: 'dark', label: 'Dark', items: [
     { s: '@bat', name: 'Bat' }, { s: '@pumpkin', name: 'Jack-o’-lantern' }, { s: '@brokenheart', name: 'Broken heart' }, { s: '☠︎', name: 'Skull' }, { s: '🥀', name: 'Wilted rose' },
@@ -264,11 +409,9 @@ export function sealSvg(inv, look) {
   const puddle = puddlePath(seed);
 
   let art;
-  if (emblem.startsWith('@')) art = `<g fill='#fff'>${SVG_EMBLEMS[emblem.slice(1)]}</g>`;
+  if (emblem.startsWith('@')) art = `<g fill='#fff'>${fittedEmblem(emblem.slice(1))}</g>`;
   else {
-    const chars = Array.from(emblem.replace(/︎/g, ''));
-    const long = chars.length > 1;
-    const size = long ? (chars.length > 2 ? 21 : 27) : 42;
+    const size = textEmblemSize(emblem);
     art = `<text x='50' y='52' text-anchor='middle' dominant-baseline='central' fill='#fff' filter='url(#${id}w)'
       font-family="'Cinzel Decorative', 'Cormorant Garamond', serif" font-weight='700' font-size='${size}'>${esc(emblem)}</text>`;
   }

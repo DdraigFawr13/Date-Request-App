@@ -194,3 +194,17 @@ test('it can be added to a home screen', async ({ page, request }) => {
   expect(manifest.icons.some(i => i.purpose === 'maskable')).toBe(true);
   expect((await request.get(`/${await page.locator('link[rel=apple-touch-icon]').getAttribute('href')}`)).ok()).toBe(true);
 });
+
+test('every seal emblem sits inside the pressed face, clear of the raised ring', async ({ page }) => {
+  const { measure, FACE_REACH } = await import('../scripts/fit-emblems.mjs');
+  const { SVG_EMBLEMS, fittedEmblem, textEmblemSize } = await import('../js/seal.js');
+  await page.goto('/');
+  const arts = Object.fromEntries(Object.keys(SVG_EMBLEMS).map(id => [id, fittedEmblem(id)]));
+  // The widest initials and a round emoji, in the seal's own lettering.
+  for (const t of ['W', 'WW', 'WWW', 'WWWW', 'R&S', '🦁', '♞']) {
+    arts[`text ${t}`] = `<text x='50' y='52' text-anchor='middle' dominant-baseline='central' font-family="'Cinzel Decorative', 'Cormorant Garamond', serif" font-weight='700' font-size='${textEmblemSize(t)}'>${t.replace('&', '&amp;')}</text>`;
+  }
+  const m = await measure(page, arts);
+  const tooBig = Object.entries(m).filter(([, v]) => v.reach > FACE_REACH + 1.5).map(([id, v]) => `${id} reaches ${v.reach.toFixed(1)}`);
+  expect(tooBig, 'emblems touching the ring (face is r=31.6) — run node scripts/fit-emblems.mjs').toEqual([]);
+});

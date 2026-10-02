@@ -9,7 +9,7 @@ import { applyTheme, esc, formatWhen, particles, renderCard, wordsFor } from './
 import { isPast } from './calendar.js';
 import { SENT_KEY, cleanSent, parseReply, tally, upsertSent } from './replies.js';
 import { CORNER_OPTIONS, FOILS, GLOW_COLORS, PAPERS, foilCss, ornamentPreview, RULE_OPTIONS, SCENES, SIDE_OPTIONS, backdropCss, luminance, resolvePaper, safeHex } from './decor.js';
-import { EMBLEM_GROUPS, FACE_FINISHES, SVG_EMBLEMS, WAX_BY_ID, WAX_COLORS, sealHtml } from './seal.js';
+import { EMBLEM_GROUPS, FACE_FINISHES, WAX_BY_ID, WAX_COLORS, fittedEmblem, sealHtml } from './seal.js';
 import { WRAPPERS, playOpening, resolveWrapper, wrapperHtml } from './wrappers.js';
 import { shortenUrl } from './shorten.js';
 import { loadAllFonts } from './fonts.js';
@@ -182,7 +182,7 @@ function renderLook() {
 
 // ── Step 4: delivery & seal ──────────────────────────────────────────
 const emblemArt = s => (s.startsWith('@')
-  ? `<svg viewBox="16 16 68 68" aria-hidden="true"><g fill="currentColor">${SVG_EMBLEMS[s.slice(1)].replace(/#000/g, '#fff').replace(/stroke='#fff'/g, "stroke='currentColor'")}</g></svg>`
+  ? `<svg viewBox="22 22 56 56" aria-hidden="true"><g fill="currentColor">${fittedEmblem(s.slice(1)).replace(/#000/g, '#fff').replace(/stroke='#fff'/g, "stroke='currentColor'")}</g></svg>`
   : esc(s));
 
 function renderDelivery() {
@@ -824,7 +824,8 @@ export async function showBuilder() {
   document.documentElement.removeAttribute('style');
   document.documentElement.removeAttribute('data-theme');
   document.documentElement.removeAttribute('data-font');
-  $('#sky').replaceChildren();
+  $('#builder-sky').hidden = false;
+  particles($('#sky'), { particles: ['✦', '✧', '☾', '✉︎', '✧', '⋆'] }, 12);
   $('#invite').hidden = true;
   $('#builder').hidden = false;
   document.title = 'Moonpost — whimsical invitations';

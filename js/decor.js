@@ -164,6 +164,16 @@ export const SCENES = [
   { id: 'cyber', label: 'Neon city' },
   { id: 'middleearth', label: 'Misty mountains' },
   { id: 'noir', label: 'Noir rooftops' },
+  { id: 'candles', label: 'Candlelight' },
+  { id: 'garden', label: 'Blossom garden' },
+  { id: 'snowpines', label: 'Snowy pines' },
+  { id: 'harvest', label: 'Harvest field' },
+  { id: 'stones', label: 'Standing stones' },
+  { id: 'shore', label: 'Seashore' },
+  { id: 'tropics', label: 'Tropical sunset' },
+  { id: 'fireside', label: 'Fireside' },
+  { id: 'rooftops', label: 'Moonlit rooftops' },
+  { id: 'trail', label: 'Mountain trail' },
   ...Object.entries(PATTERNS).map(([id, p]) => ({ id, label: p.label })),
 ];
 
@@ -252,6 +262,151 @@ function boaTile(color) {
   }
   return svgTile(160, 70, `<path d='${strokes.join(' ')}' stroke='${color}' stroke-width='2.2' stroke-linecap='round' fill='none'/>
     <path d='${strokes.filter((_, i) => i % 3 === 0).join(' ')}' stroke='#fff' stroke-opacity='.35' stroke-width='.8' stroke-linecap='round' fill='none'/>`);
+}
+
+
+// ── Scenes for the earlier looks: drawn from the look's own colors ──────
+// A seeded random, so a scene draws the same way every time.
+const seeded = seed => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const STAR4 = (x, y, s, fill) => `<path transform='translate(${x} ${y}) scale(${s})' d='M0 -8 L2 -2 L8 0 L2 2 L0 8 L-2 2 L-8 0 L-2 -2Z' fill='${fill}'/>`;
+
+// Pillar candles in two clusters (the card sits between them), wax dripping, flames haloed.
+function candleClusters(glow) {
+  const r = seeded(11);
+  const candles = [[34, 120, 34], [80, 78, 28], [128, 152, 40], [172, 96, 30], [392, 104, 32], [440, 164, 42], [492, 88, 30], [530, 130, 34]];
+  return svgTile(560, 240, `<defs><linearGradient id='w' x1='0' x2='1'><stop offset='0' stop-color='#fff4dc'/><stop offset='.4' stop-color='#efdcb6'/><stop offset='1' stop-color='#8f7652'/></linearGradient>
+    <radialGradient id='h'><stop offset='0' stop-color='${glow}' stop-opacity='.5'/><stop offset='1' stop-color='${glow}' stop-opacity='0'/></radialGradient>
+    <radialGradient id='f' cx='.5' cy='.72' r='.62'><stop offset='0' stop-color='#fff'/><stop offset='.4' stop-color='#ffe08a'/><stop offset='1' stop-color='#ff8a2a'/></radialGradient></defs>
+    ${candles.map(([x, h, w]) => `<circle cx='${x}' cy='${240 - h - 16}' r='${w * 1.7}' fill='url(#h)'/>`).join('')}
+    ${candles.map(([x, h, w]) => {
+      const top = 240 - h, d1 = 8 + r() * 14, d2 = 14 + r() * 18, d3 = 5 + r() * 10;
+      return `<rect x='${x - w / 2}' y='${top}' width='${w}' height='${h}' rx='3' fill='url(#w)'/>
+      <path d='M${x - w / 2} ${top} h${w} v3 q${-w * 0.12} ${d3} ${-w * 0.24} 0 q${-w * 0.14} ${d2} ${-w * 0.3} 0 q${-w * 0.14} ${d1} ${-w * 0.28} 0 q${-w * 0.08} ${d3} ${-w * 0.18} 0Z' fill='#f8ecd4'/>
+      <ellipse cx='${x}' cy='${top + 1}' rx='${w / 2}' ry='3.2' fill='#dcc69e'/><path d='M${x} ${top} v-7' stroke='#2a1a10' stroke-width='1.6'/>
+      <path d='M${x} ${top - 30} c6.5 9 7.5 14 3.2 19.5 c-1.6 2 -4.8 2 -6.4 0 c-4.3 -5.5 -3.3 -10.5 3.2 -19.5z' fill='url(#f)'/>`;
+    }).join('')}`);
+}
+
+// A flowering branch reaching in from a top corner.
+function blossomBranch(bark, petal, petal2, flip = false) {
+  const r = seeded(23);
+  const flower = (x, y, k, c) => `<g transform='translate(${x} ${y}) scale(${k.toFixed(2)}) rotate(${Math.round(r() * 72)})' fill='${c}'>${[0, 72, 144, 216, 288].map(a => `<ellipse cy='-5' rx='3.8' ry='5.2' transform='rotate(${a})'/>`).join('')}<circle r='2' fill='#f2c14e'/></g>`;
+  const spots = [[58, 32], [96, 44], [128, 38], [168, 58], [200, 50], [238, 74], [38, 58], [150, 20], [112, 72], [214, 30], [262, 88], [80, 22]];
+  const art = `<path d='M-10 8 C40 28 90 30 140 44 C180 56 214 62 268 90' fill='none' stroke='${bark}' stroke-width='6' stroke-linecap='round'/>
+    <path d='M90 32 C100 18 120 10 152 14 M140 44 C150 60 140 76 116 84 M196 58 C204 44 214 34 234 28 M40 22 C40 40 46 52 58 62' fill='none' stroke='${bark}' stroke-width='3' stroke-linecap='round'/>
+    ${spots.map(([x, y], i) => flower(x, y, 1 + r() * 0.6, i % 3 ? petal : petal2)).join('')}
+    ${[[70, 46], [182, 70], [122, 28], [226, 60]].map(([x, y]) => `<circle cx='${x}' cy='${y}' r='2.8' fill='${petal}'/>`).join('')}`;
+  return svgTile(290, 150, flip ? `<g transform='translate(290 0) scale(-1 1)'>${art}</g>` : art);
+}
+
+// Rolling meadow hills dotted with flowers.
+function meadow(back, front, flowers) {
+  const r = seeded(31);
+  let dots = '';
+  for (let i = 0; i < 80; i++) dots += `<circle cx='${(r() * 600).toFixed(0)}' cy='${(152 + r() * 46).toFixed(0)}' r='${(1.4 + r() * 1.9).toFixed(1)}' fill='${flowers[i % flowers.length]}'/>`;
+  return svgTile(600, 200, `<path d='M0 200 V122 C120 98 220 120 320 112 C420 104 500 92 600 106 V200Z' fill='${back}'/>
+    <path d='M0 200 V152 C100 138 200 152 300 148 C400 144 500 134 600 142 V200Z' fill='${front}'/>${dots}`);
+}
+
+// A snowy pine, tier on tier, with snow on each ledge.
+function pine(x, base, h, fill, snow) {
+  const tier = (top, bottom, half) => `<path d='M${x} ${top} L${x + half} ${bottom} L${x - half} ${bottom}Z' fill='${fill}'/><path d='M${x - half * 0.9} ${bottom - 1} q${half * 0.45} ${-h * 0.05} ${half * 0.9} 0 q${half * 0.45} ${-h * 0.06} ${half * 0.9} 0' fill='none' stroke='${snow}' stroke-width='${Math.max(1.5, h * 0.04).toFixed(1)}' stroke-linecap='round'/>`;
+  return `<rect x='${x - h * 0.04}' y='${base - h * 0.08}' width='${h * 0.08}' height='${h * 0.1}' fill='${fill}'/>`
+    + tier(base - h, base - h * 0.58, h * 0.2) + tier(base - h * 0.78, base - h * 0.3, h * 0.29) + tier(base - h * 0.52, base - h * 0.06, h * 0.36)
+    + `<path d='M${x} ${base - h} L${x + h * 0.08} ${base - h * 0.84} L${x - h * 0.08} ${base - h * 0.84}Z' fill='${snow}'/>`;
+}
+function snowyWood(far, near, snow, windowGlow) {
+  const r = seeded(41);
+  let back = '';
+  for (let i = 0; i < 18; i++) back += pine(10 + i * 34 + r() * 14, 150 + r() * 8, 34 + r() * 26, far, snow);
+  const front = [[26, 96], [70, 70], [500, 84], [548, 108], [590, 74]].map(([x, h]) => pine(x, 196, h, near, snow)).join('');
+  const cottage = `<g transform='translate(150 152)'><rect x='0' y='12' width='46' height='30' fill='${near}'/><path d='M-6 14 L23 -8 L52 14Z' fill='${near}'/><path d='M-6 14 L23 -8 L52 14' fill='none' stroke='${snow}' stroke-width='4' stroke-linejoin='round'/>
+    <rect x='32' y='-6' width='7' height='12' fill='${near}'/><rect x='8' y='20' width='10' height='10' fill='${windowGlow}'/><rect x='27' y='24' width='9' height='18' fill='${windowGlow}' opacity='.75'/></g>`;
+  return svgTile(600, 200, `<path d='M0 200 V146 C140 136 260 150 380 142 C470 136 540 140 600 138 V200Z' fill='${shade(snow, -0.06)}'/>${back}
+    <path d='M0 200 V178 C120 168 260 182 380 176 C470 172 540 170 600 174 V200Z' fill='${snow}'/>${cottage}${front}`);
+}
+
+// A field of ripe wheat with a couple of round hay bales.
+function wheatField(stalk, head, bale) {
+  const r = seeded(53);
+  let stalks = '';
+  for (let i = 0; i < 120; i++) {
+    const x = r() * 600, h = 22 + r() * 40, lean = (r() - 0.5) * 10, top = 200 - h;
+    stalks += `<path d='M${x.toFixed(0)} 200 q${(lean / 2).toFixed(1)} ${(-h / 2).toFixed(0)} ${lean.toFixed(1)} ${(-h).toFixed(0)}' stroke='${stalk}' stroke-width='1.3' fill='none'/>`
+      + `<ellipse cx='${(x + lean).toFixed(1)}' cy='${(top - 6).toFixed(0)}' rx='2.8' ry='8' transform='rotate(${(lean * 2).toFixed(0)} ${(x + lean).toFixed(1)} ${(top - 5).toFixed(0)})' fill='${head}'/>`;
+  }
+  const hay = (x, y, k) => `<g transform='translate(${x} ${y}) scale(${k})'><rect x='-26' y='-22' width='52' height='40' rx='16' fill='${bale}'/><ellipse cx='-16' cy='-2' rx='12' ry='18' fill='${shade(bale, 0.12)}'/>
+    <path d='M-16 -14 a10 14 0 1 1 -1 28 a7 10 0 1 1 1 -20 a4 6 0 1 1 -1 12' fill='none' stroke='${shade(bale, -0.25)}' stroke-width='1.4'/></g>`;
+  return svgTile(600, 200, `<path d='M0 200 V176 C150 168 300 178 450 172 C520 168 570 170 600 172 V200Z' fill='${shade(stalk, -0.15)}'/>${stalks}${hay(150, 178, 0.9)}${hay(460, 176, 0.75)}`);
+}
+
+// A ring of standing stones on a hilltop, one trilithon, and (at night) a small fire.
+function stoneRing(stone, hill, fire) {
+  const upright = (x, base, w, h, tilt = 0) => `<path transform='rotate(${tilt} ${x} ${base})' d='M${x - w / 2} ${base} L${x - w / 2 + 2} ${base - h + 6} Q${x} ${base - h - 4} ${x + w / 2 - 2} ${base - h + 6} L${x + w / 2} ${base}Z' fill='${stone}'/>`;
+  const flames = fire ? `<g transform='translate(300 150)'><path d='M-12 6 C-14 -6 -4 -10 -6 -22 C2 -16 6 -10 4 -2 C8 -8 8 -14 6 -18 C14 -10 16 0 12 6Z' fill='#ffb24a'/><path d='M-6 6 C-6 -2 -1 -4 -2 -12 C4 -6 6 0 6 6Z' fill='#fff1b0'/>
+    <path d='M-16 8 L16 4 M-14 4 L14 9' stroke='${stone}' stroke-width='3' stroke-linecap='round'/></g>` : '';
+  return svgTile(600, 200, `<path d='M0 200 V170 C120 160 200 134 300 132 C400 134 480 160 600 168 V200Z' fill='${hill}'/>
+    ${upright(150, 160, 20, 46, -4)}${upright(196, 146, 18, 56)}${upright(404, 146, 18, 58, 3)}${upright(452, 158, 22, 44, 5)}${upright(250, 140, 16, 44, -2)}${upright(354, 140, 16, 46, 2)}
+    <g fill='${stone}'><rect x='270' y='96' width='16' height='46' rx='2'/><rect x='316' y='96' width='16' height='46' rx='2'/><rect x='262' y='88' width='78' height='12' rx='3'/></g>${flames}`);
+}
+
+// Foam-edged waves along the shore.
+function waves(foam) {
+  return svgTile(240, 40, `<path d='M0 22 Q30 10 60 22 T120 22 T180 22 T240 22 V40 H0Z' fill='${foam}' opacity='.28'/><path d='M0 30 Q30 20 60 30 T120 30 T180 30 T240 30 V40 H0Z' fill='${foam}' opacity='.5'/>
+    <path d='M0 22 Q30 10 60 22 T120 22 T180 22 T240 22' fill='none' stroke='#fff' stroke-opacity='.7' stroke-width='1.6'/>`);
+}
+const gulls = svgTile(300, 90, `<g fill='none' stroke='#1a1a2a' stroke-opacity='.55' stroke-width='2' stroke-linecap='round'>${[[40, 40, 1], [72, 28, 0.7], [240, 52, 0.9], [210, 30, 0.6]].map(([x, y, k]) => `<path transform='translate(${x} ${y}) scale(${k})' d='M-12 0 Q-6 -7 0 0 Q6 -7 12 0'/>`).join('')}</g>`);
+function palm(x, base, h, lean, fill) {
+  const tx = x + lean, ty = base - h;
+  const frond = a => `<path transform='translate(${tx} ${ty}) rotate(${a})' d='M0 0 C14 -10 34 -10 52 2 C40 -2 30 -1 22 4 C30 4 36 8 40 14 C28 6 14 4 0 0Z' fill='${fill}'/>`;
+  return `<path d='M${x - 5} ${base} C${x - 3} ${base - h * 0.5} ${tx - 6} ${ty + h * 0.2} ${tx - 2} ${ty} L${tx + 2} ${ty} C${tx - 1} ${ty + h * 0.2} ${x + 3} ${base - h * 0.5} ${x + 5} ${base}Z' fill='${fill}'/>`
+    + [-160, -120, -70, -30, 10, 200].map(frond).join('') + `<circle cx='${tx}' cy='${ty + 4}' r='4' fill='${fill}'/>`;
+}
+
+// Fairy lights strung across the top.
+function fairyLights(wire, bulb) {
+  return svgTile(220, 70, `<path d='M0 8 Q110 52 220 8' fill='none' stroke='${wire}' stroke-width='1.4'/>
+    ${[18, 50, 84, 120, 156, 192].map(x => { const t = x / 220, y = 8 + 4 * 22 * t * (1 - t) * 2; return `<circle cx='${x}' cy='${(y + 6).toFixed(1)}' r='11' fill='${bulb}' opacity='.18'/><circle cx='${x}' cy='${(y + 6).toFixed(1)}' r='5' fill='${bulb}' opacity='.35'/><ellipse cx='${x}' cy='${(y + 5).toFixed(1)}' rx='2.6' ry='3.6' fill='#fff6d6'/><rect x='${x - 1.6}' y='${(y - 0.5).toFixed(1)}' width='3.2' height='3' fill='${wire}'/>`; }).join('')}`);
+}
+// Things on the floor by the fire: books, a mug and a plant at one side, a cat asleep on a cushion at the other.
+// Each side is its own tile, pinned to its corner, so neither is cropped on a phone.
+function hearthProps(sil, rim) {
+  const left = `<g fill='${sil}'><rect x='10' y='150' width='92' height='18' rx='2'/><rect x='16' y='134' width='80' height='16' rx='2'/><rect x='12' y='120' width='86' height='14' rx='2'/>
+    <path d='M108 168 h26 v-26 h-26z M134 148 c10 0 10 14 0 14' /><path d='M150 168 h24 l4 -26 h-32z'/><path d='M162 142 C150 120 140 116 132 118 C146 124 152 132 158 142 M164 142 C166 118 172 108 182 104 C176 118 172 130 168 142 M166 142 C176 128 188 126 196 130 C184 132 176 138 170 142'/></g>
+    <g fill='none' stroke='${rim}' stroke-opacity='.5' stroke-width='1'><path d='M10 150 H102 M16 134 H96 M12 120 H98'/><path d='M114 138 C112 132 118 130 116 124 M124 138 C122 132 128 130 126 124' stroke-opacity='.4' stroke-width='1.6' stroke-linecap='round'/></g>`;
+  const right = `<g transform='translate(430 0)' fill='${sil}'><ellipse cx='70' cy='160' rx='66' ry='14'/>
+    <path d='M22 150 C20 128 40 116 66 116 C92 116 110 126 112 140 C114 150 108 156 96 156 L40 156 C30 156 22 156 22 150Z'/>
+    <path d='M96 128 L100 112 L106 124 L112 110 L114 128 C118 136 116 146 108 150 C100 152 94 146 94 138Z'/><path d='M24 146 C10 146 8 132 18 128 C14 136 20 142 30 142Z'/></g>
+    <g transform='translate(430 0)' fill='none' stroke='${rim}' stroke-opacity='.55' stroke-width='1.2'><path d='M30 134 C40 122 70 118 96 128'/><path d='M100 140 q4 2 8 0' stroke-linecap='round'/></g>`;
+  return {
+    left: svgTile(200, 180, left),
+    right: svgTile(150, 180, right.replaceAll("translate(430 0)", 'translate(4 0)')),
+  };
+}
+
+// Moonlit rooftops: pitched roofs, chimneys, warm windows, and a cat on a chimney.
+function catRooftops(sil, lit) {
+  const r = seeded(61);
+  const roofs = [[0, 110, 120], [100, 90, 110], [190, 120, 100], [300, 96, 120], [400, 116, 100], [490, 86, 120]];
+  let body = '', windows = '';
+  for (const [x, top, w] of roofs) {
+    body += `<path d='M${x} 220 V${top + 30} L${x + w / 2} ${top} L${x + w} ${top + 30} V220Z'/>`;
+    for (let k = 0; k < 3; k++) if (r() > 0.4) windows += `<rect x='${(x + 14 + k * (w / 3)).toFixed(0)}' y='${(top + 48 + r() * 50).toFixed(0)}' width='9' height='13' rx='1'/>`;
+  }
+  const cat = `<g transform='translate(452 46)'><path d='M8 46 C2 46 0 40 2 34 C4 28 7 24 8 20 C6 16 6 11 7 6 L11 10 C13 9.4 16 9.4 18 10 L22 6 C23 11 22 16 20 20 C24 25 26 32 26 38 C26 41 28 43 31 41 C34 39 33.5 34 31 32 C35 32 37 37 34 42 C31 46 25 46 23 46Z'/></g>`;
+  return svgTile(600, 220, `<g fill='${sil}'>${body}<rect x='440' y='92' width='26' height='34'/><rect x='436' y='88' width='34' height='6'/><rect x='150' y='76' width='18' height='30'/>${cat}</g><g fill='${lit}' opacity='.85'>${windows}</g>`);
+}
+
+// Layered mountains with pines, and a dotted trail winding up the nearest slope.
+function mountainTrail(far, mid, near, trail) {
+  const r = seeded(71);
+  let pines = '';
+  for (let i = 0; i < 22; i++) { const x = r() * 600, h = 14 + r() * 18, base = 186 - r() * 14; pines += `<path d='M${x.toFixed(0)} ${(base - h).toFixed(0)} L${(x + h * 0.32).toFixed(0)} ${base.toFixed(0)} L${(x - h * 0.32).toFixed(0)} ${base.toFixed(0)}Z'/>`; }
+  return svgTile(600, 200, `<path d='M0 200 V112 L60 74 L110 98 L170 50 L230 92 L280 70 L340 104 L400 58 L460 90 L520 64 L600 96 V200Z' fill='${far}'/>
+    <path d='M170 50 L182 60 L176 62 L170 58 L162 64 L158 58Z M400 58 L412 68 L404 70 L398 66 L392 70 L390 66Z' fill='#fff' opacity='.6'/>
+    <path d='M0 200 V140 C80 118 150 132 220 120 C300 108 380 132 460 118 C520 110 570 120 600 124 V200Z' fill='${mid}'/>
+    <path d='M0 200 V170 C120 156 220 176 320 168 C420 160 520 150 600 158 V200Z' fill='${near}'/><g fill='${near}'>${pines}</g>
+    <path d='M300 200 C320 186 260 182 300 172 C340 162 380 166 410 156' fill='none' stroke='${trail}' stroke-width='2.6' stroke-dasharray='1 7' stroke-linecap='round'/>`);
 }
 
 function backdropLayers(look, inv = {}) {
@@ -410,6 +565,77 @@ function backdropLayers(look, inv = {}) {
       + `${svgUrl(wood)} center bottom / max(100%, 560px) auto no-repeat, `
       + `radial-gradient(circle at 80% 27%, #fffdf0 0 34px, rgba(255, 250, 225, 0.4) 40px, rgba(220, 225, 255, 0.12) 110px, transparent 190px), `
       + `${patternCss('stars', '#ffffff', look.accent, 0.45)}, linear-gradient(175deg, ${c1}, ${c2})`;
+  }
+
+  if (scene === 'candles') {
+    const bokeh = (x, y, r, o) => `radial-gradient(circle at ${x}% ${y}%, rgba(255, 196, 120, ${o}) 0 ${r - 6}px, transparent ${r}px)`;
+    return `${svgUrl(candleClusters('#ffb347'))} center bottom / max(100%, 600px) auto no-repeat, `
+      + `${[bokeh(14, 20, 26, 0.12), bokeh(82, 14, 34, 0.1), bokeh(70, 42, 18, 0.12), bokeh(24, 50, 14, 0.1), bokeh(90, 60, 22, 0.08)].join(', ')}, `
+      + `radial-gradient(90% 30% at 50% 100%, rgba(255, 168, 80, 0.3), transparent 70%), `
+      + `${patternCss('damask', motif, look.accent, 0.05)}, ${vignette}, linear-gradient(170deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'garden') {
+    const petal = shade(look.accent, 0.62), petal2 = '#ffffff';
+    return `${svgUrl(blossomBranch('#6b4a3a', petal, petal2))} left top / min(60%, 360px) auto no-repeat, `
+      + `${svgUrl(blossomBranch('#6b4a3a', petal2, petal, true))} right top / min(52%, 320px) auto no-repeat, `
+      + `${svgUrl(meadow('#b5dc9c', '#93c97b', ['#ffffff', petal, look.accent, '#ffd75e']))} center bottom / max(100%, 620px) auto no-repeat, `
+      + `${patternCss('blossoms', petal, look.accent, 0.18)}, `
+      + `radial-gradient(60% 30% at 50% 0%, rgba(255, 252, 230, 0.6), transparent 70%), linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'snowpines') {
+    const far = dark ? shade(c2, 0.12) : shade(c1, -0.32), near = dark ? shade(c1, -0.35) : shade(c1, -0.55);
+    return `${svgUrl(snowyWood(far, near, dark ? '#e8f0f2' : '#ffffff', '#ffd27a'))} center bottom / max(100%, 620px) auto no-repeat, `
+      + `${patternCss('snow', '#ffffff', look.accent2, dark ? 0.55 : 0.8)}, `
+      + (dark
+        ? `radial-gradient(circle at 76% 18%, #fffbe8 0 30px, rgba(255, 250, 220, 0.3) 32px, rgba(255, 250, 220, 0.08) 90px, transparent 150px), ${patternCss('stars', '#ffffff', look.accent, 0.35)}, `
+        : `radial-gradient(50% 30% at 70% 22%, rgba(255, 244, 214, 0.9), rgba(255, 220, 190, 0.3) 40%, transparent 70%), `)
+      + `linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'harvest') {
+    const stalk = dark ? '#8a5a24' : '#b8862e', head = dark ? '#d39a3e' : '#eec35a';
+    return `${svgUrl(wheatField(stalk, head, dark ? '#a8742c' : '#d9a441'))} center bottom / max(100%, 620px) auto no-repeat, `
+      + `${patternCss('leaves', dark ? '#ffffff' : look.accent, look.accent2, dark ? 0.1 : 0.16)}, `
+      + `radial-gradient(circle at 76% 18%, ${dark ? '#ffe2a8' : '#fff4cf'} 0 46px, rgba(255, 176, 90, 0.4) 62px, rgba(255, 150, 70, 0.12) 140px, transparent 220px), `
+      + `${dark ? `${patternCss('stars', '#ffffff', look.accent, 0.3)}, ` : ''}${vignette}, linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'stones') {
+    const stone = dark ? '#0b0710' : shade(c2, -0.55), hill = dark ? '#120b16' : shade(c2, -0.35);
+    const sky = dark
+      ? `radial-gradient(circle at 76% 18%, #fff6e2 0 42px, rgba(255, 236, 200, 0.35) 50px, rgba(220, 200, 255, 0.1) 120px, transparent 200px), radial-gradient(14% 6% at 50% 76%, rgba(255, 150, 60, 0.5), transparent 70%), ${patternCss('stars', '#ffffff', look.accent2, 0.45)}`
+      : `repeating-conic-gradient(from 0deg at 50% calc(100% - 118px), rgba(255, 255, 255, 0.16) 0 6deg, transparent 6deg 16deg), radial-gradient(circle at 50% calc(100% - 118px), #fffbe6 0 40px, rgba(255, 240, 180, 0.6) 44px, rgba(255, 220, 140, 0.2) 120px, transparent 220px)`;
+    return `${svgUrl(stoneRing(stone, hill, dark))} center bottom / max(100%, 620px) auto no-repeat, ${sky}, ${vignette}, linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'shore' || scene === 'tropics') {
+    const sea = shade(c2, -0.28), horizon = '62%';
+    const palms = scene === 'tropics'
+      ? `${svgUrl(svgTile(200, 300, `${palm(40, 300, 220, 40, '#14100e')}${palm(96, 300, 150, -6, '#14100e')}`))} left -8% bottom 0 / auto min(46vh, 340px) no-repeat, `
+        + `${svgUrl(svgTile(200, 300, palm(150, 300, 200, -44, '#14100e')))} right -6% bottom 0 / auto min(42vh, 310px) no-repeat, ` : '';
+    return `${palms}${svgUrl(waves('#ffffff'))} 0 100% / 240px 40px repeat-x, `
+      + `${svgUrl(gulls)} 70% 12% / min(60%, 300px) auto no-repeat, `
+      + `linear-gradient(90deg, transparent 44%, rgba(255, 244, 210, 0.35) 50%, transparent 56%) 0 100% / 100% 38% no-repeat, `
+      + `repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.12) 0 2px, transparent 2px 14px) 0 100% / 100% 38% no-repeat, `
+      + `linear-gradient(180deg, ${shade(sea, 0.15)}, ${sea}) 0 100% / 100% 38% no-repeat, `
+      + `radial-gradient(circle at 50% ${horizon}, #fffbe6 0 34px, rgba(255, 236, 190, 0.55) 38px, rgba(255, 200, 150, 0.2) 110px, transparent 200px), `
+      + `linear-gradient(180deg, ${c1}, ${shade(c1, 0.25)} 62%, ${c2})`;
+  }
+  if (scene === 'fireside') {
+    const sil = shade(c1, -0.55);
+    return `${svgUrl(fairyLights('#2a1c14', '#ffd27a'))} 0 0 / 220px 70px repeat-x, `
+      + `${svgUrl(hearthProps(sil, '#ffc27a').left)} left 2% bottom 0 / min(46%, 220px) auto no-repeat, `
+      + `${svgUrl(hearthProps(sil, '#ffc27a').right)} right 2% bottom 0 / min(36%, 170px) auto no-repeat, `
+      + `radial-gradient(50% 40% at 50% 100%, rgba(255, 150, 70, 0.32), transparent 70%), radial-gradient(30% 30% at 10% 90%, rgba(255, 190, 110, 0.18), transparent 70%), `
+      + `${patternCss(look.pattern, motif, look.accent, 0.07)}, ${vignette}, linear-gradient(175deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'rooftops') {
+    return `${svgUrl(catRooftops('#07050c', '#ffcf73'))} center bottom / max(100%, 620px) auto no-repeat, `
+      + `radial-gradient(circle at 76% 22%, #fffbe8 0 52px, rgba(255, 250, 220, 0.3) 56px, rgba(200, 190, 255, 0.1) 130px, transparent 220px), `
+      + `${patternCss('stars', '#ffffff', look.accent, 0.45)}, ${vignette}, linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'trail') {
+    return `${svgUrl(mountainTrail(shade(c2, 0.25) + 'aa', shade(c2, -0.2), shade(c1, -0.35), '#f6ead0'))} center bottom / max(100%, 620px) auto no-repeat, `
+      + `repeating-conic-gradient(from 0deg at 62% 58%, rgba(255, 236, 190, 0.08) 0 5deg, transparent 5deg 14deg), `
+      + `radial-gradient(circle at 62% 58%, #fff3cf 0 30px, rgba(255, 210, 140, 0.45) 34px, rgba(255, 170, 90, 0.15) 120px, transparent 220px), `
+      + `linear-gradient(180deg, ${c1}, ${c2})`;
   }
   if (scene === 'bokeh') {
     const dot = (x, y, r, c, o) => `radial-gradient(circle at ${x}% ${y}%, ${c}${o} 0, ${c}${o} ${r - 4}px, transparent ${r}px)`;

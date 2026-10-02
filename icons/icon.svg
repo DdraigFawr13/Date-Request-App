@@ -16,7 +16,7 @@
     <path d="M150 70l5 13 13 5-13 5-5 13-5-13-13-5 13-5z"/>
   </g>
   <!-- the crescent moon -->
-  <path d="M352 66a96 96 0 1 0 74 152 76 76 0 1 1-74-152z" fill="url(#gold)"/>
+  <path transform="translate(-26 -30)" d="M352 66a96 96 0 1 0 74 152 76 76 0 1 1-74-152z" fill="url(#gold)"/>
   <!-- the envelope -->
   <g transform="translate(106 196)">
     <rect width="300" height="200" rx="14" fill="#fbf5e8"/>

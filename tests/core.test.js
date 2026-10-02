@@ -108,7 +108,7 @@ test('wrappers and wax seals fall back to the look and reject bad input', async 
   const { THEMES } = await import('../js/themes.js');
   const seaside = THEMES.seaside;
   assert.equal(resolveWrapper({}, seaside), 'bottle', 'look picks its own wrapper');
-  assert.equal(resolveWrapper({}, THEMES.samhain), 'envelope');
+  assert.equal(resolveWrapper({}, { ...THEMES.samhain, wrap: undefined }), 'envelope', 'no pick falls back to the envelope');
   assert.equal(resolveWrapper({ w: 'scroll' }, seaside), 'scroll');
   assert.equal(resolveWrapper({ w: 'trebuchet' }, seaside), 'bottle');
   assert.equal(sealColor({ sc: '#c9a227' }, seaside), '#c9a227');
@@ -281,7 +281,9 @@ test('every module import can be stamped with the release id on deploy', async (
 test('every look is a complete, flat entry (no look nested inside another)', async () => {
   const { THEMES } = await import('../js/themes.js');
   for (const [id, t] of Object.entries(THEMES)) {
-    for (const key of ['name', 'cat', 'bg', 'card', 'ink', 'accent', 'accent2', 'seal', 'pattern', 'wax', 'paper']) assert.ok(t[key], `${id}: missing ${key}`);
+    // Every look is dressed to the same level: a scene, side borders, a way to arrive and a drawn seal.
+    for (const key of ['name', 'cat', 'bg', 'card', 'ink', 'accent', 'accent2', 'seal', 'pattern', 'wax', 'paper', 'scene', 'sides', 'wrap', 'corners', 'rule']) assert.ok(t[key], `${id}: missing ${key}`);
+    assert.match(t.seal, /^@/, `${id}: seal should be a drawn emblem, not text`);
     for (const [k, v] of Object.entries(t)) assert.ok(typeof v !== 'object' || Array.isArray(v), `${id}.${k} is a nested object`);
   }
 });
@@ -344,4 +346,13 @@ test('the shortener sandbox can’t be broken out of by a crafted link', async (
   const doc = sandboxDoc('https://is.gd/create.php?format=json&url=</script><script>alert(1)</script>', 'id"1');
   assert.equal(doc.match(/<\/script>/g).length, 1, 'only the sandbox’s own closing tag');
   assert.ok(!/<script>alert/.test(doc));
+});
+
+test('every occasion has its own wording for each answer', async () => {
+  const { TEMPLATES } = await import('../js/occasions.js');
+  for (const t of TEMPLATES) {
+    for (const key of ['badge', 'greeting', 'yes', 'maybe', 'no', 'closing']) {
+      if (!(t.seasonal && ['badge', 'greeting', 'yes'].includes(key))) assert.ok(t[key], `${t.id}: missing ${key}`);
+    }
+  }
 });
