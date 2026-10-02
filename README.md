@@ -152,6 +152,9 @@ jack-o’-lantern, broken heart, skull, kiss…)
 (martini, die, music, disco ball, cake…) or cats (sitting cat, cat face,
 paw print…). Or press your own initials or symbol (up
 to 4 characters, emoji included).
+Every emblem, drawn or typed, is sized to sit inside the seal's pressed
+face, clear of the raised ring (`node scripts/fit-emblems.mjs` re-fits the
+drawn ones after adding or changing one; a browser test checks it).
 
 ## Detail modules
 
