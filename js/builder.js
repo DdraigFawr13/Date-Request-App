@@ -41,6 +41,7 @@ function normalize(saved) {
     st.lookTab = THEMES[st.look].cat;
   }
   if (!THEMES[st.look]) st.look = blankState().look;
+  if (!saved?.lookTab || !LOOK_CATEGORIES.some(c => c.id === st.lookTab)) st.lookTab = THEMES[st.look].cat;
   if (typeof st.askCustom === 'string') st.askCustom = st.askCustom.trim() ? [st.askCustom] : [];
   if (!Array.isArray(st.askCustom)) st.askCustom = [];
   if (saved?.closing && !st.tx.close) st.tx = { ...st.tx, close: saved.closing };

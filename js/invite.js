@@ -5,7 +5,7 @@ import { resolveTheme } from './occasions.js';
 import { QUESTION_BY_ID } from './modules.js';
 import { decodeInvite } from './codec.js';
 import { downloadIcs, googleUrl, outlookUrl } from './calendar.js';
-import { applyTheme, esc, formatWhen, particles, renderCard, wordsFor } from './render.js';
+import { ICONS, applyTheme, cardOpen, esc, formatWhen, particles, renderCard, sectionRule, wordsFor } from './render.js';
 import { $, copyText, smsHref, store, toast } from './util.js';
 import { playOpening, wrapperHtml } from './wrappers.js';
 
@@ -35,10 +35,10 @@ function replyText(kind, answers = [], note = '') {
 function calendarButtons() {
   return `<p class="sub">Add it to your calendar</p>
     <div class="btn-row">
-      <button type="button" class="btn" data-action="ics">🍎 Apple / iPhone</button>
-      <a class="btn" href="${esc(googleUrl(inv, url))}" target="_blank" rel="noopener">📆 Google</a>
-      <a class="btn" href="${esc(outlookUrl(inv, url))}" target="_blank" rel="noopener">📧 Outlook</a>
-      <button type="button" class="btn ghost" data-action="ics">⬇ .ics file</button>
+      <button type="button" class="btn" data-action="ics">${ICONS.date} Apple / iPhone</button>
+      <a class="btn" href="${esc(googleUrl(inv, url))}" target="_blank" rel="noopener">${ICONS.date} Google</a>
+      <a class="btn" href="${esc(outlookUrl(inv, url))}" target="_blank" rel="noopener">${ICONS.date} Outlook</a>
+      <button type="button" class="btn ghost" data-action="ics">${ICONS.download} .ics file</button>
     </div>`;
 }
 
@@ -49,8 +49,8 @@ function replyControls(kind) {
   const notePlaceholder = { yes: 'Anything else to add? (optional)', maybe: 'When works better for you?', no: 'Add a note (optional)' }[kind];
   return `${fields}<label>${kind === 'maybe' ? 'Suggest a time' : 'A note'}<textarea data-note rows="2" placeholder="${notePlaceholder}"></textarea></label>
     <div class="btn-row">
-      <a id="reply-send" class="btn primary">💬 Text ${who} my answer</a>
-      <button type="button" id="reply-copy" class="btn" data-action="copy-reply">📋 Copy my reply</button>
+      <a id="reply-send" class="btn primary">${ICONS.message} Text ${who} my answer</a>
+      <button type="button" id="reply-copy" class="btn" data-action="copy-reply">${ICONS.copy} Copy my reply</button>
     </div>
     <p class="hint">“Text” opens your messages with the reply written for you — just pick ${who}. Or copy it and send it however you usually chat.</p>`;
 }
@@ -58,7 +58,7 @@ function replyControls(kind) {
 function renderPanel(kind, { scroll = true } = {}) {
   const panel = $('#rsvp-panel');
   const heading = `<h2 class="panel-title">${esc(words[`${kind}H`])}</h2>${words[`${kind}P`] ? `<p>${esc(words[`${kind}P`])}</p>` : ''}`;
-  panel.innerHTML = `${heading}${replyControls(kind)}${kind === 'yes' ? calendarButtons() : ''}`;
+  panel.innerHTML = `${sectionRule(inv, theme)}${heading}${replyControls(kind)}${kind === 'yes' ? `${sectionRule(inv, theme, true)}${calendarButtons()}` : ''}`;
   panel.hidden = false;
   for (const b of document.querySelectorAll('[data-r]')) b.classList.toggle('chosen', b.dataset.r === kind);
 
@@ -98,7 +98,7 @@ function showCard(root, { animate }) {
   root.innerHTML = `
     <div class="invite-wrap ${animate ? 'reveal' : ''}">
       ${renderCard(inv, theme, words)}
-      <section class="respond card">
+      ${cardOpen(inv, theme, 'section', 'respond')}
         ${words.ask ? `<h2 class="panel-title">${esc(words.ask)}</h2>` : ''}
         ${saved ? `<p class="hint">You answered “${{ yes: 'yes', maybe: 'maybe', no: 'no' }[saved.r] || saved.r}” earlier — you can change it anytime.</p>` : ''}
         <div class="rsvp-buttons">
@@ -107,7 +107,7 @@ function showCard(root, { animate }) {
           <button type="button" class="btn ghost" data-r="no">${esc(words.no)}</button>
         </div>
         <div id="rsvp-panel" hidden></div>
-      </section>
+      </div></section>
       <p class="made-with"><a href="${esc(location.pathname)}">Make your own Moonpost ☾</a></p>
     </div>`;
   if (saved?.r) renderPanel(saved.r, { scroll: false });

@@ -77,6 +77,32 @@ export function moonLine(inv) {
 // The invitation's full wording, including the computed moon line.
 export const wordsFor = inv => wording(inv, { moon: moonLine(inv) });
 
+// Fine line-art icons that match the gilded ornaments.
+const icon = d => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+export const ICONS = {
+  date: icon('<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M8 13.5h.01M12 13.5h.01M16 13.5h.01M8 17h.01M12 17h.01" stroke-width="2.2"/>'),
+  time: icon('<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.2 2"/>'),
+  place: icon('<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>'),
+  by: icon('<path d="M7 3h10M7 21h10"/><path d="M8 3c0 5 8 5.5 8 9s-8 4-8 9M16 3c0 5-8 5.5-8 9s8 4 8 9"/>'),
+  message: icon('<path d="M4.5 5.5h15a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3.5V17.5h-1A1.5 1.5 0 0 1 3 16V7a1.5 1.5 0 0 1 1.5-1.5z"/>'),
+  copy: icon('<rect x="8.5" y="8.5" width="11.5" height="12" rx="1.6"/><path d="M15.5 8.5V5.6A1.6 1.6 0 0 0 13.9 4H5.6A1.6 1.6 0 0 0 4 5.6v8.3a1.6 1.6 0 0 0 1.6 1.6h2.9"/>'),
+  download: icon('<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/>'),
+  link: icon('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+};
+const medal = inner => `<span class="detail-icon">${inner}</span>`;
+
+// The paper, ornaments and body wrapper shared by every card on the page.
+export function cardOpen(inv, theme, tag = 'article', cls = '') {
+  return `<${tag} class="card ${cls}" data-paper="${esc(resolvePaper(inv, theme))}"${theme.dark ? ' data-dark' : ''}>
+    ${decorHtml(inv, theme)}<div class="card-body">`;
+}
+
+// A script line between sections, in the invitation's chosen style.
+export function sectionRule(inv, theme, small = false) {
+  const html = ruleHtml(resolveRule(inv, theme), theme, { emoji: esc(theme.divider), glyph: esc(theme.glyph) });
+  return small ? html.replace(/class="(rule|divider)/, 'class="$1 small') : html;
+}
+
 export const mapUrl = inv =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([inv.loc, inv.addr].filter(Boolean).join(', '))}`;
 
@@ -88,27 +114,20 @@ export function detailLabel(inv, m) {
 export function renderCard(inv, theme, words = wordsFor(inv)) {
   const when = formatWhen(inv);
   const place = inv.loc || inv.addr;
-  const rule = resolveRule(inv, theme);
-  const glyphs = { emoji: esc(theme.divider), glyph: esc(theme.glyph) };
-  const divide = (small = false) => {
-    const html = ruleHtml(rule, theme, glyphs);
-    return small ? html.replace(/class="(rule|divider)/, 'class="$1 small') : html;
-  };
+  const divide = (small = false) => sectionRule(inv, theme, small);
 
   const details = MODULES
     .filter(m => inv.d?.[m.id] && !['link', 'rsvpby'].includes(m.id))
-    .map(m => `<li class="detail"><span class="detail-icon">${m.icon}</span><span><b>${esc(detailLabel(inv, m))}</b>${esc(inv.d[m.id])}</span></li>`);
+    .map(m => `<li class="detail">${medal(m.icon)}<span><b>${esc(detailLabel(inv, m))}</b>${esc(inv.d[m.id])}</span></li>`);
   for (const c of inv.cf || []) {
-    if (c.l || c.v) details.push(`<li class="detail"><span class="detail-icon">${esc(c.i || '✦')}</span><span><b>${esc(c.l)}</b>${esc(c.v)}</span></li>`);
+    if (c.l || c.v) details.push(`<li class="detail">${medal(esc(c.i || '✦'))}<span><b>${esc(c.l)}</b>${esc(c.v)}</span></li>`);
   }
 
   const link = inv.d?.link;
   const linkHref = safeUrl(link?.u);
 
   return `
-  <article class="card" data-paper="${esc(resolvePaper(inv, theme))}"${theme.dark ? ' data-dark' : ''}>
-    ${decorHtml(inv, theme)}
-    <div class="card-body">
+  ${cardOpen(inv, theme)}
       ${words.badge ? `<div class="card-badge">${esc(words.badge)}</div>` : ''}
       ${words.dear ? `<p class="dear">${esc(words.dear)}</p>` : ''}
       ${words.greet ? `<p class="greeting">${esc(words.greet)}</p>` : ''}
@@ -116,14 +135,14 @@ export function renderCard(inv, theme, words = wordsFor(inv)) {
       ${inv.msg ? `<p class="message">${esc(inv.msg)}</p>` : ''}
       ${divide()}
       <ul class="when">
-        <li><span class="detail-icon">📅</span><span>${esc(when.date)}</span></li>
-        <li><span class="detail-icon">🕰️</span><span>${esc(when.time)}</span></li>
-        ${place ? `<li><span class="detail-icon">📍</span><span>${inv.loc ? `<b class="plain">${esc(inv.loc)}</b>` : ''}${inv.addr ? `<a href="${esc(mapUrl(inv))}" target="_blank" rel="noopener">${esc(inv.addr)}</a>` : ''}</span></li>` : ''}
+        <li>${medal(ICONS.date)}<span>${esc(when.date)}</span></li>
+        <li>${medal(ICONS.time)}<span>${esc(when.time)}</span></li>
+        ${place ? `<li>${medal(ICONS.place)}<span>${inv.loc ? `<b class="plain">${esc(inv.loc)}</b>` : ''}${inv.addr ? `<a href="${esc(mapUrl(inv))}" target="_blank" rel="noopener">${esc(inv.addr)}</a>` : ''}</span></li>` : ''}
         ${words.moon.trim() ? `<li class="moon"><span>${esc(words.moon.trim())}</span></li>` : ''}
       </ul>
       ${details.length ? `${divide(true)}<ul class="details">${details.join('')}</ul>` : ''}
-      ${linkHref ? `<a class="btn link-btn" href="${esc(linkHref)}" target="_blank" rel="noopener">🔗 ${esc(link.l || 'More info')}</a>` : ''}
-      ${inv.d?.rsvpby ? `<p class="rsvp-by">⏳ ${esc(words.by)} ${esc(formatShortDate(inv.d.rsvpby))}</p>` : ''}
+      ${linkHref ? `<a class="btn link-btn" href="${esc(linkHref)}" target="_blank" rel="noopener">${ICONS.link} ${esc(link.l || 'More info')}</a>` : ''}
+      ${inv.d?.rsvpby ? `<p class="rsvp-by">${ICONS.by} ${esc(words.by)} ${esc(formatShortDate(inv.d.rsvpby))}</p>` : ''}
       ${divide(true)}
       <p class="closing">${esc(words.close)}${inv.from ? `<span class="signature">${esc(inv.from)}</span>` : ''}</p>
       ${sealHtml(inv, theme, 'card-seal')}
