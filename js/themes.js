@@ -105,13 +105,13 @@ export const THEMES = {
   adventure: {
     name: 'Wild Adventure', cat: 'nature', tagline: 'Into the wild', glyph: '🧭',
     bg: ['#1d3328', '#4f6d4a'], card: '#f5efe0', ink: '#22332a', accent: '#c46f1f', accent2: '#4f7cac', onAccent: '#ffffff',
-    particles: ['🌲', '🍃', '🧭', '⛰️', '🦉'], seal: '🧭', wrap: 'chest', divider: '🌲 ✦ 🌲',
+    particles: ['🌲', '🍃', '🧭', '⛰️', '🦉'], seal: '🧭', wrap: 'map', divider: '🌲 ✦ 🌲',
     pattern: 'leaves', wax: 'forest', waxFace: 'bronze', paper: 'parchment', corners: 'none', rule: 'swash',
   },
   enchanted: {
     name: 'Enchanted Forest', cat: 'storybook', tagline: 'Where the fae dance', glyph: '🍄',
     bg: ['#0c2418', '#2f5d50'], card: '#112a1f', ink: '#e6f5e0', accent: '#c3f584', accent2: '#f5b0e0', onAccent: '#112a1f', dark: true,
-    particles: ['🍄', '✨', '🧚', '🌿', '🦋'], seal: '🍄', wrap: 'scroll', divider: '🌿 ✧ 🌿',
+    particles: ['🍄', '✨', '🧚', '🌿', '🦋'], seal: '🍄', wrap: 'book', divider: '🌿 ✧ 🌿',
     pattern: 'leaves', wax: 'forest', waxFace: 'gold', paper: 'smooth', corners: 'floral', rule: 'vine',
   },
   seaside: {
@@ -171,7 +171,7 @@ export const THEMES = {
   wizard: {
     name: 'Wizard’s Academy', cat: 'storybook', tagline: 'Spellbooks, candles & stardust', glyph: '✦',
     bg: ['#120a24', '#3a1d5c'], card: '#f3e7cb', ink: '#2a1a3a', accent: '#5b2a86', accent2: '#b8902a', onAccent: '#fff6e0',
-    particles: ['🕯️', '✨', '🔮', '📜', '⭐'], seal: '@wizardhat', divider: '✦ ☾ ✦', wrap: 'scroll',
+    particles: ['🕯️', '✨', '🔮', '📜', '⭐'], seal: '@wizardhat', divider: '✦ ☾ ✦', wrap: 'owl',
     pattern: 'magic', scene: 'magic', wax: 'purple', waxFace: 'gold', paper: 'parchment', corners: 'celestial', rule: 'flourish',
   },
   dragon: {
@@ -205,7 +205,7 @@ export const THEMES = {
   speakeasy: {
     name: 'Speakeasy', cat: 'party', tagline: 'Emerald, brass & jazz', glyph: '🍸',
     bg: ['#0c1c17', '#1d3b30'], card: '#f4ecd8', ink: '#1d2b24', accent: '#1f5c45', accent2: '#b8902a', onAccent: '#fff8e6',
-    particles: ['🍸', '🥃', '🎷', '✦', '🍒'], seal: '🍸', divider: '✦ 🍸 ✦',
+    particles: ['🍸', '🥃', '🎷', '✦', '🍒'], seal: '🍸', divider: '✦ 🍸 ✦', wrap: 'telegram',
     pattern: 'cocktails', scene: 'sunburst', wax: 'forest', waxFace: 'gold', paper: 'cotton', corners: 'deco', sides: 'frame', rule: 'rule',
   },
   neon: {

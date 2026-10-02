@@ -247,3 +247,14 @@ test('metallic foil accents only accept known finishes and pick a variant for th
   assert.match(card, /data-foil="copper"/);
   assert.match(card, /<linearGradient id='fo\d+'/);
 });
+
+test('every opening renders, and the telegram types escaped text', async () => {
+  const { WRAPPERS, wrapperHtml } = await import('../js/wrappers.js');
+  const { THEMES } = await import('../js/themes.js');
+  const inv = { title: '<img src=x onerror=alert(1)> party', s: Date.now() };
+  for (const w of Object.keys(WRAPPERS)) {
+    const html = wrapperHtml({ ...inv, w }, THEMES.royal, { for: 'For <b>Rowan</b>', tap: 'Tap', fromLine: '' });
+    assert.match(html, new RegExp(`data-wrap="${w}"`));
+    assert.ok(!/<img|<b>/i.test(html), `${w}: unescaped text`);
+  }
+});
