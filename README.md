@@ -9,7 +9,7 @@ their calendar, and texts their answer back to you.
 ## How it works
 
 1. **Build it.** Pick an occasion (dinner date, drinks, a night out dancing,
-   game night, birthday, Halloween party, a Halloween soirée at The Nocturne, after dark, a night of magic,
+   game night, birthday, a neon city night, a fellowship gathering, a masquerade, Halloween party, a Halloween soirée at The Nocturne, after dark, a night of magic,
    dragon quest, woodland tea, royal feast, cat date, picnic, sabbat gathering…), fill in the basics, choose a look, and add only the
    details that matter.
 2. **Seal it.** Moonpost packs the whole invitation into the link itself.
@@ -38,14 +38,15 @@ their calendar, and texts their answer back to you.
 | 🌹 Romantic | Candlelit · Blush & Gold · Midnight Velvet |
 | 🍂 Seasonal | the eight sabbats (Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon) · Halloween |
 | 🌿 Nature | Garden Picnic · Wild Adventure · Seaside |
-| 🪄 Storybook | Wizard’s Academy · Dragon’s Hoard · Woodland Tea · Enchanted Forest |
+| 🪄 Storybook | Wizard’s Academy · Dragon’s Hoard · Woodland Tea · Enchanted Forest · The Fellowship (a Lord of the Rings–style quest: misty mountains at dusk, elven knot corners and vine, the One Ring seal, opens as the treasure map) |
 | 🌌 Sky | Constellation · Aurora · Starlit Night |
 | 🏰 Medieval | Royal Court · Castle Keep · Illuminated |
 | 🐈‍⬛ Cats | Black Cat · Calico · Kitten Pastel · Cat Café |
 | 🎉 Parties | Speakeasy · Neon Club · Disco Fever · Game Night · Birthday Bash · Tiki Bar · Celebration |
+| 🗝️ After dark | Kinky · Boudoir (blush silk, black lace, pearls, satin-bow seal) · Masquerade (black velvet and gold, masquerade-mask seal, opens as the pop-up theatre) · Noir (smoky rooftops and a red lip, typed out on a typewriter) |
 | 🎭 Stage | A Midsummer Night’s Dream (moonlit wood with fairy lights, a seal of Bottom's donkey head crowned with flowers) · Theatre Night (red-velvet curtains, masks seal) · Broadway Musical (marquee lights, music-note seal) · The Nocturne (a Halloween burlesque soirée: velvet curtains under a feather-boa swag, spotlight haze, fishnet texture, a vintage mic and coupe tower, moon and bats, kiss seal, rhinestone corners and feather-boa sides) |
-| 🖤 Dark side | Gothic · Emo · Kinky |
-| ✨ Night & glam | Night at the Show · Cozy Night In |
+| 🖤 Dark side | Gothic · Emo |
+| ✨ Night & glam | Cyberpunk (a neon megacity skyline over a holo-grid, circuit-trace corners and sides, microchip seal, cyan glow) · Night at the Show · Cozy Night In |
 
 Each look also picks sensible defaults for everything below, and you can
 override any of them:
@@ -58,9 +59,9 @@ override any of them:
 - **Neon glow:** make the title, headings and card edge glow in hot pink,
   electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
 - **Background:** a soft glow, a moonlit sky, a haunted night, an aurora, a velvet curtain, bokeh lights,
-  a neon grid, a sunburst, stage curtains, marquee lights, a moonlit wood, a burlesque stage, or a pattern (damask, stars, snowfall, blossoms,
+  a neon grid, a sunburst, stage curtains, marquee lights, a moonlit wood, a burlesque stage, a neon city, misty mountains, noir rooftops, or a pattern (damask, stars, snowfall, blossoms,
   leaves, hearts, paw prints, waves, castle stone, gingham, plaid, lace, bats, wands & hats, dragon scales,
-  constellations, acorns & mushrooms, theatre masks, moons & pansies, fishnet, plumes & bats,
+  constellations, acorns & mushrooms, theatre masks, moons & pansies, fishnet, plumes & bats, circuit traces, leaves & stars,
   spiderwebs, stripes, cocktails, dice, checkerboard, disco tiles, music notes, confetti), in the look's
   colors or two of your own.
 - **Paper:** smooth card, handmade cotton, aged parchment, linen weave,
@@ -68,9 +69,9 @@ override any of them:
 - **Ornaments:** corner pieces (filigree, gothic, floral vine, art deco,
   celestial, spiderweb, constellation, acorn branch, paw prints, baroque
   scroll, art nouveau, rhinestones, ostrich plume, thorned rose, marquee
-  bulbs), side borders (double frame, climbing vine, pearls, lace, stitching,
+  bulbs, circuit, elven knot), side borders (double frame, climbing vine, pearls, lace, stitching,
   paw trail, rhinestones, beads, velvet rope, marquee bulbs, feather boa,
-  thorned vine) and script lines between sections (swash, flourish, vine,
+  thorned vine, circuit trace, elven vine) and script lines between sections (swash, flourish, vine,
   fine rule). Each option shows a small drawing of the style.
 
 ## Wording

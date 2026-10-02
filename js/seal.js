@@ -118,6 +118,23 @@ export const SVG_EMBLEMS = {
       <ellipse cx='76.5' cy='65.5' rx='2.2' ry='1.4' transform='rotate(-35 76.5 65.5)'/><path d='M69 73 C72 74.5 75.5 74 78 71.5' fill='none' stroke='#000' stroke-width='1.2'/>
       <path d='M48 70 C52 66 54 60 52 54' fill='none' stroke='#000' stroke-width='1' opacity='.5'/></g>
     ${[[43.5, 37.5, 5], [51, 33.5, 5.4], [59, 35, 4.6]].map(([x, y, r]) => `<g transform='translate(${x} ${y})'>${[0, 72, 144, 216, 288].map(a => `<ellipse cy='${-r * 0.55}' rx='${r * 0.38}' ry='${r * 0.55}' transform='rotate(${a})'/>`).join('')}<circle r='${r * 0.32}' fill='#000'/></g>`).join('')}`,
+  chip: `<rect x='32' y='34' width='36' height='36' rx='4'/><g>${[39, 46, 54, 61].map(v => `<rect x='${v - 1.5}' y='24' width='3' height='9' rx='1'/><rect x='${v - 1.5}' y='71' width='3' height='9' rx='1'/><rect x='22' y='${v - 1.5}' width='9' height='3' rx='1'/><rect x='69' y='${v - 1.5}' width='9' height='3' rx='1'/>`).join('')}</g>
+    <g fill='none' stroke='#000' stroke-width='1.6' stroke-linecap='round' opacity='.6'><rect x='40' y='42' width='20' height='20' rx='2'/><path d='M44 52 H50 L53 48 H56 M50 52 L53 56'/></g>`,
+  ring: `<path fill-rule='evenodd' d='M50 32 C66 32 77 41 77 53 C77 65 66 74 50 74 C34 74 23 65 23 53 C23 41 34 32 50 32Z M50 40 C61 40 68 46 68 53 C68 60 61 66 50 66 C39 66 32 60 32 53 C32 46 39 40 50 40Z'/>
+    <path d='M27 50 C30 41 40 36 50 36 C60 36 70 41 73 50' fill='none' stroke='#000' stroke-width='1.3' stroke-dasharray='3 1.2 1.4 1.2 2 1.6' opacity='.55'/>
+    <path d='M28 57 C32 66 41 70 50 70 C59 70 68 66 72 57' fill='none' stroke='#000' stroke-width='1.3' stroke-dasharray='2 1.4 3 1.2 1.2 1.4' opacity='.45'/>`,
+  leaf: `<path d='M50 16 C67 28 72 52 50 80 C28 52 33 28 50 16Z'/><path d='M50 80 C50 86 46 90 41 89 C44 87 46 85 46 82' fill='none' stroke='#000' stroke-width='2' opacity='.6'/>
+    <g fill='none' stroke='#000' stroke-width='1.4' opacity='.55' stroke-linecap='round'><path d='M50 22 V76'/><path d='M50 34 L41 28 M50 34 L59 28 M50 46 L39 39 M50 46 L61 39 M50 58 L40 52 M50 58 L60 52 M50 68 L43 63 M50 68 L57 63'/></g>`,
+  tree: `<path d='M47 86 C48 76 48 66 46 56 C40 52 32 50 26 44 C34 46 40 47 45 49 C42 42 36 36 34 28 C40 34 44 40 47 46 C47 38 46 30 49 22 C50 30 51 38 51 46 C54 40 58 34 64 28 C62 36 56 42 53 49 C58 47 64 46 72 44 C66 50 58 52 52 56 C50 66 50 76 51 86Z'/>
+    ${[[30, 18], [40, 12], [50, 9], [60, 12], [70, 18], [24, 27], [76, 27]].map(([x, y]) => `<path transform='translate(${x} ${y}) scale(.5)' d='M0 -6 L1.6 -1.6 L6 0 L1.6 1.6 L0 6 L-1.6 1.6 L-6 0 L-1.6 -1.6Z'/>`).join('')}
+    <path d='M40 86 H58' stroke='#000' stroke-width='1.5' opacity='.4'/>`,
+  mask: `<path d='M18 46 C24 38 36 36 50 42 C64 36 76 38 82 46 C82 56 76 64 66 64 C58 64 54 58 50 56 C46 58 42 64 34 64 C24 64 18 56 18 46Z'/>
+    <g fill='#000'><path d='M27 49 C30 44 38 44 42 49 C38 53 30 53 27 49Z'/><path d='M58 49 C62 44 70 44 73 49 C70 53 62 53 58 49Z'/></g>
+    <path d='M80 44 C86 34 86 22 80 12 C78 22 76 32 76 42Z'/><path d='M76 42 C80 32 82 22 80 12' fill='none' stroke='#000' stroke-width='.8' opacity='.5'/><path d='M19 52 C13 60 12 68 15 78 L19 77 C17 69 18 62 22 56Z' fill-opacity='.85'/>`,
+  bow: `<path d='M50 50 C40 40 26 32 20 38 C14 44 16 58 22 62 C28 66 40 60 50 54Z'/><path d='M50 50 C60 40 74 32 80 38 C86 44 84 58 78 62 C72 66 60 60 50 54Z'/>
+    <path d='M46 54 C42 64 36 76 30 84 L38 84 C42 76 46 66 49 58Z'/><path d='M54 54 C58 64 64 76 70 84 L62 84 C58 76 54 66 51 58Z'/>
+    <rect x='44' y='45' width='12' height='12' rx='4'/>
+    <g fill='none' stroke='#000' stroke-width='1.3' opacity='.45' stroke-linecap='round'><path d='M46 50 C38 44 30 40 25 44 M54 50 C62 44 70 40 75 44 M24 52 C30 56 38 56 44 53 M76 52 C70 56 62 56 56 53'/></g>`,
   paw: `<g transform='translate(50 52) scale(2.6)'><ellipse cx='0' cy='4' rx='5.2' ry='4.4'/><ellipse cx='-6' cy='-3' rx='2.1' ry='2.7' transform='rotate(-20 -6 -3)'/>
     <ellipse cx='-2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='6' cy='-3' rx='2.1' ry='2.7' transform='rotate(20 6 -3)'/></g>`,
 };
@@ -150,6 +167,14 @@ export const EMBLEM_GROUPS = [
   { id: 'stage', label: 'Stage', items: [
     { s: '@masks', name: 'Theatre masks' }, { s: '@lips', name: 'Kiss' }, { s: '@note', name: 'Music notes' }, { s: '@donkey', name: 'Donkey head' }, { s: '@pansy', name: 'Pansy' }, { s: '♪', name: 'Note' },
     { s: '🎭', name: 'Masks' }, { s: '🎟️', name: 'Ticket' }, { s: '🎤', name: 'Microphone' }, { s: '🎻', name: 'Violin' }, { s: '🌹', name: 'Rose' },
+  ] },
+  { id: 'worlds', label: 'Worlds', items: [
+    { s: '@ring', name: 'The ring' }, { s: '@leaf', name: 'Elven leaf' }, { s: '@tree', name: 'White tree' }, { s: '@chip', name: 'Microchip' },
+    { s: '🗡️', name: 'Sword' }, { s: '🏔️', name: 'Mountain' }, { s: '🤖', name: 'Robot' }, { s: '⚡', name: 'Lightning' },
+  ] },
+  { id: 'afterdark', label: 'After dark', items: [
+    { s: '@lips', name: 'Kiss' }, { s: '@mask', name: 'Masquerade mask' }, { s: '@bow', name: 'Satin bow' }, { s: '🗝️', name: 'Key' },
+    { s: '🥂', name: 'Champagne' }, { s: '🌹', name: 'Rose' }, { s: '♠', name: 'Spade' },
   ] },
   { id: 'party', label: 'Party', items: [
     { s: '🍸', name: 'Martini' }, { s: '🥂', name: 'Cheers' }, { s: '@die', name: 'Die' }, { s: '♫', name: 'Music' },

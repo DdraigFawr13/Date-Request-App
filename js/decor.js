@@ -124,6 +124,10 @@ export const PATTERNS = {
   midsummer: { label: 'Moons & pansies', size: [90, 90], draw: () => CRESCENT(22, 24, 2.2) + FLOWER(64, 60, 0.8) + SPARKLE(66, 18, 0.5) + SPARKLE(22, 68, 0.35)
     + LEAF(44, 40, 60, 0.55) + `<circle cx='84' cy='38' r='1'/><circle cx='40' cy='84' r='0.9'/><circle cx='8' cy='46' r='0.8'/>` },
   fishnet: { label: 'Fishnet', size: [22, 22], draw: () => `<path d='M0 0 L22 22 M22 0 L0 22' fill='none' stroke-width='1.6'/>` },
+  circuit: { label: 'Circuit traces', size: [80, 80], draw: () => `<g fill='none' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'><path d='M0 20 H22 L30 28 V52 L38 60 H80'/><path d='M50 0 V14 L58 22 H80'/><path d='M10 80 V66 L18 58 H30'/><path d='M62 60 V74'/></g>
+    <g fill='none' stroke-width='1.2'><circle cx='30' cy='58' r='2.4'/><circle cx='62' cy='76' r='2.4'/><circle cx='50' cy='16' r='2'/></g><rect x='40' y='32' width='12' height='12' rx='1.5' fill-opacity='.6'/>` },
+  elvish: { label: 'Leaves & stars', size: [90, 90], draw: () => LEAF(22, 24, 35, 1.1) + LEAF(66, 64, -40, 0.9) + SPARKLE(66, 20, 0.55) + SPARKLE(22, 68, 0.4)
+    + `<circle cx='46' cy='46' r='4' fill='none' stroke-width='1.2'/><circle cx='84' cy='40' r='0.9'/><circle cx='40' cy='86' r='0.8'/>` },
   plumes: { label: 'Plumes & bats', size: [100, 100], draw: () => PLUME(22, 30, -25) + PLUME(70, 70, 30, 0.85) + BAT(72, 22, 8, 0.75) + SPARKLE(24, 80, 0.4) + `<circle cx='50' cy='50' r='1.1'/>` },
   confetti: { label: 'Confetti', size: [70, 70], draw: () => `<rect x='10' y='12' width='8' height='3' rx='1' transform='rotate(30 14 13)'/><circle cx='50' cy='16' r='2.5' style='fill:var(--c2)'/>
     <rect x='40' y='48' width='8' height='3' rx='1' transform='rotate(-40 44 49)' style='fill:var(--c2)'/><circle cx='18' cy='52' r='2'/><path d='M60 34 l3 5 l-6 0z'/>` },
@@ -157,6 +161,9 @@ export const SCENES = [
   { id: 'marquee', label: 'Marquee lights' },
   { id: 'moonwood', label: 'Moonlit wood' },
   { id: 'burlesque', label: 'Burlesque stage' },
+  { id: 'cyber', label: 'Neon city' },
+  { id: 'middleearth', label: 'Misty mountains' },
+  { id: 'noir', label: 'Noir rooftops' },
   ...Object.entries(PATTERNS).map(([id, p]) => ({ id, label: p.label })),
 ];
 
@@ -319,6 +326,67 @@ function backdropLayers(look, inv = {}) {
       + `${svgUrl(net)} 0 0 / 26px 26px repeat, `
       + `radial-gradient(circle at 80% 20%, #fff1d6 0 26px, rgba(255, 200, 140, 0.45) 28px, rgba(255, 150, 90, 0.12) 80px, transparent 150px), `
       + `linear-gradient(to top, rgba(40, 10, 10, 0.6), transparent 14%), ${vignette}, linear-gradient(175deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'cyber') {
+    // A neon megacity at night: layered towers with lit windows, glowing
+    // signs, a holographic grid floor and a magenta-cyan haze.
+    let n = 7;
+    const r = () => ((n = (n * 16807) % 2147483647) / 2147483647);
+    const towers = (count, base, hMin, hMax, fill, lit) => {
+      let x = -10, out = '';
+      for (let i = 0; i < count; i++) {
+        const w = 18 + r() * 34, h = hMin + r() * (hMax - hMin), top = base - h;
+        out += `<rect x='${x.toFixed(0)}' y='${top.toFixed(0)}' width='${w.toFixed(0)}' height='${h.toFixed(0)}' fill='${fill}'/>`;
+        if (r() > 0.6) out += `<rect x='${(x + w / 2 - 0.6).toFixed(1)}' y='${(top - 14).toFixed(0)}' width='1.2' height='14' fill='${fill}'/><circle cx='${(x + w / 2).toFixed(1)}' cy='${(top - 15).toFixed(0)}' r='1.6' fill='#ff2bd6'/>`;
+        if (lit) for (let wy = top + 6; wy < base - 4; wy += 7) for (let wx = x + 4; wx < x + w - 4; wx += 6) {
+          if (r() > 0.72) out += `<rect x='${wx.toFixed(0)}' y='${wy.toFixed(0)}' width='2.6' height='3' fill='${['#00f0ff', '#ff2bd6', '#ffe36e'][Math.floor(r() * 3)]}' opacity='${(0.35 + r() * 0.5).toFixed(2)}'/>`;
+        }
+        if (lit && r() > 0.7) out += `<rect x='${(x + 3).toFixed(0)}' y='${(top + 10 + r() * 30).toFixed(0)}' width='${(w * 0.6).toFixed(0)}' height='6' rx='1' fill='none' stroke='${r() > 0.5 ? '#ff2bd6' : '#00f0ff'}' stroke-width='1.6' opacity='.9'/>`;
+        x += w + 2 + r() * 6;
+      }
+      return out;
+    };
+    const city = svgTile(520, 240, `${towers(14, 240, 60, 150, '#120a24', false)}${towers(12, 240, 40, 120, '#07040f', true)}`);
+    return `linear-gradient(to bottom, transparent 84%, ${c2} 84%) 0 0 / 100% 100% no-repeat, `
+      + `repeating-linear-gradient(90deg, ${look.accent}44 0 1px, transparent 1px 40px) 0 100% / 100% 16% no-repeat, `
+      + `repeating-linear-gradient(0deg, ${look.accent2}55 0 1px, transparent 1px 22px) 0 100% / 100% 16% no-repeat, `
+      + `${svgUrl(city)} center 84% / max(100%, 620px) auto no-repeat, `
+      + `radial-gradient(70% 22% at 50% 78%, ${look.accent2}55, transparent 70%), radial-gradient(50% 30% at 80% 40%, ${look.accent}33, transparent 70%), `
+      + `${patternCss('stars', '#ffffff', look.accent, 0.3)}, linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'middleearth') {
+    // Misty mountains at dusk: three ranges fading into mist, a far peak
+    // smouldering on the horizon, and the first stars.
+    const range = (pts, fill) => `<path d='M0 200 ${pts} L600 200Z' fill='${fill}'/>`;
+    const far = svgTile(600, 200, range('L0 120 L40 96 L70 110 L110 70 L140 92 L180 60 L215 88 L250 74 L290 100 L330 66 L360 84 L400 56 L440 90 L480 78 L520 96 L560 72 L600 90', 'rgba(150, 165, 190, 0.35)'));
+    const mid = svgTile(600, 200, range('L0 140 L50 112 L90 128 L130 96 L170 122 L210 104 L260 132 L300 108 L350 126 L390 98 L430 120 L470 106 L520 130 L560 112 L600 124', 'rgba(60, 72, 90, 0.75)')
+      + `<path d='M384 102 L390 98 L396 103' fill='none' stroke='rgba(255,255,255,.5)' stroke-width='2'/>`);
+    const near = svgTile(600, 200, range('L0 168 C60 150 110 158 160 164 C220 172 280 146 340 152 C400 158 470 146 530 156 C560 160 590 156 600 158', '#0b1410')
+      + `<g fill='#0b1410'>${[30, 70, 520, 556].map(x => `<path d='M${x} 150 l9 22 h-18z M${x} 140 l7 18 h-14z'/>`).join('')}</g>`);
+    return `${svgUrl(near)} center bottom / max(100%, 640px) auto no-repeat, `
+      + `linear-gradient(to top, rgba(220, 230, 240, 0.0) 20%, rgba(220, 230, 240, 0.18) 30%, transparent 44%), `
+      + `${svgUrl(mid)} center bottom / max(100%, 640px) auto no-repeat, `
+      + `linear-gradient(to top, transparent 24%, rgba(220, 228, 240, 0.22) 36%, transparent 50%), `
+      + `${svgUrl(far)} center bottom / max(100%, 640px) auto no-repeat, `
+      + `radial-gradient(9% 5% at 80% 87%, rgba(255, 120, 40, 0.6), rgba(255, 80, 20, 0.15) 60%, transparent 100%), `
+      + `radial-gradient(90% 40% at 50% 85%, rgba(255, 190, 120, 0.22), transparent 70%), `
+      + `${patternCss('stars', '#ffffff', look.accent2, 0.35)}, linear-gradient(180deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'noir') {
+    // Film noir: rooftops and water towers in silhouette, a pale moon,
+    // drifting fog and one red neon glow far below.
+    const sil = '#050505';
+    const roofs = svgTile(560, 200, `<g fill='${sil}'><path d='M0 200 V120 H60 V100 H120 V130 H170 V90 H230 V140 H280 V110 H330 V80 H380 V125 H440 V105 H500 V135 H560 V200Z'/>
+      <g transform='translate(190 52)'><rect x='-14' y='10' width='28' height='26' rx='3'/><path d='M-16 10 L0 -2 L16 10Z'/><path d='M-12 36 L-16 44 M12 36 L16 44 M0 36 V44' stroke='${sil}' stroke-width='2.5'/></g>
+      <g transform='translate(470 70)'><rect x='-11' y='8' width='22' height='22' rx='2'/><path d='M-13 8 L0 -2 L13 8Z'/><path d='M-9 30 L-12 38 M9 30 L12 38' stroke='${sil}' stroke-width='2'/></g>
+      <rect x='350' y='66' width='3' height='18'/><rect x='80' y='88' width='2' height='14'/></g>
+      <g fill='#d8d8d8' opacity='.35'>${[[70, 112], [96, 112], [250, 152], [400, 136], [420, 136], [520, 150]].map(([x, y]) => `<rect x='${x}' y='${y}' width='5' height='7'/>`).join('')}</g>`);
+    return `radial-gradient(60% 10% at 30% 92%, rgba(210, 210, 210, 0.16), transparent 70%), `
+      + `${svgUrl(roofs)} center bottom / max(100%, 600px) auto no-repeat, `
+      + `radial-gradient(18% 8% at 70% 96%, ${look.accent}88, transparent 70%), `
+      + `radial-gradient(70% 18% at 60% 70%, rgba(200, 200, 200, 0.12), transparent 70%), radial-gradient(50% 14% at 20% 60%, rgba(200, 200, 200, 0.1), transparent 70%), `
+      + `radial-gradient(circle at 78% 18%, #f4f1ea 0 28px, rgba(240, 236, 228, 0.3) 30px, rgba(240, 236, 228, 0.08) 80px, transparent 150px), `
+      + `${vignette}, linear-gradient(175deg, ${c1}, ${c2})`;
   }
   if (scene === 'marquee') {
     // Rows of marquee bulbs top and bottom, crossing searchlights and sparkle.
@@ -508,6 +576,16 @@ const CORNERS = {
         <path d='M-4 2 C-6 -3 -2 -6 2 -5 C5 -4 5 0 2 1 C0 2 -2 0 0 -2'/></g>
       <path d='M-11 2 C-13 -8 -6 -13 0 -12 C7 -13 13 -7 11 2' fill='none' stroke='#fff' stroke-opacity='.3' stroke-width='0.8'/>
     </g>`,
+  // Circuit traces with solder pads and a chip in the corner.
+  circuit: `<g fill='none' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><path d='M8 74 V34 L16 26 H44'/><path d='M16 78 V48 L24 40 H34'/><path d='M26 8 H52 L60 16 H76'/><path d='M44 16 V24 L38 30'/></g>
+    <g fill='none' stroke-width='1.3'><circle cx='46' cy='26' r='2.4'/><circle cx='36' cy='40' r='2.4'/><circle cx='78' cy='16' r='2'/><circle cx='36.5' cy='31.5' r='2'/></g>
+    <rect x='4' y='4' width='16' height='16' rx='2'/><rect x='8' y='8' width='8' height='8' rx='1' style='fill:var(--c2)'/>
+    <g stroke-width='1.2'><path d='M22 8 h3 M22 12 h3 M22 16 h3 M8 22 v3 M12 22 v3 M16 22 v3'/></g>`,
+  // Elven knotwork: interlaced curves, mallorn leaves and a star.
+  elven: `<g fill='none' stroke-width='1.2' stroke-linecap='round'><path d='M4 78 C4 42 14 18 36 9 C48 5 62 4 78 4'/><path d='M11 72 C12 48 21 30 37 21'/><path d='M72 11 C48 12 30 21 21 37'/>
+      <path d='M37 21 C45 17 48 25 42 27 C38 29 35 25 38 23'/><path d='M21 37 C17 45 25 48 27 42 C29 38 25 35 23 38'/></g>
+    ${LEAF(52, 13, 75, 0.85)}${LEAF(13, 52, 15, 0.85)}${LEAF(64, 8, 100, 0.6)}${LEAF(8, 64, -10, 0.6)}
+    <g transform='translate(19 19)' style='fill:var(--c2)'>${SPARKLE(0, 0, 0.9)}</g><circle cx='19' cy='19' r='1.4'/>`,
   // Marquee bulbs along both edges, glowing.
   marquee: `<g fill='none' stroke-width='0.9'><path d='M14 78 V14 H78'/></g>
     ${[[7, 7], [19, 6], [31, 6], [43, 6], [55, 6], [67, 6], [6, 19], [6, 31], [6, 43], [6, 55], [6, 67]].map(([x, y]) => `<circle cx='${x}' cy='${y}' r='5.2' fill='#ffd98a' fill-opacity='.28' stroke='none'/><circle cx='${x}' cy='${y}' r='3'/><circle cx='${x}' cy='${y}' r='1.9' fill='#fff8e0' stroke='none'/>`).join('')}`,
@@ -523,6 +601,7 @@ export const CORNER_OPTIONS = [
   { id: 'deco', label: 'Art deco' }, { id: 'celestial', label: 'Celestial' }, { id: 'web', label: 'Spiderweb' }, { id: 'stars', label: 'Constellation' }, { id: 'branch', label: 'Acorn branch' }, { id: 'paws', label: 'Paw prints' },
   { id: 'baroque', label: 'Baroque scroll' }, { id: 'nouveau', label: 'Art nouveau' }, { id: 'rhinestone', label: 'Rhinestones' },
   { id: 'feather', label: 'Ostrich plume' }, { id: 'rose', label: 'Thorned rose' }, { id: 'marquee', label: 'Marquee bulbs' },
+  { id: 'circuit', label: 'Circuit' }, { id: 'elven', label: 'Elven knot' },
 ];
 
 // ── Side borders ─────────────────────────────────────────────────────
@@ -531,6 +610,7 @@ export const SIDE_OPTIONS = [
   { id: 'vine', label: 'Climbing vine' }, { id: 'pearls', label: 'Pearls' }, { id: 'lace', label: 'Lace' }, { id: 'stitch', label: 'Stitching' }, { id: 'paws', label: 'Paw trail' },
   { id: 'rhinestones', label: 'Rhinestones' }, { id: 'beads', label: 'Beads' }, { id: 'rope', label: 'Velvet rope' },
   { id: 'bulbs', label: 'Marquee bulbs' }, { id: 'plumes', label: 'Feather boa' }, { id: 'thorns', label: 'Thorned vine' },
+  { id: 'circuit', label: 'Circuit trace' }, { id: 'elvenvine', label: 'Elven vine' },
 ];
 const SIDE_TILES = {
   vine: [24, 60, `<g fill='none' stroke-width='1.2'><path d='M12 0 C4 15 20 30 12 45 C8 52 10 56 12 60'/></g>${LEAF(17, 14, 50, 0.6)}${LEAF(7, 40, -50, 0.6)}<circle cx='12' cy='30' r='1.4'/>`],
@@ -553,6 +633,10 @@ const SIDE_TILES = {
     }).join(' ');
     return `<path d='${barbs}' fill='none' stroke-width='.7' stroke-linecap='round' stroke-opacity='.85'/><path d='M12 0 V30' stroke-width='1.6' stroke-opacity='.5'/>`;
   })()],
+  circuit: [24, 44, `<path d='M10 0 V12 L16 18 V30 L10 36 V44' fill='none' stroke-width='1.3' stroke-linejoin='round'/><path d='M16 24 H21' fill='none' stroke-width='1.2'/>
+    <circle cx='21' cy='24' r='1.8' style='fill:var(--c2)'/><circle cx='10' cy='12' r='1.5'/><rect x='7.5' y='38' width='5' height='3' rx='.6'/>`],
+  elvenvine: [24, 56, `<path d='M12 0 C4 14 20 28 12 42 C8 49 10 53 12 56' fill='none' stroke-width='1'/>${LEAF(17, 12, 55, 0.6)}${LEAF(7, 34, -55, 0.6)}${LEAF(16, 46, 40, 0.45)}
+    <g style='fill:var(--c2)'>${SPARKLE(9, 22, 0.3)}</g>`],
   thorns: [24, 52, `<path d='M12 0 C6 13 18 26 12 39 C9 45 11 49 12 52' fill='none' stroke-width='1.1'/><path d='M10.6 9 l-4 -1 l3 3z M14.8 21 l4 -1 l-3 3z M10.2 33 l-4 -1 l3 3z'/>
     ${LEAF(17, 13, 50, 0.5)}${LEAF(7, 42, -50, 0.5)}<circle cx='12' cy='27' r='2.4' style='fill:var(--c2)'/>`],
 };

@@ -13,6 +13,7 @@ export const LOOK_CATEGORIES = [
   { id: 'party', label: 'Parties', icon: '🎉' },
   { id: 'stage', label: 'Stage', icon: '🎭' },
   { id: 'dark', label: 'Dark side', icon: '🖤' },
+  { id: 'afterdark', label: 'After dark', icon: '🗝️' },
   { id: 'night', label: 'Night & glam', icon: '✨' },
 ];
 
@@ -188,6 +189,13 @@ export const THEMES = {
     pattern: 'woodland', scene: 'woodland', wax: 'sage', waxFace: 'bronze', paper: 'linen', corners: 'branch', rule: 'vine',
   },
 
+  fellowship: {
+    name: 'The Fellowship', cat: 'storybook', tagline: 'A Lord of the Rings–style quest', glyph: '🍃',
+    bg: ['#0d1a14', '#33402e'], card: '#f2e6c8', ink: '#2a2216', accent: '#2f5d3a', accent2: '#b8923e', onAccent: '#fff6e0',
+    particles: ['🍃', '💍', '⭐', '🗡️', '🏔️', '🌿'], seal: '@ring', divider: '✦ 🍃 ✦', wrap: 'map',
+    pattern: 'elvish', scene: 'middleearth', wax: 'forest', waxFace: 'gold', paper: 'parchment', corners: 'elven', sides: 'elvenvine', rule: 'vine',
+  },
+
   // ── Sky ──────────────────────────────────────────────────────────────
   constellation: {
     name: 'Constellation', cat: 'sky', tagline: 'Star charts & golden lines', glyph: '✧',
@@ -281,10 +289,28 @@ export const THEMES = {
     pattern: 'stripes', scene: 'stripes', wax: 'black', waxFace: 'rosegold', paper: 'smooth', corners: 'none', sides: 'stitch', rule: 'rule',
   },
   kinky: {
-    name: 'Kinky', cat: 'dark', tagline: 'Lace, leather & a little danger', glyph: '❦',
+    name: 'Kinky', cat: 'afterdark', tagline: 'Lace, leather & a little danger', glyph: '❦',
     bg: ['#050305', '#2b0610'], card: '#120a0e', ink: '#f5e9ec', accent: '#d9264a', accent2: '#c39a4b', onAccent: '#ffffff', dark: true,
     particles: ['💋', '🍒', '🔥', '🗝️', '🖤'], seal: '💋', divider: '✦ ❦ ✦', wrap: 'envelope',
     pattern: 'lace', scene: 'velvet', wax: 'scarlet', waxFace: 'gold', paper: 'smooth', corners: 'filigree', sides: 'lace', rule: 'flourish',
+  },
+  boudoir: {
+    name: 'Boudoir', cat: 'afterdark', tagline: 'Blush silk, black lace & pearls', glyph: '❦',
+    bg: ['#1c0c12', '#4a1e2c'], card: '#fbeef0', ink: '#2b1418', accent: '#a8244a', accent2: '#b88a62', onAccent: '#ffffff',
+    particles: ['🌹', '🕯️', '🥂', '🎀', '💋'], seal: '@bow', divider: '✦ ❦ ✦', wrap: 'envelope',
+    pattern: 'lace', scene: 'bokeh', wax: 'rose', waxFace: 'gold', paper: 'silk', corners: 'rose', sides: 'pearls', rule: 'flourish',
+  },
+  masquerade: {
+    name: 'Masquerade', cat: 'afterdark', tagline: 'Black velvet, gold & secrets', glyph: '❖',
+    bg: ['#07060a', '#2a1f12'], card: '#0f0c09', ink: '#f6ead2', accent: '#d4af37', accent2: '#b0283c', onAccent: '#0f0c09', dark: true,
+    particles: ['🎭', '🪶', '🥂', '✨', '🕯️'], seal: '@mask', divider: '❖ ✦ ❖', wrap: 'book',
+    pattern: 'damask', scene: 'bokeh', wax: 'black', waxFace: 'gold', paper: 'smooth', corners: 'baroque', sides: 'beads', rule: 'swash',
+  },
+  noir: {
+    name: 'Noir', cat: 'afterdark', tagline: 'Smoke, shadows & a red lip', glyph: '♠',
+    bg: ['#060606', '#2a2a2a'], card: '#f2efe9', ink: '#151515', accent: '#b3122e', accent2: '#6e6e6e', onAccent: '#ffffff',
+    particles: ['🌙', '🥃', '🌹', '🎷', '✦'], seal: '@lips', divider: '✦ ♠ ✦', wrap: 'telegram',
+    pattern: 'stripes', scene: 'noir', wax: 'black', waxFace: 'silver', paper: 'cotton', corners: 'deco', sides: 'frame', rule: 'rule',
   },
 
   // ── Night & glam ─────────────────────────────────────────────────────
@@ -293,6 +319,12 @@ export const THEMES = {
     bg: ['#050a24', '#1b1f5c'], card: '#0f1545', ink: '#e7e9ff', accent: '#ffd66b', accent2: '#9aa5ff', onAccent: '#0f1545', dark: true,
     particles: ['✦', '✧', '⋆', '🌙', '☄️'], seal: '☾', divider: '⋆ ☾ ⋆',
     pattern: 'stars', scene: 'stars', wax: 'navy', waxFace: 'gold', paper: 'smooth', corners: 'celestial', rule: 'swash',
+  },
+  cyberpunk: {
+    name: 'Cyberpunk', cat: 'night', tagline: 'Neon city, chrome & static', glyph: '◈',
+    bg: ['#05040d', '#1c0b33'], card: '#0b0b16', ink: '#e8f7ff', accent: '#00f0ff', accent2: '#ff2bd6', onAccent: '#05040d', dark: true,
+    particles: ['⚡', '💾', '🌃', '✦', '🤖', '💜'], seal: '@chip', divider: '◈ ⚡ ◈', wrap: 'envelope', glow: '#00f0ff',
+    pattern: 'circuit', scene: 'cyber', wax: 'black', waxFace: 'silver', paper: 'smooth', corners: 'circuit', sides: 'circuit', rule: 'rule',
   },
   show: {
     name: 'Night at the Show', cat: 'night', tagline: 'Curtain up', glyph: '🎭',

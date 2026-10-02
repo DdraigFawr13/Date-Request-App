@@ -270,3 +270,11 @@ test('every module import can be stamped with the release id on deploy', async (
     assert.ok(!/\bimport\s*\(/.test(src), `${file}: dynamic import() would not be stamped`);
   }
 });
+
+test('every look is a complete, flat entry (no look nested inside another)', async () => {
+  const { THEMES } = await import('../js/themes.js');
+  for (const [id, t] of Object.entries(THEMES)) {
+    for (const key of ['name', 'cat', 'bg', 'card', 'ink', 'accent', 'accent2', 'seal', 'pattern', 'wax', 'paper']) assert.ok(t[key], `${id}: missing ${key}`);
+    for (const [k, v] of Object.entries(t)) assert.ok(typeof v !== 'object' || Array.isArray(v), `${id}.${k} is a nested object`);
+  }
+});
