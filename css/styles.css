@@ -1086,6 +1086,8 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   .custom-row input[data-key=v] { grid-column: 1 / 3; grid-row: 2; }
   .wording-group { grid-template-columns: 1fr; }
   .seal-designer { flex-direction: column; align-items: center; }
+  .seal-controls { align-self: stretch; width: 100%; }
+  .color-setting { grid-template-columns: 1fr; gap: 0.2rem; margin-bottom: 0.4rem; }
   .step { padding: 1rem 0.9rem 0.6rem; }
 }
 
