@@ -816,7 +816,7 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   transition: transform 0.75s 0.3s cubic-bezier(.45, .05, .3, 1), z-index 0s 0.68s;
 }
 .flap-out, .flap-in { inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.flap-out { filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.2)); }
+.flap-out { filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.18)) drop-shadow(0 6px 7px rgba(0, 0, 0, 0.22)); }
 /* Drawn apex-up: its own flip turns it apex-down like the outside, and the flap's swing turns it back up. */
 .flap-in { transform: rotateX(180deg); clip-path: polygon(50% 0, 100% 100%, 0 100%); background: var(--liner-pattern), var(--liner); border-radius: 0 0 9px 9px; }
 .env-sprig {
@@ -949,7 +949,7 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   left: 34%; right: 34%; top: 42%; bottom: 7%;
   z-index: 2;
   transform: rotate(-4deg);
-  transition: transform 0.95s 0.55s cubic-bezier(.2, .8, .2, 1), opacity 0.35s 1.25s;
+  transition: transform 1s 0.55s cubic-bezier(.2, .8, .2, 1), opacity 0.3s 1.45s, z-index 0s 0.95s;
 }
 .bottle-cork {
   left: 37%; width: 26%; top: 4.6%; height: 12.4%;
@@ -960,15 +960,16 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .bottle-waves {
   left: -25%; right: -25%; height: 22%;
   animation: waves 5s linear infinite;
-  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent);
-  mask-image: linear-gradient(to bottom, #000 50%, transparent);
+  /* A pool that fades out at the sides and below, not a band with edges. */
+  -webkit-mask-image: radial-gradient(52% 120% at 50% 0%, #000 55%, transparent 92%);
+  mask-image: radial-gradient(52% 120% at 50% 0%, #000 55%, transparent 92%);
 }
 .bottle-waves.back {
-  bottom: 9%; opacity: 0.85; animation-duration: 9s; animation-direction: reverse;
+  bottom: 9%; opacity: 0.7; animation-duration: 9s; animation-direction: reverse;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='44'%3E%3Cdefs%3E%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233f9aa0'/%3E%3Cstop offset='1' stop-color='%230f4d58'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeGaussianBlur stdDeviation='1.4'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M0 16 C20 8 40 8 60 16 S100 24 120 16 V44 H0Z' fill='url%28%23w%29'/%3E%3Cpath d='M0 16 C20 8 40 8 60 16 S100 24 120 16' fill='none' stroke='%23cfeeed' stroke-width='2.4' opacity='.35' filter='url%28%23s%29'/%3E%3C/svg%3E") 0 0 / 120px 100% repeat-x;
 }
 .bottle-waves.front {
-  bottom: -3%; z-index: 2;
+  bottom: -3%; z-index: 2; opacity: 0.82;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='50'%3E%3Cdefs%3E%3ClinearGradient id='w' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2356b6bb'/%3E%3Cstop offset='.35' stop-color='%232a8f97'/%3E%3Cstop offset='1' stop-color='%230d4552'/%3E%3C/linearGradient%3E%3Cfilter id='f'%3E%3CfeGaussianBlur stdDeviation='.9'/%3E%3C/filter%3E%3Cfilter id='c'%3E%3CfeGaussianBlur stdDeviation='.5'/%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M0 18 C22 7 45 7 75 18 S128 29 150 18 V50 H0Z' fill='url%28%23w%29'/%3E%3Cpath d='M0 18 C22 7 45 7 75 18 S128 29 150 18' fill='none' stroke='%23f4fbfa' stroke-width='3.2' opacity='.75' filter='url%28%23f%29'/%3E%3Cpath d='M8 22 C24 15 40 15 56 20 M84 23 C100 26 118 26 136 21' fill='none' stroke='%23e6f7f6' stroke-width='1.4' opacity='.45' filter='url%28%23c%29'/%3E%3Cpath d='M14 32 C30 29 44 30 58 33 M90 36 C106 33 120 33 134 35' fill='none' stroke='%23bfe7e7' stroke-width='.9' opacity='.35' filter='url%28%23c%29'/%3E%3Cg fill='%23fff' opacity='.7'%3E%3Ccircle cx='38' cy='12.5' r='.9'/%3E%3Ccircle cx='42' cy='11' r='.6'/%3E%3Ccircle cx='110' cy='22.5' r='.7'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 150px 100% repeat-x;
   filter: drop-shadow(0 -2px 4px rgba(0, 40, 50, 0.25));
 }
@@ -979,7 +980,16 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .bottle-glints i:nth-child(2) { left: 64%; top: 55%; animation-delay: 0.9s; }
 .bottle-glints i:nth-child(3) { left: 86%; top: 20%; animation-delay: 1.7s; }
 .bottle.opening .bottle-cork { transform: translateY(-170px) rotate(-300deg); opacity: 0; }
-.bottle.opening .bottle-note { transform: translateY(-105%) rotate(6deg) scale(1.05); opacity: 0; }
+.bottle.opening .bottle-note { transform: translateY(-150%) rotate(6deg) scale(1.05); opacity: 0; z-index: 5; }
+/* Rings spreading on the water around the bottle, and its shadow below the surface. */
+.bottle-ripples { left: 8%; right: 8%; bottom: 7%; height: 12%; z-index: 1; pointer-events: none; }
+.bottle-ripples::before { content: ''; position: absolute; left: 22%; right: 22%; top: 30%; height: 50%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 30, 35, 0.35), transparent); filter: blur(2px); }
+.bottle-ripples i { position: absolute; left: 50%; top: 45%; width: 60%; height: 34%; border-radius: 50%; border: 1.5px solid rgba(230, 250, 250, 0.5);
+  transform: translate(-50%, -50%) scale(0.5); opacity: 0; animation: ripple 3.6s ease-out infinite; }
+.bottle-ripples i:nth-child(2) { animation-delay: 1.2s; }
+.bottle-ripples i:nth-child(3) { animation-delay: 2.4s; }
+@keyframes ripple { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.45); } 15% { opacity: 0.7; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); } }
 
 /* Treasure chest: planked wood, gilded straps and brackets, a jewelled lid, a pile of coins inside. */
 .chest { --exit: 1.75s; height: calc(var(--w) * 0.86); perspective: 700px; perspective-origin: 50% 12%; }
