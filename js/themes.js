@@ -7,6 +7,8 @@ export const LOOK_CATEGORIES = [
   { id: 'seasonal', label: 'Seasonal', icon: '🍂' },
   { id: 'nature', label: 'Nature', icon: '🌿' },
   { id: 'medieval', label: 'Medieval', icon: '🏰' },
+  { id: 'storybook', label: 'Storybook', icon: '🪄' },
+  { id: 'sky', label: 'Sky', icon: '🌌' },
   { id: 'cats', label: 'Cats', icon: '🐈‍⬛' },
   { id: 'party', label: 'Parties', icon: '🎉' },
   { id: 'dark', label: 'Dark side', icon: '🖤' },
@@ -86,6 +88,13 @@ export const THEMES = {
     pattern: 'leaves', wax: 'copper', waxFace: 'gold', paper: 'parchment', corners: 'floral', rule: 'flourish',
   },
 
+  halloween: {
+    name: 'Halloween', cat: 'seasonal', tagline: 'Jack-o’-lanterns & haunted moons', glyph: '🎃',
+    bg: ['#0d0716', '#2b1240'], card: '#161019', ink: '#f6e9d8', accent: '#ff7a1a', accent2: '#a07ad6', onAccent: '#1a0d05', dark: true,
+    particles: ['🎃', '🦇', '👻', '🕸️', '🍬', '🌕'], seal: '@pumpkin', divider: '🦇 🎃 🦇', wrap: 'chest', glow: '#ff7a1a',
+    pattern: 'bats', scene: 'haunted', wax: 'black', waxFace: 'copper', paper: 'speckled', corners: 'web', rule: 'swash',
+  },
+
   // ── Nature ───────────────────────────────────────────────────────────
   picnic: {
     name: 'Garden Picnic', cat: 'nature', tagline: 'Sunshine & strawberries', glyph: '🧺',
@@ -100,7 +109,7 @@ export const THEMES = {
     pattern: 'leaves', wax: 'forest', waxFace: 'bronze', paper: 'parchment', corners: 'none', rule: 'swash',
   },
   enchanted: {
-    name: 'Enchanted Forest', cat: 'nature', tagline: 'Where the fae dance', glyph: '🍄',
+    name: 'Enchanted Forest', cat: 'storybook', tagline: 'Where the fae dance', glyph: '🍄',
     bg: ['#0c2418', '#2f5d50'], card: '#112a1f', ink: '#e6f5e0', accent: '#c3f584', accent2: '#f5b0e0', onAccent: '#112a1f', dark: true,
     particles: ['🍄', '✨', '🧚', '🌿', '🦋'], seal: '🍄', wrap: 'scroll', divider: '🌿 ✧ 🌿',
     pattern: 'leaves', wax: 'forest', waxFace: 'gold', paper: 'smooth', corners: 'floral', rule: 'vine',
@@ -158,6 +167,40 @@ export const THEMES = {
     pattern: 'paws', wax: 'bronze', waxFace: 'gold', paper: 'cotton', corners: 'paws', rule: 'flourish',
   },
 
+  // ── Storybook ────────────────────────────────────────────────────────
+  wizard: {
+    name: 'Wizard’s Academy', cat: 'storybook', tagline: 'Spellbooks, candles & stardust', glyph: '✦',
+    bg: ['#120a24', '#3a1d5c'], card: '#f3e7cb', ink: '#2a1a3a', accent: '#5b2a86', accent2: '#b8902a', onAccent: '#fff6e0',
+    particles: ['🕯️', '✨', '🔮', '📜', '⭐'], seal: '@wizardhat', divider: '✦ ☾ ✦', wrap: 'scroll',
+    pattern: 'magic', scene: 'magic', wax: 'purple', waxFace: 'gold', paper: 'parchment', corners: 'celestial', rule: 'flourish',
+  },
+  dragon: {
+    name: 'Dragon’s Hoard', cat: 'storybook', tagline: 'Emerald scales & dragon gold', glyph: '🐉',
+    bg: ['#06180f', '#14402a'], card: '#f4ead2', ink: '#1c2a1f', accent: '#1e6b45', accent2: '#c39a2e', onAccent: '#fff6e0',
+    particles: ['🐉', '💎', '🪙', '🔥', '✦'], seal: '@dragon', divider: '✦ 🐉 ✦', wrap: 'chest',
+    pattern: 'scales', scene: 'scales', wax: 'forest', waxFace: 'gold', paper: 'parchment', corners: 'gothic', rule: 'flourish',
+  },
+  woodland: {
+    name: 'Woodland Tea', cat: 'storybook', tagline: 'Acorns, mushrooms & a pot of tea', glyph: '🍄',
+    bg: ['#e9dcc0', '#b9c79a'], card: '#fffaf0', ink: '#3a2c1c', accent: '#a04a2a', accent2: '#5d7a3a', onAccent: '#ffffff',
+    particles: ['🍄', '🌰', '🦔', '🦊', '🍃', '🫖'], seal: '@teacup', divider: '🌰 🍄 🌰', wrap: 'gift',
+    pattern: 'woodland', scene: 'woodland', wax: 'sage', waxFace: 'bronze', paper: 'linen', corners: 'branch', rule: 'vine',
+  },
+
+  // ── Sky ──────────────────────────────────────────────────────────────
+  constellation: {
+    name: 'Constellation', cat: 'sky', tagline: 'Star charts & golden lines', glyph: '✧',
+    bg: ['#060b22', '#14214f'], card: '#0d1636', ink: '#e8ecff', accent: '#f0c75e', accent2: '#8fa3e8', onAccent: '#0d1636', dark: true,
+    particles: ['✦', '✧', '⋆', '☄️', '🌙'], seal: '@constellation', divider: '⋆ ✧ ⋆', wrap: 'envelope',
+    pattern: 'constellations', scene: 'constellations', wax: 'navy', waxFace: 'gold', paper: 'smooth', corners: 'stars', rule: 'rule',
+  },
+  aurora: {
+    name: 'Aurora', cat: 'sky', tagline: 'Northern lights over the pines', glyph: '❄',
+    bg: ['#04121c', '#0f2a3a'], card: '#0b1d27', ink: '#e8fbf6', accent: '#5ff2c2', accent2: '#b59cff', onAccent: '#04121c', dark: true,
+    particles: ['✦', '❄', '✧', '🌲', '💫'], seal: '❄', divider: '✧ ❄ ✧', wrap: 'bottle', glow: '#5ff2c2',
+    pattern: 'snow', scene: 'aurora', wax: 'teal', waxFace: 'silver', paper: 'smooth', corners: 'celestial', rule: 'swash',
+  },
+
   // ── Parties & nights out ─────────────────────────────────────────────
   speakeasy: {
     name: 'Speakeasy', cat: 'party', tagline: 'Emerald, brass & jazz', glyph: '🍸',
@@ -209,12 +252,6 @@ export const THEMES = {
     particles: ['🖤', '💔', '⛓️', '🎸', '✖️'], seal: '@brokenheart', divider: '✖ 🖤 ✖', wrap: 'envelope',
     pattern: 'stripes', scene: 'stripes', wax: 'black', waxFace: 'rosegold', paper: 'smooth', corners: 'none', sides: 'stitch', rule: 'rule',
   },
-  halloween: {
-    name: 'Halloween', cat: 'dark', tagline: 'Pumpkins, bats & cobwebs', glyph: '🎃',
-    bg: ['#120a1c', '#3a1650'], card: '#fff4e2', ink: '#2a1430', accent: '#e8650f', accent2: '#6a3d8a', onAccent: '#ffffff',
-    particles: ['🎃', '🦇', '👻', '🕷️', '🍬'], seal: '@bat', divider: '🦇 🎃 🦇', wrap: 'chest',
-    pattern: 'bats', scene: 'bats', wax: 'copper', waxFace: 'black', paper: 'parchment', corners: 'web', rule: 'swash',
-  },
   kinky: {
     name: 'Kinky', cat: 'dark', tagline: 'Lace, leather & a little danger', glyph: '❦',
     bg: ['#050305', '#2b0610'], card: '#120a0e', ink: '#f5e9ec', accent: '#d9264a', accent2: '#c39a4b', onAccent: '#ffffff', dark: true,
@@ -224,7 +261,7 @@ export const THEMES = {
 
   // ── Night & glam ─────────────────────────────────────────────────────
   starlit: {
-    name: 'Starlit Night', cat: 'night', tagline: 'Wish upon it', glyph: '✦',
+    name: 'Starlit Night', cat: 'sky', tagline: 'Wish upon it', glyph: '✦',
     bg: ['#050a24', '#1b1f5c'], card: '#0f1545', ink: '#e7e9ff', accent: '#ffd66b', accent2: '#9aa5ff', onAccent: '#0f1545', dark: true,
     particles: ['✦', '✧', '⋆', '🌙', '☄️'], seal: '☾', divider: '⋆ ☾ ⋆',
     pattern: 'stars', scene: 'stars', wax: 'navy', waxFace: 'gold', paper: 'smooth', corners: 'celestial', rule: 'swash',

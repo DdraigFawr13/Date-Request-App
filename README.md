@@ -9,7 +9,8 @@ their calendar, and texts their answer back to you.
 ## How it works
 
 1. **Build it.** Pick an occasion (dinner date, drinks, a night out dancing,
-   game night, birthday, Halloween party, after dark, royal feast, cat date, picnic, sabbat gathering…), fill in the basics, choose a look, and add only the
+   game night, birthday, Halloween party, after dark, a night of magic,
+   dragon quest, woodland tea, royal feast, cat date, picnic, sabbat gathering…), fill in the basics, choose a look, and add only the
    details that matter.
 2. **Seal it.** Moonpost packs the whole invitation into the link itself.
    There's no server, database or account. The link is then shortened with
@@ -28,20 +29,22 @@ their calendar, and texts their answer back to you.
 
 - **The occasion** sets the *words* and the *lettering*: the banner, greeting,
   RSVP button wording and sign-off, plus a matching font pairing. You can swap
-  the lettering for any of 16 pairings (storybook, elegant script, blackletter,
-  old manuscript, art deco, neon, spooky, scrawl, celtic, playful, kitten…).
+  the lettering for any of 18 pairings (storybook, elegant script, blackletter,
+  old manuscript, spellbook, fable, art deco, neon, spooky, scrawl, celtic, playful, kitten…).
 - **The look** sets the *colors* and materials. Looks are grouped into tabs:
 
 | Tab | Looks |
 |---|---|
 | 🌹 Romantic | Candlelit · Blush & Gold · Midnight Velvet |
-| 🍂 Seasonal | the eight sabbats: Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon |
-| 🌿 Nature | Garden Picnic · Wild Adventure · Enchanted Forest · Seaside |
+| 🍂 Seasonal | the eight sabbats (Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon) · Halloween |
+| 🌿 Nature | Garden Picnic · Wild Adventure · Seaside |
+| 🪄 Storybook | Wizard’s Academy · Dragon’s Hoard · Woodland Tea · Enchanted Forest |
+| 🌌 Sky | Constellation · Aurora · Starlit Night |
 | 🏰 Medieval | Royal Court · Castle Keep · Illuminated |
 | 🐈‍⬛ Cats | Black Cat · Calico · Kitten Pastel · Cat Café |
 | 🎉 Parties | Speakeasy · Neon Club · Disco Fever · Game Night · Birthday Bash · Tiki Bar · Celebration |
-| 🖤 Dark side | Gothic · Emo · Halloween · Kinky |
-| ✨ Night & glam | Starlit Night · Night at the Show · Cozy Night In |
+| 🖤 Dark side | Gothic · Emo · Kinky |
+| ✨ Night & glam | Night at the Show · Cozy Night In |
 
 Each look also picks sensible defaults for everything below, and you can
 override any of them:
@@ -50,9 +53,10 @@ override any of them:
   changed on their own. A custom page color keeps text and titles readable.
 - **Neon glow:** make the title, headings and card edge glow in hot pink,
   electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
-- **Background:** a soft glow, a moonlit sky, a velvet curtain, bokeh lights,
+- **Background:** a soft glow, a moonlit sky, a haunted night, an aurora, a velvet curtain, bokeh lights,
   a neon grid, a sunburst, or a pattern (damask, stars, snowfall, blossoms,
-  leaves, hearts, paw prints, waves, castle stone, gingham, plaid, lace, bats,
+  leaves, hearts, paw prints, waves, castle stone, gingham, plaid, lace, bats, wands & hats, dragon scales,
+  constellations, acorns & mushrooms,
   spiderwebs, stripes, cocktails, dice, checkerboard, disco tiles, music notes, confetti), in the look's
   colors or two of your own.
 - **Paper:** smooth card, handmade cotton, aged parchment, linen weave,
@@ -93,8 +97,9 @@ stamped emblem. Choose the wax (16 shades including metallic gold, copper,
 bronze and silver, or any color), the emblem's finish (pressed into the wax,
 gold leaf, silver, copper, rose gold, bronze, pearl, jet, or any color), and
 the emblem: regal (crown, fleur-de-lis, shield, crossed swords, castle,
-laurel, key, chalice, knight, lion, dragon…), love, celestial, nature, party, dark (bat,
-broken heart, skull, kiss…)
+laurel, key, chalice, knight, lion, dragon…), love, celestial, magic (wizard’s hat, wand, dragon, constellation…),
+nature (acorn, teacup…), party, dark (bat,
+jack-o’-lantern, broken heart, skull, kiss…)
 (martini, die, music, disco ball, cake…) or cats (sitting cat, cat face,
 paw print…). Or press your own initials or symbol (up
 to 4 characters, emoji included).
