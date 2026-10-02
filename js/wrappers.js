@@ -200,13 +200,12 @@ const PARTS = {
     <span class="bottle-waves front"></span>
     <span class="bottle-glints"><i></i><i></i><i></i></span>`,
   chest: (seal, glyph, look) => `
-    <span class="chest-rays"></span>
     <span class="chest-glow"></span>
-    <span class="chest-lining">${chestLining()}</span>
+    <span class="chest-motes"><i></i><i></i><i></i><i></i><i></i><i></i></span>
     <span class="chest-letter">${pageHtml(glyph, look)}</span>
     <span class="chest-treasure">${treasure()}</span>
     <span class="chest-base">${chestBase()}</span>
-    <span class="chest-lid">${chestLid()}</span>
+    <span class="chest-lid"><span class="lid-out">${chestLid()}</span><span class="lid-in">${chestLining()}</span></span>
     <span class="chest-plate">${chestPlate()}</span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
   gift: (seal, glyph, look) => `

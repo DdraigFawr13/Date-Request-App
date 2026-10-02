@@ -982,26 +982,26 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .bottle.opening .bottle-note { transform: translateY(-105%) rotate(6deg) scale(1.05); opacity: 0; }
 
 /* Treasure chest: planked wood, gilded straps and brackets, a jewelled lid, a pile of coins inside. */
-.chest { --exit: 1.6s; height: calc(var(--w) * 0.86); perspective: 800px; }
+.chest { --exit: 1.75s; height: calc(var(--w) * 0.86); perspective: 900px; perspective-origin: 50% 20%; }
 .chest-art, .plate-art, .treasure-art { display: block; width: 100%; height: 100%; overflow: visible; }
 .chest-base, .chest-lid { left: 0; right: 0; }
 .chest-base { filter: drop-shadow(0 14px 16px rgba(0, 0, 0, 0.4)); }
 .chest-base { bottom: 0; height: 56%; z-index: 3; }
+/* The lid is one hinged piece with an outside and an inside. It lifts at the
+   front, swings up and back over the hinge and comes to rest standing behind
+   the open chest, its lined underside facing out. (Rotating about the lid's
+   top edge while the hinge settles to the rim keeps it on the chest.) */
 .chest-lid {
   bottom: 56%; height: 36%;
-  transform-origin: 50% 100%;
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
+  transform: translateY(0) rotateX(0deg);
   z-index: 4;
-  transition: transform 0.34s 0.4s cubic-bezier(.55, 0, .85, .4), filter 0.34s 0.4s;
+  transition: transform 0.95s 0.38s cubic-bezier(.45, .05, .3, 1), z-index 0s 0.8s;
 }
-/* The inside of the lid. The lid folds back to a sliver along the hinge, then
-   this face rises from the same line, so it reads as one lid swinging open. */
-.chest-lining {
-  left: 0; right: 0; bottom: 55%; height: 40%;
-  transform-origin: 50% 100%; transform: scaleY(0);
-  z-index: 1;
-  filter: drop-shadow(0 -4px 10px rgba(0, 0, 0, 0.35));
-  transition: transform 0.5s 0.74s cubic-bezier(.2, 1.3, .45, 1);
-}
+.lid-out, .lid-in { inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.lid-in { top: 0; bottom: -45%; transform: rotateX(180deg); filter: brightness(0.55); transition: filter 0.6s 0.75s; }
+.lid-out { transition: filter 0.5s 0.38s; }
 .lining-art { display: block; width: 100%; height: 100%; }
 .chest-plate {
   width: calc(var(--w) * 0.24); height: calc(var(--w) * 0.29);
@@ -1020,27 +1020,29 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   z-index: 0;
   transition: opacity 0.6s 0.6s, transform 0.9s 0.6s;
 }
-.chest-rays {
-  left: -20%; right: -20%; bottom: 20%; aspect-ratio: 1;
-  background: repeating-conic-gradient(from 0deg, rgba(255, 230, 150, 0.35) 0 6deg, transparent 6deg 18deg);
-  -webkit-mask-image: radial-gradient(circle, #000 15%, transparent 62%);
-  mask-image: radial-gradient(circle, #000 15%, transparent 62%);
-  opacity: 0; z-index: 0;
-  transition: opacity 0.6s 0.7s;
-  animation: spin 14s linear infinite;
-}
+.chest-motes { left: 20%; right: 20%; bottom: 50%; height: 50%; z-index: 2; pointer-events: none; }
+.chest-motes i { position: absolute; bottom: 0; width: 4px; height: 4px; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle, #fffbe6 0 30%, rgba(255, 214, 107, 0.6) 50%, transparent 72%); }
+.chest-motes i:nth-child(1) { left: 12%; } .chest-motes i:nth-child(2) { left: 30%; width: 3px; height: 3px; } .chest-motes i:nth-child(3) { left: 46%; }
+.chest-motes i:nth-child(4) { left: 60%; width: 5px; height: 5px; } .chest-motes i:nth-child(5) { left: 74%; width: 3px; height: 3px; } .chest-motes i:nth-child(6) { left: 88%; }
+.chest.opening .chest-motes i { animation: mote 1.4s ease-out forwards; }
+.chest.opening .chest-motes i:nth-child(1) { animation-delay: 0.85s; } .chest.opening .chest-motes i:nth-child(2) { animation-delay: 1s; }
+.chest.opening .chest-motes i:nth-child(3) { animation-delay: 0.9s; } .chest.opening .chest-motes i:nth-child(4) { animation-delay: 1.1s; }
+.chest.opening .chest-motes i:nth-child(5) { animation-delay: 0.95s; } .chest.opening .chest-motes i:nth-child(6) { animation-delay: 1.05s; }
+@keyframes mote { 0% { opacity: 0; transform: none; } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--mx, 6px), -90px); } }
+.chest-motes i:nth-child(odd) { --mx: -8px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .chest-letter {
   left: 27%; right: 27%; bottom: 34%; height: 46%;
-  z-index: 1; opacity: 0;
+  z-index: 2; opacity: 0;
   filter: drop-shadow(0 0 14px rgba(255, 214, 107, 0.7));
   transition: transform 0.75s 0.85s cubic-bezier(.2, .8, .2, 1), opacity 0.3s 0.8s;
 }
 .chest .seal-spot { left: calc(50% - var(--seal) / 2); bottom: calc(56% - var(--seal) * 0.55); }
-.chest.opening .chest-lid { transform: scaleY(0.02); filter: brightness(0.6); }
-.chest.opening .chest-lining { transform: scaleY(1); }
+.chest.opening .chest-lid { transform: translateY(100%) rotateX(-168deg); z-index: 1; }
+.chest.opening .lid-out { filter: brightness(0.5); }
+.chest.opening .lid-in { filter: brightness(1); }
 .chest.opening .chest-glow { opacity: 1; transform: scale(1.6) translateY(-20%); }
-.chest.opening .chest-rays { opacity: 1; }
 .chest.opening .chest-letter { opacity: 1; transform: translateY(-58%); }
 .chest.opening .chest-plate { opacity: 0; }
 
