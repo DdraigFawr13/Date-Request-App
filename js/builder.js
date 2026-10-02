@@ -824,7 +824,8 @@ export async function showBuilder() {
   document.documentElement.removeAttribute('style');
   document.documentElement.removeAttribute('data-theme');
   document.documentElement.removeAttribute('data-font');
-  $('#sky').replaceChildren();
+  $('#builder-sky').hidden = false;
+  particles($('#sky'), { particles: ['✦', '✧', '☾', '✉︎', '✧', '⋆'] }, 12);
   $('#invite').hidden = true;
   $('#builder').hidden = false;
   document.title = 'Moonpost — whimsical invitations';

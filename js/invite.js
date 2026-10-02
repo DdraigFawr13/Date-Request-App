@@ -194,6 +194,7 @@ export async function showInvite(code, { preview: isPreview = false } = {}) {
   const root = $('#invite');
   preview = isPreview;
   $('#builder').hidden = true;
+  $('#builder-sky').hidden = true;
   root.hidden = false;
   document.body.classList.remove('show-preview');
   document.body.classList.toggle('previewing', preview);
