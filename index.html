@@ -13,7 +13,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌙</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Caveat:wght@600&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Fredoka:wght@500;600&family=Great+Vibes&family=Pacifico&family=Playfair+Display:ital,wght@0,700;1,500&family=Quicksand:wght@400;600;700&family=Righteous&family=Uncial+Antiqua&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Caveat:wght@600&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=Fredoka:wght@500;600&family=Great+Vibes&family=IM+Fell+English:ital@0;1&family=MedievalSharp&family=Pacifico&family=Playfair+Display:ital,wght@0,700;1,500&family=Quicksand:wght@400;600;700&family=Righteous&family=Sniglet:wght@400;800&family=Uncial+Antiqua&family=UnifrakturMaguntia&display=swap">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -31,7 +31,10 @@
 
         <section class="step">
           <h2><span class="step-num">1</span> What’s the occasion?</h2>
+          <p class="hint">The occasion sets the wording and the lettering. You’ll choose the colors in step 3.</p>
           <div id="templates" class="template-grid"></div>
+          <p class="sub">Lettering</p>
+          <div id="fonts" class="font-grid"></div>
         </section>
 
         <section class="step">
@@ -54,20 +57,40 @@
 
         <section class="step">
           <h2><span class="step-num">3</span> The look</h2>
-          <div id="themes"></div>
-          <div class="hemi">
-            <span>Wheel of the Year for the</span>
-            <label class="pill"><input type="radio" name="hemi" value="N" data-bind="hemi"> Northern</label>
-            <label class="pill"><input type="radio" name="hemi" value="S" data-bind="hemi"> Southern</label>
-            <span>hemisphere</span>
-          </div>
+          <p class="hint">Colors, background, paper and ornaments.</p>
+          <div id="look-tabs" class="tab-row" role="tablist" aria-label="Look categories"></div>
+          <div id="themes" class="swatch-grid"></div>
+          <details class="more" open>
+            <summary>Background</summary>
+            <div id="scenes" class="scene-grid"></div>
+            <div id="bg-colors" class="opt-row"></div>
+          </details>
+          <details class="more">
+            <summary>Paper</summary>
+            <div id="papers" class="paper-grid"></div>
+          </details>
+          <details class="more">
+            <summary>Ornaments</summary>
+            <p class="sub">Corners</p><div id="corners" class="opt-row"></div>
+            <p class="sub">Along the sides</p><div id="sides" class="opt-row"></div>
+            <p class="sub">Script lines between sections</p><div id="rules" class="opt-row"></div>
+          </details>
+        </section>
+
+        <section class="step">
+          <h2><span class="step-num">4</span> Delivery &amp; wax seal</h2>
           <p class="sub">Delivered as</p>
           <div id="wrappers" class="wrapper-grid"></div>
           <p class="sub">Wax seal</p>
           <div class="seal-designer">
             <div id="seal-preview" class="seal-preview"></div>
             <div class="seal-controls">
+              <span class="mini-label">Wax</span>
               <div id="seal-colors" class="color-row"></div>
+              <span class="mini-label">Emblem finish</span>
+              <div id="seal-faces" class="color-row"></div>
+              <span class="mini-label">Emblem</span>
+              <div id="emblem-tabs" class="tab-row small"></div>
               <div id="seal-emblems" class="emblem-row"></div>
               <label>Or press your own initials or symbol
                 <input data-bind="sealEmblem" maxlength="4" placeholder="e.g. R&amp;S or 🦉">
@@ -77,8 +100,8 @@
         </section>
 
         <section class="step">
-          <h2><span class="step-num">4</span> The details</h2>
-          <p class="hint">Add only what matters for this occasion. Tap a suggestion or write your own.</p>
+          <h2><span class="step-num">5</span> The details</h2>
+          <p class="hint">Add only what matters for this occasion. Tap a suggestion or write your own; you can rename any label too.</p>
           <div id="modules"></div>
           <p class="sub">Add a detail</p>
           <div id="module-picker" class="chip-row"></div>
@@ -88,19 +111,19 @@
         </section>
 
         <section class="step">
-          <h2><span class="step-num">5</span> Questions for them</h2>
-          <p class="hint">Their answers come back in their reply text.</p>
+          <h2><span class="step-num">6</span> Questions for them</h2>
+          <p class="hint">Their answers come back in their reply.</p>
           <div id="asks" class="chip-row"></div>
-          <label>Your own question <input data-bind="askCustom" placeholder="e.g. Sweet or savory?"></label>
+          <p class="sub">Your own questions</p>
+          <div id="own-asks"></div>
+          <button type="button" class="btn ghost small" data-action="add-ask">+ Add your own question</button>
         </section>
 
         <section class="step">
-          <h2><span class="step-num">6</span> Sign-off & replies</h2>
-          <label>Closing line <input data-bind="closing" placeholder="Leave blank for the theme’s own"></label>
-          <label>Your mobile number, so they can text their RSVP back
-            <input type="tel" data-bind="phone" placeholder="+1 555 123 4567">
-          </label>
-          <p class="hint">🔒 Your number is stored inside the link, so anyone with the link can see it.</p>
+          <h2><span class="step-num">7</span> The wording</h2>
+          <p class="hint">Every line is filled in from the occasion. Change anything, or clear a line to hide it.</p>
+          <div id="wording"></div>
+          <button type="button" class="btn ghost small" data-action="reset-wording">↺ Reset all wording</button>
           <label>Calendar reminder
             <select data-bind="remind">
               <option value="0">None</option>
@@ -113,22 +136,22 @@
         </section>
 
         <section class="step send">
-          <h2><span class="step-num">7</span> Send it</h2>
-          <label>Their mobile number (optional)
-            <input type="tel" data-bind="toPhone" placeholder="Leave blank to choose in Messages">
-          </label>
-          <label>Text to send with the link
+          <h2><span class="step-num">8</span> Send it</h2>
+          <label>Message to send with the link
             <textarea data-bind="smsText" rows="2"></textarea>
           </label>
           <button type="button" class="btn primary big" data-action="create">✨ Seal my invitation</button>
           <div id="result" class="result" hidden>
-            <input id="result-url" readonly aria-label="Invitation link">
+            <label>Your message, ready to paste
+              <textarea id="result-message" rows="3" readonly></textarea>
+            </label>
             <div class="btn-row">
-              <a id="send-sms" class="btn primary">💬 Text it</a>
-              <button type="button" class="btn" data-action="copy">📋 Copy link</button>
+              <button type="button" class="btn primary" data-action="copy-message">📋 Copy message</button>
+              <button type="button" class="btn" data-action="copy">🔗 Copy link only</button>
               <button type="button" class="btn" data-action="share" id="share-btn" hidden>📤 Share…</button>
               <a id="open-link" class="btn" target="_blank" rel="noopener">👀 Open it</a>
             </div>
+            <input id="result-url" readonly aria-label="Invitation link">
             <p id="result-note" class="hint"></p>
           </div>
           <button type="button" class="btn ghost small" data-action="reset">↺ Start a fresh invitation</button>

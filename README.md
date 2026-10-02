@@ -8,73 +8,87 @@ their calendar, and texts their answer back to you.
 
 ## How it works
 
-1. **Build it.** Pick an occasion (dinner date, picnic, stargazing, sabbat
-   gathering…), fill in the basics, choose a look, and add only the details
-   that matter.
+1. **Build it.** Pick an occasion (dinner date, royal feast, cat date, picnic,
+   sabbat gathering…), fill in the basics, choose a look, and add only the
+   details that matter.
 2. **Seal it.** Moonpost packs the whole invitation into the link itself.
-   There's no server, database or account.
-3. **Text it.** Tap **💬 Text it** to open Messages with the link ready to go,
-   or copy/share it anywhere.
+   There's no server, database or account. The link is then shortened with
+   [is.gd](https://is.gd) (or v.gd), so it looks like `is.gd/aB3xYz`.
+3. **Send it.** Tap **📋 Copy message** and paste your note and the link into a
+   text (or anywhere else), or use **Share…**.
 4. **They open it.** They see your invitation arrive (an envelope, a scroll,
-   a message in a bottle, a treasure chest or a gift box), tap to break your
+   a message in a bottle, a treasure chest or a gift box), tap to crack your
    wax seal, and watch it open into the card.
-5. **They answer.** *Yes*, *Maybe — another time?*, or *Sadly, I can't*. A yes
-   gets a little celebration, answers to any questions you asked, and
-   **Add to calendar** buttons (Apple/iPhone, Google, Outlook, .ics).
-   Their reply opens as a pre-written text addressed to you.
+5. **They answer.** A yes gets a little celebration, answers to any questions
+   you asked, and **Add to calendar** buttons (Apple/iPhone, Google, Outlook,
+   .ics). **Text my answer** opens their messages app with the reply already
+   written (they pick you as the recipient), or they can copy it.
 
-## Themes
+## Occasion vs. look
 
-**Wheel of the Year (automatic).** By default the invitation follows the
-Wheel of the Year. Your event date picks the closest sabbat, and there's a
-Southern Hemisphere toggle:
+- **The occasion** sets the *words* and the *lettering*: the banner, greeting,
+  RSVP button wording and sign-off, plus a matching font pairing. You can swap
+  the lettering for any of 12 pairings (storybook, elegant script, blackletter,
+  old manuscript, celtic, playful, kitten…).
+- **The look** sets the *colors* and materials. Looks are grouped into tabs:
 
-| Season | Roughly | Feel |
-|---|---|---|
-| Imbolc | Jan 11 – Feb 24 | candlelight, first snowdrops |
-| Ostara | Feb 25 – Apr 10 | pastel blooms, rabbits & eggs |
-| Beltane | Apr 11 – May 26 | bonfires & flowers |
-| Litha | May 27 – Jul 11 | golden midsummer sun |
-| Lughnasadh | Jul 12 – Aug 27 | first harvest, wheat & bread |
-| Mabon | Aug 28 – Oct 11 | falling leaves & gratitude |
-| Samhain | Oct 12 – Nov 25 | the veil grows thin |
-| Yule | Nov 26 – Jan 10 | evergreen, snow & the returning sun |
+| Tab | Looks |
+|---|---|
+| 🌹 Romantic | Candlelit · Blush & Gold · Midnight Velvet |
+| 🍂 Seasonal | the eight sabbats: Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon |
+| 🌿 Nature | Garden Picnic · Wild Adventure · Enchanted Forest · Seaside |
+| 🏰 Medieval | Royal Court · Castle Keep · Illuminated |
+| 🐈‍⬛ Cats | Black Cat · Calico · Kitten Pastel · Cat Café |
+| ✨ Night & glam | Starlit Night · Night at the Show · Celebration · Cozy Night In |
 
-If the event lands *on* a sabbat, the card says so ("✨ It falls on Samhain
-itself ✨"). Every card also shows the **moon phase** for that night and the
-month's traditional moon name (e.g. "🌕 Beneath the full Hunter's Moon").
+Each look also picks sensible defaults for everything below, and you can
+override any of them:
 
-**Occasion themes.** You can also pick an occasion theme instead: Candlelit
-Dinner, Starlit Night, Garden Picnic, Wild Adventure, Celebration, Cozy Night
-In, Enchanted Forest, Seaside, and Night at the Show.
+- **Background:** a soft glow, a moonlit sky, a velvet curtain, or a pattern
+  (damask, stars, snowfall, blossoms, leaves, hearts, paw prints, waves,
+  castle stone, gingham, plaid, confetti), in the look's colors or two of
+  your own.
+- **Paper:** smooth card, handmade cotton, aged parchment, linen weave,
+  watercolor wash or marble.
+- **Ornaments:** corner pieces (filigree, gothic, floral vine, art deco,
+  celestial, paw prints), side borders (double frame, climbing vine, pearls,
+  stitching, paw trail) and script lines between sections (swash, flourish,
+  vine, fine rule).
 
-Each theme has its own colors, fonts, floating particles, wax seal, greeting,
-"yes" button wording and sign-off.
+## Wording
+
+Every line of text is editable in step 7: the words above and below the
+envelope, the banner, salutation, greeting, moon line, reply-by line, closing,
+the RSVP question and buttons, and what they see after answering. Clear a line
+to hide it. Detail labels (e.g. "What to wear" → "Attire") can be renamed too.
+
+Every card shows the **moon phase** for that night and the month's traditional
+moon name (e.g. "🌕 Beneath the full Hunter's Moon"), and notes when the date
+falls on a sabbat. The **Sabbat gathering** occasion uses the wording of the
+season the date falls in.
 
 ## Delivery & wax seals
 
-**Delivered as:** choose how the invitation arrives. Each one has its own
-opening animation:
+**Delivered as:** each wrapper is dressed in the look's colors and pattern
+(envelope liners, gift wrap…), and the seal cracks in two with a burst of
+sparks when tapped:
 
 | | Opening |
 |---|---|
-| ✉️ Envelope | the seal pops, the flap lifts, and the letter slides out |
-| 📜 Scroll | the ribbon falls away and the parchment unrolls between its rods |
-| 🍾 Message in a bottle | the bottle bobs on the waves, the cork pops, and the note rises out |
-| 🧰 Treasure chest | the seal is the lock; the lid swings open in a golden glow |
-| 🎁 Gift box | the lid and bow fly off and the letter rises up |
+| ✉️ Envelope | gold-foil edged paper with a patterned liner and a botanical sprig under the seal; the flap swings open and an illuminated letter slides out |
+| 📜 Scroll | parchment rolled on dowels with gilded finials, tassels and a satin ribbon; it unrolls into an illuminated page |
+| 🍾 Message in a bottle | sea glass with sand, a starfish and twine on the neck, bobbing on foamy waves; the cork pops and the ribboned note rises out |
+| 🧰 Treasure chest | planked wood with gilded straps, brackets and a jewelled lid; the seal is the lock, and the lid tips back to reveal velvet, gold coins and gems |
+| 🎁 Gift box | patterned wrap, stitched satin ribbons, a full bow and a gift tag; the bow unties, the lid tumbles off, and the letter rises from tissue paper |
 
-Leave it on **Theme's pick** and each theme chooses for you (Seaside sends a
-bottle, Wild Adventure a chest, Celebration and Yule a gift, Enchanted Forest
-and Lughnasadh a scroll, and the rest an envelope).
-
-**Wax seal:** pick the wax color (11 presets like crimson, gold, raven and
-sea glass, or any color you like) and the emblem pressed into it: a moon,
-star, heart, pentacle, fleur-de-lis, sun, crown, clover, owl, mushroom and
-more. You can also stamp it with your own initials or symbol (up to 4
-characters, emoji included). The same seal appears on the wrapper and at the
-bottom of the card. The builder's preview has an **✉︎ Opening** mode so you can
-play the animation before sending.
+**Wax seal:** an SVG seal with an irregular wax spill, a raised rim and a
+stamped emblem. Choose the wax (16 shades including metallic gold, copper,
+bronze and silver, or any color), the emblem's finish (pressed into the wax,
+gold leaf, silver, copper, rose gold, bronze, pearl, jet, or any color), and
+the emblem: regal (crown, fleur-de-lis, shield, crossed swords, castle,
+laurel, key, chalice, knight, lion, dragon…), love, celestial, nature or cats
+(sitting cat, cat face, paw print…). Or press your own initials or symbol (up
+to 4 characters, emoji included).
 
 ## Detail modules
 
@@ -124,8 +138,11 @@ localhost.
 - The invitation lives in the part of the URL after `#`, which browsers never
   send to a server. Anyone *with the link* can read it, though, so share
   it like you would the text itself.
-- If you add your phone number for text-back RSVPs, it's inside the link too.
-- RSVPs aren't collected anywhere. They arrive as a normal text message to you.
+- Short links are made by is.gd, which stores the full link (and so can see
+  the invitation). If it can't be reached, Moonpost gives you the full link
+  instead.
+- No phone numbers are stored. RSVPs aren't collected anywhere; they arrive as
+  a normal text message from your guest.
 
 ## Project layout
 
@@ -136,26 +153,31 @@ js/app.js           routes between builder and invitation (#i=…)
 js/builder.js       the sender's form, live preview and "seal & send"
 js/invite.js        the recipient's envelope, RSVP and replies
 js/render.js        renders the invitation card (shared by both views)
-js/themes.js        all themes, Wheel of the Year logic and moon phases
-js/wrappers.js      delivery styles (envelope, scroll…) and the wax seal
-js/modules.js       detail modules, questions and occasion templates
+js/themes.js        looks (colors & materials), Wheel of the Year and moon phases
+js/occasions.js     occasions (wording, lettering), font pairings, editable lines
+js/decor.js         backgrounds, patterns, paper, corner/side ornaments, script lines
+js/seal.js          the SVG wax seal, wax colors, finishes and emblems
+js/wrappers.js      delivery styles (envelope, scroll…) and their animations
+js/wrapper-art.js   hand-drawn SVG detail for the envelope, bottle, chest and gift
+js/shorten.js       short links via is.gd / v.gd
+js/modules.js       detail modules and questions
 js/calendar.js      .ics / Google / Outlook calendar links
 js/codec.js         packs the invitation into the link (compressed)
 tests/              unit tests (node --test)
 ```
 
-### Adding your own theme or occasion
+### Adding your own look or occasion
 
-- **Theme:** add an entry to `THEMES` in `js/themes.js`. Set `group:
-  'occasion'` and it shows up in the picker automatically.
-- **Occasion template:** add an entry to `TEMPLATES` in `js/modules.js` with
-  the theme and the details it should pre-fill.
+- **Look:** add an entry to `THEMES` in `js/themes.js` with a `cat` from
+  `LOOK_CATEGORIES`, and it shows up under that tab automatically.
+- **Occasion:** add an entry to `TEMPLATES` in `js/occasions.js` with its
+  wording, font pairing and the details it should pre-fill.
 - **Detail module:** add an entry to `MODULES` in `js/modules.js`.
 
 ## Ideas for later
 
-- A tiny backend (e.g. a Cloudflare Worker) for short links, per-invite link
-  previews, and an RSVP dashboard that tracks who said yes.
+- A tiny backend (e.g. a Cloudflare Worker) for our own short links, photo
+  backgrounds, per-invite link previews, and an RSVP dashboard.
 - Photo or GIF header on the card.
 - Multi-guest invitations with a headcount.
 - Month-specific flourishes (birth flowers, birthstones) layered on the

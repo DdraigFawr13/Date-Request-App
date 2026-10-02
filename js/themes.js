@@ -1,150 +1,190 @@
-// Themes: the eight sabbats of the Wheel of the Year, plus occasion themes.
-// A theme is pure data — colors, fonts, floating particles and a few lines of copy.
+// Looks: the colors, particles and default materials of an invitation. Looks
+// are grouped into categories for the picker. Wording and lettering come from
+// the occasion (see occasions.js), not from the look.
 
+export const LOOK_CATEGORIES = [
+  { id: 'romantic', label: 'Romantic', icon: '🌹' },
+  { id: 'seasonal', label: 'Seasonal', icon: '🍂' },
+  { id: 'nature', label: 'Nature', icon: '🌿' },
+  { id: 'medieval', label: 'Medieval', icon: '🏰' },
+  { id: 'cats', label: 'Cats', icon: '🐈‍⬛' },
+  { id: 'night', label: 'Night & glam', icon: '✨' },
+];
+
+// pattern: the motif used on envelope liners, gift wrap and "Look's own" backgrounds.
+// wax / waxFace: the default seal (a wax color id and an emblem finish id).
 export const THEMES = {
-  // ── Wheel of the Year ────────────────────────────────────────────────
+  // ── Romantic ─────────────────────────────────────────────────────────
+  candlelit: {
+    name: 'Candlelit', cat: 'romantic', tagline: 'Wine-dark & gold', glyph: '🕯',
+    bg: ['#1c0b10', '#4a0f1e'], card: '#fbf3ea', ink: '#3a0d17', accent: '#a4161a', accent2: '#b8902a', onAccent: '#fff6ea',
+    particles: ['🕯️', '🌹', '✦', '🍷', '✧'], seal: '♥︎', divider: '✦ 🌹 ✦',
+    pattern: 'damask', wax: 'scarlet', waxFace: 'gold', paper: 'cotton', corners: 'filigree', rule: 'flourish',
+  },
+  blush: {
+    name: 'Blush & Gold', cat: 'romantic', tagline: 'Soft pink, gilded edges', glyph: '❦',
+    bg: ['#f6d5d9', '#e8b4bc'], card: '#fffaf7', ink: '#5b2a35', accent: '#b5485d', accent2: '#c39a4b', onAccent: '#ffffff',
+    particles: ['🌸', '✧', '💗', '✦', '🕊️'], seal: '❀', divider: '✧ ❦ ✧',
+    pattern: 'hearts', wax: 'rose', waxFace: 'gold', paper: 'watercolor', corners: 'floral', rule: 'swash',
+  },
+  velvet: {
+    name: 'Midnight Velvet', cat: 'romantic', tagline: 'Plum, rose & candle-glow', glyph: '❧',
+    bg: ['#1a0d24', '#4a1942'], card: '#2a1530', ink: '#f6e6ee', accent: '#e58fb0', accent2: '#d6b25e', onAccent: '#2a1530', dark: true,
+    particles: ['🌹', '✦', '🕯️', '✧', '🍷'], seal: '🌹', divider: '✦ ❧ ✦',
+    pattern: 'damask', wax: 'burgundy', waxFace: 'gold', paper: 'smooth', corners: 'filigree', rule: 'flourish',
+  },
+
+  // ── Seasonal: the Wheel of the Year ──────────────────────────────────
   samhain: {
-    name: 'Samhain', group: 'wheel', tagline: 'The veil grows thin', glyph: '☾',
-    bg: ['#140a18', '#3b1a2e'], card: '#221320', ink: '#f3e6d0', accent: '#e8742a', accent2: '#b48cf2', onAccent: '#1a0f1f',
-    display: "'Cinzel Decorative', serif", body: "'Cormorant Garamond', serif",
-    particles: ['🦇', '🍂', '🕯️', '✦', '🌙'], seal: '🎃', divider: '✦ ☾ ✦',
-    greeting: 'By candle and by moonlight, you are summoned…',
-    yes: 'I shall attend 🕯️', closing: 'Yours beyond the veil,',
+    name: 'Samhain', cat: 'seasonal', tagline: 'The veil grows thin', glyph: '☾',
+    bg: ['#140a18', '#3b1a2e'], card: '#221320', ink: '#f3e6d0', accent: '#e8742a', accent2: '#b48cf2', onAccent: '#1a0f1f', dark: true,
+    particles: ['🦇', '🍂', '🕯️', '✦', '🌙'], seal: '☾', divider: '✦ ☾ ✦',
+    pattern: 'stars', wax: 'black', waxFace: 'copper', paper: 'parchment', corners: 'celestial', rule: 'flourish',
   },
   yule: {
-    name: 'Yule', group: 'wheel', tagline: 'Return of the sun', glyph: '❄',
-    bg: ['#0b231d', '#16473a'], card: '#f8f2e4', ink: '#1f3b2d', accent: '#b3262e', accent2: '#c9a227', onAccent: '#fff8ea',
-    display: "'Great Vibes', cursive", body: "'Cormorant Garamond', serif",
-    particles: ['❄', '✧', '🌲', '❅', '✦'], seal: '🌲', wrap: 'gift', divider: '❄ ✧ ❄',
-    greeting: 'On the longest night, let us make our own light…',
-    yes: 'Count me in ❄', closing: 'Warmly, by the Yule fire,',
+    name: 'Yule', cat: 'seasonal', tagline: 'Return of the sun', glyph: '❄',
+    bg: ['#0b231d', '#16473a'], card: '#f8f2e4', ink: '#1f3b2d', accent: '#b3262e', accent2: '#b8902a', onAccent: '#fff8ea',
+    particles: ['❄', '✧', '🌲', '❅', '✦'], seal: '❄', wrap: 'gift', divider: '❄ ✧ ❄',
+    pattern: 'snow', wax: 'scarlet', waxFace: 'gold', paper: 'linen', corners: 'floral', rule: 'vine',
   },
   imbolc: {
-    name: 'Imbolc', group: 'wheel', tagline: 'First stirrings of spring', glyph: '🜂',
+    name: 'Imbolc', cat: 'seasonal', tagline: 'First stirrings of spring', glyph: '✧',
     bg: ['#dfe7f1', '#f6f1ea'], card: '#ffffff', ink: '#2c3e57', accent: '#c94f4f', accent2: '#7fa7d1', onAccent: '#ffffff',
-    display: "'Cormorant Garamond', serif", body: "'Cormorant Garamond', serif",
-    particles: ['🕯️', '❄', '🌱', '✧', '🐑'], seal: '🕯️', divider: '✧ 🕯 ✧',
-    greeting: 'As Brigid’s flame wakes the sleeping earth…',
-    yes: 'Yes, light the candle 🕯️', closing: 'With a kindled heart,',
+    particles: ['🕯️', '❄', '🌱', '✧', '🐑'], seal: '✦', divider: '✧ 🕯 ✧',
+    pattern: 'snow', wax: 'ivory', waxFace: 'silver', paper: 'cotton', corners: 'none', rule: 'swash',
   },
   ostara: {
-    name: 'Ostara', group: 'wheel', tagline: 'Balance & bloom', glyph: '✿',
+    name: 'Ostara', cat: 'seasonal', tagline: 'Balance & bloom', glyph: '✿',
     bg: ['#fde7f1', '#e3f5e8'], card: '#fffdf7', ink: '#4a3b52', accent: '#d9649a', accent2: '#6fbf8a', onAccent: '#ffffff',
-    display: "'Pacifico', cursive", body: "'Quicksand', sans-serif",
-    particles: ['🌷', '🥚', '🐇', '🌼', '🦋'], seal: '🥚', divider: '✿ 🐇 ✿',
-    greeting: 'Day and night stand in balance — and the garden is waking…',
-    yes: 'Yes! Let’s bloom 🌷', closing: 'Blossoming with joy,',
+    particles: ['🌷', '🥚', '🐇', '🌼', '🦋'], seal: '❀', divider: '✿ 🐇 ✿',
+    pattern: 'blossoms', wax: 'lavender', waxFace: 'pearl', paper: 'watercolor', corners: 'floral', rule: 'vine',
   },
   beltane: {
-    name: 'Beltane', group: 'wheel', tagline: 'Fire & flowers', glyph: '🔥',
+    name: 'Beltane', cat: 'seasonal', tagline: 'Fire & flowers', glyph: '❀',
     bg: ['#ffd6e4', '#ffc999'], card: '#fff8f2', ink: '#5a1e3a', accent: '#d81b60', accent2: '#2e8b57', onAccent: '#ffffff',
-    display: "'Great Vibes', cursive", body: "'Cormorant Garamond', serif",
-    particles: ['🌸', '🔥', '🌺', '✿', '🎀'], seal: '🌸', divider: '✿ 🔥 ✿',
-    greeting: 'The bonfires are lit and the may is in bloom…',
-    yes: 'Yes, I’ll dance 🔥', closing: 'Ever-blooming,',
+    particles: ['🌸', '🔥', '🌺', '✿', '🎀'], seal: '❀', divider: '✿ 🔥 ✿',
+    pattern: 'blossoms', wax: 'rose', waxFace: 'gold', paper: 'watercolor', corners: 'floral', rule: 'vine',
   },
   litha: {
-    name: 'Litha', group: 'wheel', tagline: 'Midsummer’s golden light', glyph: '☀',
-    bg: ['#fff1b8', '#ffc94a'], card: '#fffdf2', ink: '#5b3a00', accent: '#f08a00', accent2: '#1fa595', onAccent: '#ffffff',
-    display: "'Amatic SC', cursive", body: "'Quicksand', sans-serif",
-    particles: ['☀️', '🌻', '🐝', '✦', '🌼'], seal: '🌻', divider: '✦ ☀ ✦',
-    greeting: 'On the longest day, the sun lingers just for us…',
-    yes: 'Yes, sunshine! ☀️', closing: 'Sun-kissed & smiling,',
+    name: 'Litha', cat: 'seasonal', tagline: 'Midsummer’s golden light', glyph: '☀',
+    bg: ['#fff1b8', '#ffc94a'], card: '#fffdf2', ink: '#5b3a00', accent: '#d97a00', accent2: '#1fa595', onAccent: '#ffffff',
+    particles: ['☀️', '🌻', '🐝', '✦', '🌼'], seal: '☀︎', divider: '✦ ☀ ✦',
+    pattern: 'blossoms', wax: 'gold', waxFace: 'pressed', paper: 'linen', corners: 'deco', rule: 'swash',
   },
   lughnasadh: {
-    name: 'Lughnasadh', group: 'wheel', tagline: 'The first harvest', glyph: '🌾',
+    name: 'Lughnasadh', cat: 'seasonal', tagline: 'The first harvest', glyph: '🌾',
     bg: ['#f4e3c1', '#d9a95b'], card: '#fff8ea', ink: '#4a2e12', accent: '#a85a1b', accent2: '#5f7f1f', onAccent: '#fff8ea',
-    display: "'Uncial Antiqua', serif", body: "'Cormorant Garamond', serif",
     particles: ['🌾', '🍞', '🌻', '✦', '🍯'], seal: '🌾', wrap: 'scroll', divider: '🌾 ✦ 🌾',
-    greeting: 'The grain is golden and the bread is baking…',
-    yes: 'I’ll gather with you 🌾', closing: 'With gratitude for the harvest,',
+    pattern: 'leaves', wax: 'bronze', waxFace: 'pressed', paper: 'parchment', corners: 'floral', rule: 'vine',
   },
   mabon: {
-    name: 'Mabon', group: 'wheel', tagline: 'Gratitude & golden leaves', glyph: '🍁',
+    name: 'Mabon', cat: 'seasonal', tagline: 'Gratitude & golden leaves', glyph: '🍁',
     bg: ['#3d1f0f', '#8a3b12'], card: '#fbf1e1', ink: '#3d1f0f', accent: '#b8461a', accent2: '#7a1f2b', onAccent: '#fff6ea',
-    display: "'Cormorant Garamond', serif", body: "'Cormorant Garamond', serif",
-    particles: ['🍁', '🍂', '🍎', '🍇', '✦'], seal: '🍎', divider: '🍂 ✦ 🍂',
-    greeting: 'As the leaves turn and the wheel tips toward the dark…',
-    yes: 'Yes, let’s cozy up 🍁', closing: 'Gratefully yours,',
+    particles: ['🍁', '🍂', '🍎', '🍇', '✦'], seal: '🍂', divider: '🍂 ✦ 🍂',
+    pattern: 'leaves', wax: 'copper', waxFace: 'gold', paper: 'parchment', corners: 'floral', rule: 'flourish',
   },
 
-  // ── Occasions ────────────────────────────────────────────────────────
-  candlelit: {
-    name: 'Candlelit Dinner', group: 'occasion', tagline: 'A table for two', glyph: '🕯',
-    bg: ['#1c0b10', '#4a0f1e'], card: '#fbf3ea', ink: '#3a0d17', accent: '#a4161a', accent2: '#c9a227', onAccent: '#fff6ea',
-    display: "'Playfair Display', serif", body: "'Cormorant Garamond', serif",
-    particles: ['🕯️', '🌹', '✦', '🍷', '✧'], seal: '🌹', divider: '✦ 🌹 ✦',
-    greeting: 'A candle, a table, and a seat saved just for you…',
-    yes: 'It’s a date 🌹', closing: 'Yours,',
-  },
-  starlit: {
-    name: 'Starlit Night', group: 'occasion', tagline: 'Wish upon it', glyph: '✦',
-    bg: ['#050a24', '#1b1f5c'], card: '#0f1545', ink: '#e7e9ff', accent: '#ffd66b', accent2: '#9aa5ff', onAccent: '#0f1545',
-    display: "'Cinzel Decorative', serif", body: "'Cormorant Garamond', serif",
-    particles: ['✦', '✧', '⋆', '🌙', '☄️'], seal: '🌙', divider: '⋆ ☾ ⋆',
-    greeting: 'The stars have aligned, and they spell out your name…',
-    yes: 'Yes, under the stars ✨', closing: 'Yours under the stars,',
-  },
+  // ── Nature ───────────────────────────────────────────────────────────
   picnic: {
-    name: 'Garden Picnic', group: 'occasion', tagline: 'Sunshine & strawberries', glyph: '🧺',
-    bg: ['#e4f6d9', '#fff3d6'], card: '#fffef8', ink: '#2f4a2a', accent: '#e05a47', accent2: '#6aa84f', onAccent: '#ffffff',
-    display: "'Pacifico', cursive", body: "'Quicksand', sans-serif",
+    name: 'Garden Picnic', cat: 'nature', tagline: 'Sunshine & strawberries', glyph: '🧺',
+    bg: ['#e4f6d9', '#fff3d6'], card: '#fffef8', ink: '#2f4a2a', accent: '#d94f3d', accent2: '#6aa84f', onAccent: '#ffffff',
     particles: ['🌼', '🍓', '🐞', '🦋', '🌿'], seal: '🍓', divider: '🌼 ✿ 🌼',
-    greeting: 'A blanket, a basket, and a lazy afternoon…',
-    yes: 'Yes, pack the basket 🧺', closing: 'Sweet as strawberries,',
+    pattern: 'gingham', wax: 'scarlet', waxFace: 'pearl', paper: 'linen', corners: 'floral', rule: 'vine',
   },
   adventure: {
-    name: 'Wild Adventure', group: 'occasion', tagline: 'Into the wild', glyph: '🧭',
-    bg: ['#1d3328', '#4f6d4a'], card: '#f5efe0', ink: '#22332a', accent: '#d9822b', accent2: '#4f7cac', onAccent: '#ffffff',
-    display: "'Amatic SC', cursive", body: "'Quicksand', sans-serif",
+    name: 'Wild Adventure', cat: 'nature', tagline: 'Into the wild', glyph: '🧭',
+    bg: ['#1d3328', '#4f6d4a'], card: '#f5efe0', ink: '#22332a', accent: '#c46f1f', accent2: '#4f7cac', onAccent: '#ffffff',
     particles: ['🌲', '🍃', '🧭', '⛰️', '🦉'], seal: '🧭', wrap: 'chest', divider: '🌲 ✦ 🌲',
-    greeting: 'The trail is calling, and it said to bring you…',
-    yes: 'Adventure accepted 🥾', closing: 'See you out there,',
-  },
-  party: {
-    name: 'Celebration', group: 'occasion', tagline: 'Let’s make some noise', glyph: '🎉',
-    bg: ['#2b1055', '#d53369'], card: '#ffffff', ink: '#2b1055', accent: '#e93d82', accent2: '#f5b700', onAccent: '#ffffff',
-    display: "'Fredoka', sans-serif", body: "'Quicksand', sans-serif",
-    particles: ['🎉', '✨', '🎈', '🥂', '🎊'], seal: '🎈', wrap: 'gift', divider: '✨ 🎉 ✨',
-    greeting: 'Grab your best grin — there’s a party and you’re on the list…',
-    yes: 'Wouldn’t miss it 🎉', closing: 'Let’s celebrate,',
-  },
-  cozy: {
-    name: 'Cozy Night In', group: 'occasion', tagline: 'Blankets mandatory', glyph: '☕',
-    bg: ['#3b2a24', '#6b4a3a'], card: '#fdf6ee', ink: '#3b2a24', accent: '#c26a4f', accent2: '#7d8f4e', onAccent: '#ffffff',
-    display: "'Caveat', cursive", body: "'Quicksand', sans-serif",
-    particles: ['☕', '🍿', '🧸', '🕯️', '🧦'], seal: '☕', divider: '☕ ✦ 🍿',
-    greeting: 'Soft lights, warm drinks, and absolutely no plans to go out…',
-    yes: 'Yes, I’ll bring socks 🧦', closing: 'Cozily,',
+    pattern: 'leaves', wax: 'forest', waxFace: 'bronze', paper: 'parchment', corners: 'none', rule: 'swash',
   },
   enchanted: {
-    name: 'Enchanted Forest', group: 'occasion', tagline: 'Where the fae dance', glyph: '🍄',
-    bg: ['#0c2418', '#2f5d50'], card: '#112a1f', ink: '#e6f5e0', accent: '#c3f584', accent2: '#f5b0e0', onAccent: '#112a1f',
-    display: "'Cinzel Decorative', serif", body: "'Cormorant Garamond', serif",
+    name: 'Enchanted Forest', cat: 'nature', tagline: 'Where the fae dance', glyph: '🍄',
+    bg: ['#0c2418', '#2f5d50'], card: '#112a1f', ink: '#e6f5e0', accent: '#c3f584', accent2: '#f5b0e0', onAccent: '#112a1f', dark: true,
     particles: ['🍄', '✨', '🧚', '🌿', '🦋'], seal: '🍄', wrap: 'scroll', divider: '🌿 ✧ 🌿',
-    greeting: 'A little bird (a fairy, really) asked me to deliver this…',
-    yes: 'Lead me to the glade ✨', closing: 'Enchantedly,',
+    pattern: 'leaves', wax: 'forest', waxFace: 'gold', paper: 'smooth', corners: 'floral', rule: 'vine',
   },
   seaside: {
-    name: 'Seaside', group: 'occasion', tagline: 'Salt air & sunshine', glyph: '🐚',
-    bg: ['#d6f1f6', '#8fd3e8'], card: '#fffdf8', ink: '#0c3c4c', accent: '#f2734a', accent2: '#2a9d8f', onAccent: '#ffffff',
-    display: "'Pacifico', cursive", body: "'Quicksand', sans-serif",
+    name: 'Seaside', cat: 'nature', tagline: 'Salt air & sunshine', glyph: '🐚',
+    bg: ['#d6f1f6', '#8fd3e8'], card: '#fffdf8', ink: '#0c3c4c', accent: '#e0603a', accent2: '#2a9d8f', onAccent: '#ffffff',
     particles: ['🐚', '🌊', '🐠', '⭐', '☀️'], seal: '🐚', wrap: 'bottle', divider: '〰 🐚 〰',
-    greeting: 'The tide sent a message in a bottle — and it’s for you…',
-    yes: 'Yes, see you at the shore 🌊', closing: 'Sea you soon,',
+    pattern: 'waves', wax: 'teal', waxFace: 'pearl', paper: 'watercolor', corners: 'none', rule: 'swash',
+  },
+
+  // ── Medieval ─────────────────────────────────────────────────────────
+  royal: {
+    name: 'Royal Court', cat: 'medieval', tagline: 'Crimson, ermine & gold', glyph: '♛',
+    bg: ['#2a0710', '#6b0f22'], card: '#f6ecd6', ink: '#3a1010', accent: '#8e1420', accent2: '#b08a2e', onAccent: '#fff4dc',
+    particles: ['⚜️', '👑', '✦', '🗝️', '✧'], seal: '@crown', wrap: 'scroll', divider: '⚜ ✦ ⚜',
+    pattern: 'damask', scene: 'damask', wax: 'scarlet', waxFace: 'gold', paper: 'parchment', corners: 'gothic', rule: 'flourish',
+  },
+  castle: {
+    name: 'Castle Keep', cat: 'medieval', tagline: 'Stone, steel & banners', glyph: '♜',
+    bg: ['#1f2630', '#4a5568'], card: '#ece6d8', ink: '#22262e', accent: '#2f4b8a', accent2: '#8a7a55', onAccent: '#ffffff',
+    particles: ['🛡️', '⚔️', '🏰', '✦', '🐉'], seal: '@shield', wrap: 'chest', divider: '⚔ ✦ ⚔',
+    pattern: 'stone', scene: 'stone', wax: 'navy', waxFace: 'silver', paper: 'parchment', corners: 'gothic', rule: 'rule',
+  },
+  manuscript: {
+    name: 'Illuminated', cat: 'medieval', tagline: 'Gilded letters & vines', glyph: '❦',
+    bg: ['#3b2a1a', '#6e4f2c'], card: '#f3e5c4', ink: '#2e1f10', accent: '#a3201a', accent2: '#1f4e8c', onAccent: '#fff6e0',
+    particles: ['📜', '🪶', '✦', '🌿', '✧'], seal: '⚜︎', wrap: 'scroll', divider: '❦ ✦ ❦',
+    pattern: 'damask', wax: 'burgundy', waxFace: 'gold', paper: 'parchment', corners: 'gothic', sides: 'vine', rule: 'vine',
+  },
+
+  // ── Cats ─────────────────────────────────────────────────────────────
+  blackcat: {
+    name: 'Black Cat', cat: 'cats', tagline: 'Moonlight & golden eyes', glyph: '🐈‍⬛',
+    bg: ['#120d1e', '#33244d'], card: '#1d1630', ink: '#f2ecff', accent: '#f0c64a', accent2: '#a98be0', onAccent: '#1d1630', dark: true,
+    particles: ['🐈‍⬛', '🌙', '✦', '🐾', '✧'], seal: '@cat', divider: '✦ 🐾 ✦',
+    pattern: 'paws', wax: 'black', waxFace: 'gold', paper: 'smooth', corners: 'celestial', rule: 'swash',
+  },
+  calico: {
+    name: 'Calico', cat: 'cats', tagline: 'Ginger, cream & cocoa', glyph: '🐈',
+    bg: ['#f7e7d2', '#e8b98a'], card: '#fffaf2', ink: '#4a2f1c', accent: '#c8642a', accent2: '#6b4a32', onAccent: '#ffffff',
+    particles: ['🐈', '🧶', '🐾', '🐟', '✦'], seal: '@paw', divider: '🐾 ✦ 🐾',
+    pattern: 'paws', scene: 'paws', wax: 'copper', waxFace: 'pearl', paper: 'linen', corners: 'paws', rule: 'swash',
+  },
+  kitten: {
+    name: 'Kitten Pastel', cat: 'cats', tagline: 'Pink noses & yarn', glyph: '🐱',
+    bg: ['#fde4ef', '#e6dcff'], card: '#fffbfe', ink: '#4b3660', accent: '#d36a9e', accent2: '#8f7ad6', onAccent: '#ffffff',
+    particles: ['🐱', '🧶', '💗', '🐾', '✧'], seal: '@catface', divider: '✧ 🐾 ✧',
+    pattern: 'paws', scene: 'paws', wax: 'rose', waxFace: 'pearl', paper: 'watercolor', corners: 'paws', rule: 'swash',
+  },
+  catcafe: {
+    name: 'Cat Café', cat: 'cats', tagline: 'Lattes & lap cats', glyph: '☕',
+    bg: ['#3b2a22', '#7a5641'], card: '#fbf3e8', ink: '#3b2a22', accent: '#9c5a3c', accent2: '#c39a4b', onAccent: '#ffffff',
+    particles: ['☕', '🐈', '🐾', '🥐', '✦'], seal: '@cat', divider: '☕ 🐾 ☕',
+    pattern: 'paws', wax: 'bronze', waxFace: 'gold', paper: 'cotton', corners: 'paws', rule: 'flourish',
+  },
+
+  // ── Night & glam ─────────────────────────────────────────────────────
+  starlit: {
+    name: 'Starlit Night', cat: 'night', tagline: 'Wish upon it', glyph: '✦',
+    bg: ['#050a24', '#1b1f5c'], card: '#0f1545', ink: '#e7e9ff', accent: '#ffd66b', accent2: '#9aa5ff', onAccent: '#0f1545', dark: true,
+    particles: ['✦', '✧', '⋆', '🌙', '☄️'], seal: '☾', divider: '⋆ ☾ ⋆',
+    pattern: 'stars', scene: 'stars', wax: 'navy', waxFace: 'gold', paper: 'smooth', corners: 'celestial', rule: 'swash',
   },
   show: {
-    name: 'Night at the Show', group: 'occasion', tagline: 'Curtain up', glyph: '🎭',
-    bg: ['#0d0b1a', '#3a0ca3'], card: '#17122d', ink: '#f5f3ff', accent: '#f72585', accent2: '#4cc9f0', onAccent: '#ffffff',
-    display: "'Righteous', sans-serif", body: "'Quicksand', sans-serif",
-    particles: ['🎶', '🎭', '✨', '🎟️', '🎸'], seal: '🎟️', divider: '♪ ✦ ♪',
-    greeting: 'The lights dim, the crowd hushes — and there’s a seat next to mine…',
-    yes: 'Save me that seat 🎟️', closing: 'See you in the front row,',
+    name: 'Night at the Show', cat: 'night', tagline: 'Curtain up', glyph: '🎭',
+    bg: ['#0d0b1a', '#3a0ca3'], card: '#17122d', ink: '#f5f3ff', accent: '#f72585', accent2: '#4cc9f0', onAccent: '#ffffff', dark: true,
+    particles: ['🎶', '🎭', '✨', '🎟️', '🎸'], seal: '✦', divider: '♪ ✦ ♪',
+    pattern: 'stars', scene: 'velvet', wax: 'black', waxFace: 'silver', paper: 'smooth', corners: 'deco', rule: 'rule',
+  },
+  party: {
+    name: 'Celebration', cat: 'night', tagline: 'Let’s make some noise', glyph: '🎉',
+    bg: ['#2b1055', '#d53369'], card: '#ffffff', ink: '#2b1055', accent: '#e93d82', accent2: '#e0a800', onAccent: '#ffffff',
+    particles: ['🎉', '✨', '🎈', '🥂', '🎊'], seal: '✦', wrap: 'gift', divider: '✨ 🎉 ✨',
+    pattern: 'confetti', scene: 'confetti', wax: 'gold', waxFace: 'pressed', paper: 'smooth', corners: 'deco', rule: 'swash',
+  },
+  cozy: {
+    name: 'Cozy Night In', cat: 'night', tagline: 'Blankets mandatory', glyph: '☕',
+    bg: ['#3b2a24', '#6b4a3a'], card: '#fdf6ee', ink: '#3b2a24', accent: '#b45d43', accent2: '#7d8f4e', onAccent: '#ffffff',
+    particles: ['☕', '🍿', '🧸', '🕯️', '🧦'], seal: '♥︎', divider: '☕ ✦ 🍿',
+    pattern: 'plaid', scene: 'plaid', wax: 'burgundy', waxFace: 'pearl', paper: 'linen', corners: 'none', sides: 'stitch', rule: 'swash',
   },
 };
 for (const [id, t] of Object.entries(THEMES)) t.id = id;
 
-// The calendar date of each sabbat (Northern Hemisphere, month is 1-based).
+// The calendar date of each sabbat (month is 1-based).
 export const SABBATS = {
   imbolc: [2, 1], ostara: [3, 20], beltane: [5, 1], litha: [6, 21],
   lughnasadh: [8, 1], mabon: [9, 22], samhain: [10, 31], yule: [12, 21],
@@ -157,22 +197,16 @@ const SEASON_STARTS = [
   ['lughnasadh', 7, 12], ['mabon', 8, 28], ['samhain', 10, 12], ['yule', 11, 26],
 ];
 
-// Southern Hemisphere seasons are flipped, so shift the calendar six months.
-function wheelMonth(month, hemi) {
-  return hemi === 'S' ? ((month + 5) % 12) + 1 : month;
-}
-
-export function sabbatFor(month, day, hemi = 'N') {
-  const md = wheelMonth(month, hemi) * 100 + day;
+export function sabbatFor(month, day) {
+  const md = month * 100 + day;
   let current = 'yule';
   for (const [id, m, d] of SEASON_STARTS) if (md >= m * 100 + d) current = id;
   return current;
 }
 
 // Returns the sabbat id if the date is the sabbat itself, else null.
-export function sabbatOn(month, day, hemi = 'N') {
-  const m = wheelMonth(month, hemi);
-  for (const [id, [sm, sd]] of Object.entries(SABBATS)) if (sm === m && sd === day) return id;
+export function sabbatOn(month, day) {
+  for (const [id, [sm, sd]] of Object.entries(SABBATS)) if (sm === month && sd === day) return id;
   return null;
 }
 
@@ -187,10 +221,15 @@ export function partsInTz(ms, tz) {
   return out;
 }
 
-export function resolveTheme(inv) {
-  if (inv.th && inv.th !== 'auto' && THEMES[inv.th]) return THEMES[inv.th];
+export function seasonOf(inv) {
   const { month, day } = partsInTz(inv.s ?? Date.now(), inv.tz);
-  return THEMES[sabbatFor(month, day, inv.h)];
+  return sabbatFor(month, day);
+}
+
+// The look's own data. Older links may say 'auto', meaning "the season of the date".
+export function resolveLook(inv) {
+  if (inv.th && THEMES[inv.th]) return THEMES[inv.th];
+  return THEMES[seasonOf(inv)];
 }
 
 // ── Moon lore ──────────────────────────────────────────────────────────

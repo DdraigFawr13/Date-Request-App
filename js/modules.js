@@ -1,5 +1,5 @@
-// The building blocks of an invitation: optional detail modules, questions to
-// ask the guest, and occasion templates that pre-fill a sensible set of both.
+// The building blocks of an invitation: optional detail modules and questions
+// to ask the guest. Occasions (occasions.js) pre-fill a sensible set of both.
 
 export const MODULES = [
   { id: 'dress', icon: '👗', label: 'What to wear', type: 'chips',
@@ -54,31 +54,3 @@ export const QUESTIONS = [
   { id: 'wish', q: 'Anything that would make it perfect?' },
 ];
 export const QUESTION_BY_ID = Object.fromEntries(QUESTIONS.map(q => [q.id, q]));
-
-export const TEMPLATES = [
-  { id: 'dinner', icon: '🍷', label: 'Dinner date', title: 'Dinner for two', theme: 'candlelit',
-    mods: { dress: 'Smart casual', cost: 'My treat ✨', transport: 'I’ll pick you up', vibe: 'Romantic' }, asks: ['diet'] },
-  { id: 'picnic', icon: '🧺', label: 'Picnic', title: 'A picnic in the park', theme: 'picnic',
-    mods: { dress: 'Comfy & cozy', bring: 'Just yourself', food: 'Snacks provided', weather: 'Mostly outdoors' }, asks: ['diet', 'drink'] },
-  { id: 'stars', icon: '🔭', label: 'Stargazing', title: 'A night under the stars', theme: 'starlit',
-    mods: { dress: 'Comfy & cozy', bring: 'A warm layer', weather: 'Could be chilly — bring layers', activity: 'Totally chill' }, asks: ['drink'] },
-  { id: 'adventure', icon: '🥾', label: 'Adventure', title: 'An adventure awaits', theme: 'adventure',
-    mods: { dress: 'Outdoor-ready', bring: 'Water bottle', activity: 'Moderate', weather: 'Might get muddy' }, asks: [] },
-  { id: 'cozy', icon: '🍿', label: 'Movie night', title: 'Movie night in', theme: 'cozy',
-    mods: { dress: 'Comfy & cozy', food: 'Snacks provided', vibe: 'Low-key' }, asks: ['drink', 'wish'] },
-  { id: 'show', icon: '🎭', label: 'Show / concert', title: 'A night at the show', theme: 'show',
-    mods: { dress: 'Dressy', cost: 'Tickets are covered', transport: 'Let’s ride together', link: { l: 'Our tickets', u: '' } }, asks: [] },
-  { id: 'party', icon: '🎉', label: 'Party', title: 'You’re invited to celebrate!', theme: 'party',
-    mods: { guests: 'Bring a friend', bring: 'Just yourself', dress: 'Wear something you love' }, asks: ['song'] },
-  { id: 'sabbat', icon: '🕯️', label: 'Sabbat gathering', title: 'Gather for the turning of the wheel', theme: 'auto',
-    mods: { bring: 'A dish to share', dress: 'Wear something you love', vibe: 'Witchy', guests: 'Small group' }, asks: ['diet'] },
-  { id: 'coffee', icon: '☕', label: 'Coffee date', title: 'Coffee & conversation', theme: 'cozy',
-    mods: { cost: 'My treat ✨', vibe: 'Low-key' }, asks: [] },
-  { id: 'beach', icon: '🌊', label: 'Beach day', title: 'A day by the sea', theme: 'seaside',
-    mods: { bring: 'Swimsuit & towel', weather: 'Sunny — bring shades', food: 'Snacks provided' }, asks: [] },
-  { id: 'fae', icon: '🍄', label: 'Fairy-tale outing', title: 'Into the enchanted wood', theme: 'enchanted',
-    mods: { dress: 'Costume encouraged', vibe: 'Playful', activity: 'A little walking' }, asks: [] },
-  { id: 'surprise', icon: '🎁', label: 'Surprise', title: 'A surprise outing', theme: 'auto',
-    mods: { surprise: 'Total surprise — trust me', dress: 'Smart casual' }, asks: ['pickup'] },
-  { id: 'custom', icon: '✨', label: 'Something else', title: '', theme: 'auto', mods: {}, asks: [] },
-];
