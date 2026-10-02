@@ -93,6 +93,18 @@ export const SVG_EMBLEMS = {
     <circle cx='24' cy='64' r='4'/><circle cx='36' cy='44' r='3.2'/><circle cx='52' cy='50' r='4.4'/><circle cx='64' cy='30' r='3.6'/><circle cx='78' cy='40' r='3'/><circle cx='70' cy='62' r='3.6'/>`,
   die: `<g transform='rotate(-10 50 52)'><rect x='28' y='30' width='44' height='44' rx='10'/>
     <g fill='#000'><circle cx='39' cy='41' r='4.2'/><circle cx='61' cy='41' r='4.2'/><circle cx='50' cy='52' r='4.2'/><circle cx='39' cy='63' r='4.2'/><circle cx='61' cy='63' r='4.2'/></g></g>`,
+  masks: `<g transform='translate(61 44) rotate(14) scale(1.35)'><path d='M0 -13 C8.5 -13 12 -8 12 -1 C12 9 6 15 0 15 C-6 15 -12 9 -12 -1 C-12 -8 -8.5 -13 0 -13Z'/>
+      <g fill='#000'><path d='M-8.5 -5 Q-5.5 -1 -2.5 -5 Q-5.5 -3.2 -8.5 -5Z M2.5 -5 Q5.5 -1 8.5 -5 Q5.5 -3.2 2.5 -5Z M-6 9.5 Q0 2.5 6 9.5 Q0 6.5 -6 9.5Z'/></g></g>
+    <g transform='translate(39 56) rotate(-14) scale(1.35)'><path d='M0 -13 C8.5 -13 12 -8 12 -1 C12 9 6 15 0 15 C-6 15 -12 9 -12 -1 C-12 -8 -8.5 -13 0 -13Z' stroke='#000' stroke-width='1.4'/>
+      <g fill='#000'><path d='M-8.5 -3 Q-5.5 -8 -2.5 -3 Q-5.5 -5 -8.5 -3Z M2.5 -3 Q5.5 -8 8.5 -3 Q5.5 -5 2.5 -3Z M-6.5 3.5 Q0 12 6.5 3.5 Q0 7 -6.5 3.5Z'/></g></g>
+    <path d='M22 74 C30 70 34 76 42 72 M66 60 C72 64 78 60 82 66' fill='none' stroke-width='2.4' stroke-linecap='round'/>`,
+  note: `<g transform='rotate(-8 50 52)'><ellipse cx='36' cy='70' rx='9.5' ry='6.8' transform='rotate(-22 36 70)'/><ellipse cx='68' cy='62' rx='9.5' ry='6.8' transform='rotate(-22 68 62)'/>
+    <rect x='43' y='28' width='4.2' height='42'/><rect x='75' y='20' width='4.2' height='42'/><path d='M43 28 L79.2 20 V30 L43 38Z'/></g>`,
+  pansy: `<g transform='translate(50 52)'><ellipse cx='-10' cy='-14' rx='13' ry='15' transform='rotate(-20 -10 -14)'/><ellipse cx='10' cy='-14' rx='13' ry='15' transform='rotate(20 10 -14)'/>
+    <ellipse cx='-16' cy='3' rx='12' ry='10' transform='rotate(-15 -16 3)'/><ellipse cx='16' cy='3' rx='12' ry='10' transform='rotate(15 16 3)'/>
+    <path d='M0 0 C14 0 22 10 18 20 C14 28 -14 28 -18 20 C-22 10 -14 0 0 0Z'/>
+    <g fill='none' stroke='#000' stroke-width='1.6' stroke-linecap='round' opacity='.75'><path d='M0 6 V16 M-4 6 L-8 14 M4 6 L8 14 M-6 2 L-14 6 M6 2 L14 6'/></g>
+    <circle cy='3' r='3.6' fill='#000'/></g>`,
   paw: `<g transform='translate(50 52) scale(2.6)'><ellipse cx='0' cy='4' rx='5.2' ry='4.4'/><ellipse cx='-6' cy='-3' rx='2.1' ry='2.7' transform='rotate(-20 -6 -3)'/>
     <ellipse cx='-2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='6' cy='-3' rx='2.1' ry='2.7' transform='rotate(20 6 -3)'/></g>`,
 };
@@ -121,6 +133,10 @@ export const EMBLEM_GROUPS = [
     { s: '@acorn', name: 'Acorn' }, { s: '@teacup', name: 'Teacup' }, { s: '☘︎', name: 'Clover' },
  { s: '🍂', name: 'Leaf' }, { s: '🍄', name: 'Mushroom' }, { s: '🐝', name: 'Bee' },
     { s: '🦋', name: 'Butterfly' }, { s: '🦉', name: 'Owl' }, { s: '🐚', name: 'Shell' }, { s: '🌾', name: 'Wheat' }, { s: '🍓', name: 'Strawberry' },
+  ] },
+  { id: 'stage', label: 'Stage', items: [
+    { s: '@masks', name: 'Theatre masks' }, { s: '@note', name: 'Music notes' }, { s: '@pansy', name: 'Pansy' }, { s: '♪', name: 'Note' },
+    { s: '🎭', name: 'Masks' }, { s: '🎟️', name: 'Ticket' }, { s: '🎤', name: 'Microphone' }, { s: '🎻', name: 'Violin' }, { s: '🌹', name: 'Rose' },
   ] },
   { id: 'party', label: 'Party', items: [
     { s: '🍸', name: 'Martini' }, { s: '🥂', name: 'Cheers' }, { s: '@die', name: 'Die' }, { s: '♫', name: 'Music' },

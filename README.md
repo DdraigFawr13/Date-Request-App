@@ -43,6 +43,7 @@ their calendar, and texts their answer back to you.
 | 🏰 Medieval | Royal Court · Castle Keep · Illuminated |
 | 🐈‍⬛ Cats | Black Cat · Calico · Kitten Pastel · Cat Café |
 | 🎉 Parties | Speakeasy · Neon Club · Disco Fever · Game Night · Birthday Bash · Tiki Bar · Celebration |
+| 🎭 Stage | A Midsummer Night’s Dream (moonlit wood with fairy lights, pansy seal) · Theatre Night (red-velvet curtains, masks seal) · Broadway Musical (marquee lights, music-note seal) |
 | 🖤 Dark side | Gothic · Emo · Kinky |
 | ✨ Night & glam | Night at the Show · Cozy Night In |
 
@@ -57,9 +58,9 @@ override any of them:
 - **Neon glow:** make the title, headings and card edge glow in hot pink,
   electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
 - **Background:** a soft glow, a moonlit sky, a haunted night, an aurora, a velvet curtain, bokeh lights,
-  a neon grid, a sunburst, or a pattern (damask, stars, snowfall, blossoms,
+  a neon grid, a sunburst, stage curtains, marquee lights, a moonlit wood, or a pattern (damask, stars, snowfall, blossoms,
   leaves, hearts, paw prints, waves, castle stone, gingham, plaid, lace, bats, wands & hats, dragon scales,
-  constellations, acorns & mushrooms,
+  constellations, acorns & mushrooms, theatre masks, moons & pansies,
   spiderwebs, stripes, cocktails, dice, checkerboard, disco tiles, music notes, confetti), in the look's
   colors or two of your own.
 - **Paper:** smooth card, handmade cotton, aged parchment, linen weave,

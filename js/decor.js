@@ -78,6 +78,12 @@ const CONSTELLATION = (pts, links) => `<g fill='none' stroke-width='0.7' stroke-
 const WAND = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><path d='M0 10 L0 -4' fill='none' stroke-width='1.8' stroke-linecap='round'/>${SPARKLE(0, -8, 0.7)}<circle cx='-4' cy='-12' r='0.8'/><circle cx='4' cy='-11' r='0.6'/></g>`;
 const HAT = (x, y, r, s = 1) => `<g transform='translate(${x} ${y}) rotate(${r}) scale(${s})'><path d='M-9 4 C-4 2 4 2 9 4 C5 6 -5 6 -9 4Z M-5 3 L1 -12 C2 -13 3 -12 3 -11 L5 3Z'/></g>`;
 
+// Comedy and tragedy masks, eyes and mouths cut through (even-odd).
+const MASK = (x, y, r, s, happy) => `<path fill-rule='evenodd' transform='translate(${x} ${y}) rotate(${r}) scale(${s})' d='M0 -11 C7 -11 10 -7 10 -1 C10 7 5 12 0 12 C-5 12 -10 7 -10 -1 C-10 -7 -7 -11 0 -11Z
+  ${happy ? 'M-7 -3 Q-4.5 -7 -2 -3 Q-4.5 -4.6 -7 -3Z M2 -3 Q4.5 -7 7 -3 Q4.5 -4.6 2 -3Z M-5.5 3 Q0 10 5.5 3 Q0 6 -5.5 3Z'
+    : 'M-7 -5 Q-4.5 -1.5 -2 -5 Q-4.5 -3.4 -7 -5Z M2 -5 Q4.5 -1.5 7 -5 Q4.5 -3.4 2 -5Z M-5 8 Q0 2 5 8 Q0 5.5 -5 8Z'}'/>`;
+const CRESCENT = (x, y, s) => `<path transform='translate(${x} ${y}) scale(${s})' d='M0 -4 A4 4 0 1 0 3 2.5 A3 3 0 1 1 0 -4Z'/>`;
+
 export const PATTERNS = {
   damask: { label: 'Damask', size: [56, 64], draw: () => DAMASK(28, 18, 1) + DAMASK(0, 50, 0.8) + DAMASK(56, 50, 0.8) },
   stars: { label: 'Stars', size: [90, 90], draw: () => SPARKLE(20, 22, 0.9) + SPARKLE(66, 60, 0.6) + SPARKLE(70, 14, 0.35)
@@ -111,6 +117,9 @@ export const PATTERNS = {
   bats: { label: 'Bats', size: [110, 100], draw: () => BAT(30, 26, -8, 1.9) + BAT(80, 70, 10, 1.45) + `<circle cx='88' cy='20' r='1.4'/><circle cx='20' cy='78' r='1.2'/>` },
   webs: { label: 'Spiderwebs', size: [80, 80], draw: () => WEB(22, 22, 1) + WEB(62, 60, 0.75) },
   stripes: { label: 'Stripes', size: [28, 28], draw: () => `<path d='M-7 7 L7 -7 M0 28 L28 0 M21 35 L35 21' stroke-width='6' stroke-linecap='square' fill='none'/>` },
+  masks: { label: 'Theatre masks', size: [90, 90], draw: () => MASK(24, 26, -14, 1, true) + MASK(64, 62, 12, 0.9, false) + SPARKLE(68, 20, 0.45) + SPARKLE(20, 70, 0.4) + `<circle cx='46' cy='44' r='1.1'/>` },
+  midsummer: { label: 'Moons & pansies', size: [90, 90], draw: () => CRESCENT(22, 24, 2.2) + FLOWER(64, 60, 0.8) + SPARKLE(66, 18, 0.5) + SPARKLE(22, 68, 0.35)
+    + LEAF(44, 40, 60, 0.55) + `<circle cx='84' cy='38' r='1'/><circle cx='40' cy='84' r='0.9'/><circle cx='8' cy='46' r='0.8'/>` },
   confetti: { label: 'Confetti', size: [70, 70], draw: () => `<rect x='10' y='12' width='8' height='3' rx='1' transform='rotate(30 14 13)'/><circle cx='50' cy='16' r='2.5' style='fill:var(--c2)'/>
     <rect x='40' y='48' width='8' height='3' rx='1' transform='rotate(-40 44 49)' style='fill:var(--c2)'/><circle cx='18' cy='52' r='2'/><path d='M60 34 l3 5 l-6 0z'/>` },
 };
@@ -139,6 +148,9 @@ export const SCENES = [
   { id: 'bokeh', label: 'Bokeh lights' },
   { id: 'neon', label: 'Neon grid' },
   { id: 'sunburst', label: 'Sunburst' },
+  { id: 'curtain', label: 'Stage curtains' },
+  { id: 'marquee', label: 'Marquee lights' },
+  { id: 'moonwood', label: 'Moonlit wood' },
   ...Object.entries(PATTERNS).map(([id, p]) => ({ id, label: p.label })),
 ];
 
@@ -226,6 +238,47 @@ function backdropLayers(look, inv = {}) {
       + `${svgUrl(yard)} center bottom / max(100%, 520px) auto no-repeat, `
       + `radial-gradient(circle at 74% 18%, #fff3d6 0 46px, rgba(255, 214, 150, 0.55) 48px, rgba(255, 170, 80, 0.18) 110px, transparent 200px), `
       + `${patternCss('stars', '#ffffff', look.accent, 0.35)}, linear-gradient(175deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'curtain') {
+    // Red-velvet stage: pleated curtains drawn to the sides, a swagged valance
+    // with gold fringe, a spotlight and the glow on the boards.
+    const velvet = look.dark ? look.accent2 : look.accent;
+    const pleats = 'repeating-linear-gradient(90deg, rgba(0,0,0,.42) 0, rgba(255,255,255,.1) 11px, rgba(0,0,0,.18) 20px, rgba(255,255,255,.06) 28px, rgba(0,0,0,.42) 36px)';
+    const shade = side => `linear-gradient(to ${side}, rgba(0,0,0,.55), transparent 70%)`;
+    const valance = svgTile(160, 64, `<path d='M0 0 H160 V30 Q120 62 80 30 Q40 62 0 30Z' fill='${velvet}'/><path d='M0 0 H160 V30 Q120 62 80 30 Q40 62 0 30Z' fill='url(#s)'/>
+      <defs><linearGradient id='s' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#000' stop-opacity='.45'/><stop offset='.6' stop-color='#fff' stop-opacity='.06'/><stop offset='1' stop-color='#000' stop-opacity='.4'/></linearGradient></defs>
+      <path d='M0 30 Q40 62 80 30 Q120 62 160 30' fill='none' stroke='#d8b45a' stroke-width='3'/><path d='M0 33 Q40 65 80 33 Q120 65 160 33' fill='none' stroke='#e9c96e' stroke-width='5' stroke-dasharray='1 2'/>
+      <circle cx='80' cy='34' r='4' fill='#d8b45a'/><path d='M80 38 v10' stroke='#d8b45a' stroke-width='2'/><ellipse cx='80' cy='50' rx='3' ry='5' fill='#c9a24a'/>`);
+    return `${svgUrl(valance)} 0 0 / 160px 64px repeat-x, `
+      + `${shade('right')} left top / 20% 100% no-repeat, ${shade('left')} right top / 20% 100% no-repeat, `
+      + `${pleats} left top / 20% 100% no-repeat, ${pleats} right top / 20% 100% no-repeat, `
+      + `linear-gradient(${velvet}, ${velvet}) left top / 20% 100% no-repeat, linear-gradient(${velvet}, ${velvet}) right top / 20% 100% no-repeat, `
+      + `radial-gradient(38% 12% at 50% 92%, rgba(255, 236, 190, 0.32), transparent 70%), `
+      + `radial-gradient(28% 75% at 50% 0%, rgba(255, 240, 205, 0.16), transparent 75%), `
+      + `linear-gradient(to top, rgba(60, 30, 10, 0.55), transparent 14%), ${vignette}, linear-gradient(175deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'marquee') {
+    // Rows of marquee bulbs top and bottom, crossing searchlights and sparkle.
+    const bulb = 'radial-gradient(circle, #fffbe6 0 2.5px, rgba(255, 214, 120, 0.85) 3.5px, rgba(255, 190, 80, 0.25) 7px, transparent 11px)';
+    const frame = `linear-gradient(${look.accent}55, ${look.accent}55)`;
+    return `${bulb} 0 14px / 30px 30px repeat-x, ${bulb} 15px calc(100% - 14px) / 30px 30px repeat-x, `
+      + `${frame} 0 27px / 100% 2px no-repeat, ${frame} 0 calc(100% - 28px) / 100% 2px no-repeat, `
+      + `linear-gradient(115deg, transparent 38%, rgba(255, 244, 210, 0.09) 44%, transparent 52%), `
+      + `linear-gradient(65deg, transparent 46%, rgba(255, 244, 210, 0.08) 52%, transparent 60%), `
+      + `radial-gradient(60% 40% at 50% 100%, ${look.accent2}44, transparent 70%), `
+      + `${patternCss('stars', '#ffffff', look.accent, 0.35)}, ${vignette}, linear-gradient(170deg, ${c1}, ${c2})`;
+  }
+  if (scene === 'moonwood') {
+    // A moonlit wood: a big moon, tree silhouettes, low mist and fairy lights.
+    const sil = '#070b18';
+    const wood = svgTile(480, 200, `<g fill='${sil}'><path d='M0 200 V150 C60 138 120 146 180 152 C260 160 330 136 400 142 C440 146 470 140 480 142 V200Z'/>
+      ${[[30, 70, 34], [92, 96, 44], [150, 60, 28], [330, 92, 46], [396, 66, 32], [452, 88, 40]].map(([x, h, r]) => `<rect x='${x - 3}' y='${150 - h * 0.45}' width='6' height='${h * 0.5}'/><circle cx='${x}' cy='${150 - h * 0.6}' r='${r}'/><circle cx='${x - r * 0.6}' cy='${150 - h * 0.45}' r='${r * 0.7}'/><circle cx='${x + r * 0.6}' cy='${150 - h * 0.42}' r='${r * 0.72}'/>`).join('')}</g>`);
+    const fly = (x, y, r) => `radial-gradient(circle at ${x}% ${y}%, rgba(255, 246, 190, 0.95) 0 1.6px, rgba(255, 230, 140, 0.35) ${r * 0.4}px, transparent ${r}px)`;
+    return [fly(18, 62, 10), fly(32, 74, 8), fly(70, 66, 11), fly(82, 78, 8), fly(56, 82, 7), fly(10, 82, 7), fly(90, 58, 9), fly(44, 60, 6)].join(', ') + ', '
+      + `linear-gradient(to top, rgba(190, 200, 255, 0.18), transparent 26%), `
+      + `${svgUrl(wood)} center bottom / max(100%, 560px) auto no-repeat, `
+      + `radial-gradient(circle at 80% 27%, #fffdf0 0 34px, rgba(255, 250, 225, 0.4) 40px, rgba(220, 225, 255, 0.12) 110px, transparent 190px), `
+      + `${patternCss('stars', '#ffffff', look.accent, 0.45)}, linear-gradient(175deg, ${c1}, ${c2})`;
   }
   if (scene === 'bokeh') {
     const dot = (x, y, r, c, o) => `radial-gradient(circle at ${x}% ${y}%, ${c}${o} 0, ${c}${o} ${r - 4}px, transparent ${r}px)`;
