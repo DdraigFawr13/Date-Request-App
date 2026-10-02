@@ -5,9 +5,9 @@
 import { THEMES, MONTH_MOONS, moonPhase, partsInTz, sabbatOn } from './themes.js';
 import { wording } from './occasions.js';
 import { MODULES } from './modules.js';
-import { backdropCss, backdropIsDark, decorHtml, resolvePaper, resolveRule, ruleHtml } from './decor.js';
+import { backdropCss, backdropIsDark, resolveGlow, decorHtml, resolvePaper, resolveRule, ruleHtml } from './decor.js';
 import { sealHtml } from './seal.js';
-import { esc } from './util.js';
+import { esc, escEmoji } from './util.js';
 
 export { esc };
 
@@ -22,6 +22,9 @@ export function applyTheme(el, theme, inv = {}) {
     '--on-bg': backdropIsDark(theme, inv) ? '#ffffff' : theme.ink,
     '--on-bg-glow': backdropIsDark(theme, inv) ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.75)',
   };
+  const glow = resolveGlow(inv, theme);
+  vars['--glow'] = glow || 'transparent';
+  el.dataset.glow = glow ? 'on' : '';
   for (const [k, v] of Object.entries(vars)) el.style.setProperty(k, v);
   el.dataset.theme = theme.id;
   el.dataset.font = theme.fontId || '';
@@ -129,8 +132,8 @@ export function renderCard(inv, theme, words = wordsFor(inv)) {
   return `
   ${cardOpen(inv, theme)}
       ${words.badge ? `<div class="card-badge">${esc(words.badge)}</div>` : ''}
-      ${words.dear ? `<p class="dear">${esc(words.dear)}</p>` : ''}
-      ${words.greet ? `<p class="greeting">${esc(words.greet)}</p>` : ''}
+      ${words.dear ? `<p class="dear">${escEmoji(words.dear)}</p>` : ''}
+      ${words.greet ? `<p class="greeting">${escEmoji(words.greet)}</p>` : ''}
       <h1 class="title">${esc(inv.title || 'A little bit of magic')}</h1>
       ${inv.msg ? `<p class="message">${esc(inv.msg)}</p>` : ''}
       ${divide()}
@@ -138,13 +141,13 @@ export function renderCard(inv, theme, words = wordsFor(inv)) {
         <li>${medal(ICONS.date)}<span>${esc(when.date)}</span></li>
         <li>${medal(ICONS.time)}<span>${esc(when.time)}</span></li>
         ${place ? `<li>${medal(ICONS.place)}<span>${inv.loc ? `<b class="plain">${esc(inv.loc)}</b>` : ''}${inv.addr ? `<a href="${esc(mapUrl(inv))}" target="_blank" rel="noopener">${esc(inv.addr)}</a>` : ''}</span></li>` : ''}
-        ${words.moon.trim() ? `<li class="moon"><span>${esc(words.moon.trim())}</span></li>` : ''}
+        ${words.moon.trim() ? `<li class="moon"><span>${escEmoji(words.moon.trim())}</span></li>` : ''}
       </ul>
       ${details.length ? `${divide(true)}<ul class="details">${details.join('')}</ul>` : ''}
       ${linkHref ? `<a class="btn link-btn" href="${esc(linkHref)}" target="_blank" rel="noopener">${ICONS.link} ${esc(link.l || 'More info')}</a>` : ''}
       ${inv.d?.rsvpby ? `<p class="rsvp-by">${ICONS.by} ${esc(words.by)} ${esc(formatShortDate(inv.d.rsvpby))}</p>` : ''}
       ${divide(true)}
-      <p class="closing">${esc(words.close)}${inv.from ? `<span class="signature">${esc(inv.from)}</span>` : ''}</p>
+      <p class="closing">${escEmoji(words.close)}${inv.from ? `<span class="signature">${esc(inv.from)}</span>` : ''}</p>
       ${sealHtml(inv, theme, 'card-seal')}
     </div>
   </article>`;

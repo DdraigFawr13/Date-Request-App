@@ -2,6 +2,7 @@
 // the colors. Every line of text can be overridden by the sender (inv.tx).
 
 import { THEMES, resolveLook, seasonOf } from './themes.js';
+import { contrast, luminance, readableOn, safeHex } from './decor.js';
 
 // Font pairings: a display face for titles and a body face for everything else.
 export const FONTS = {
@@ -18,6 +19,8 @@ export const FONTS = {
   kitten: { name: 'Kitten', display: "'Sniglet', sans-serif", body: "'Quicksand', sans-serif" },
   deco: { name: 'Art deco', display: "'Limelight', serif", body: "'Cormorant Garamond', serif" },
   neon: { name: 'Neon', display: "'Monoton', cursive", body: "'Quicksand', sans-serif" },
+  spooky: { name: 'Spooky', display: "'Creepster', cursive", body: "'Quicksand', sans-serif" },
+  scrawl: { name: 'Scrawl', display: "'Permanent Marker', cursive", body: "'Quicksand', sans-serif" },
   marquee: { name: 'Marquee', display: "'Righteous', sans-serif", body: "'Quicksand', sans-serif" },
 };
 for (const [id, f] of Object.entries(FONTS)) f.id = id;
@@ -69,6 +72,12 @@ export const TEMPLATES = [
   { id: 'birthday', icon: '🎂', label: 'Birthday', title: 'It’s my birthday!', font: 'sunny',
     badge: 'Another trip around the sun', greeting: 'Cake is involved, and so are you…', yes: 'Wouldn’t miss it 🎂', closing: 'Let’s celebrate,',
     mods: { bring: 'Just yourself', dress: 'Wear something you love' }, asks: ['song'] },
+  { id: 'halloween', icon: '🎃', label: 'Halloween party', title: 'A Halloween party', font: 'spooky',
+    badge: 'Trick or treat', greeting: 'Something wicked this way comes — and it’s inviting you…', yes: 'Count me in 🎃', maybe: 'Haunt me another night?', no: 'Too scared to come', closing: 'Spookily yours,',
+    mods: { dress: 'Costume encouraged', food: 'Snacks provided', vibe: 'Spooky' }, asks: ['drink'] },
+  { id: 'afterdark', icon: '😈', label: 'After dark', title: 'A private invitation', font: 'script',
+    badge: 'For your eyes only', greeting: 'Dress code: something you’d never wear to brunch…', yes: 'Yes, please 😈', maybe: 'Tempt me another night?', no: 'Not this time', closing: 'Wickedly yours,',
+    mods: { surprise: 'A little mystery', guests: 'Just us two' }, asks: ['wish'] },
   { id: 'medieval', icon: '🏰', label: 'Royal feast', title: 'A royal feast', font: 'blackletter',
     badge: 'By royal decree', greeting: 'Hear ye, hear ye! Thy presence is humbly requested…', yes: 'I accept, my liege ⚔️', maybe: 'Another day, perchance?', no: 'Alas, I cannot', closing: 'By my hand and seal,',
     mods: { dress: 'Costume encouraged', food: 'Dinner included', vibe: 'Playful' }, asks: ['drink'] },
@@ -150,9 +159,20 @@ export function wording(inv, extra = {}) {
 
 // A look merged with its lettering — everything render code needs for styling.
 export function resolveTheme(inv) {
-  const look = resolveLook(inv);
   const font = FONTS[inv.fn] || FONTS[occasionWords(inv).font] || FONTS.storybook;
-  return { ...look, display: font.display, body: font.body, fontId: font.id };
+  return { ...withPageColor(resolveLook(inv), inv), display: font.display, body: font.body, fontId: font.id };
+}
+
+// A custom page (card) color, independent of the background. Text and title
+// colors are adjusted so they stay readable on it.
+export function withPageColor(look, inv) {
+  const card = safeHex(inv.cc);
+  if (!card || card.toLowerCase() === look.card.toLowerCase()) return look;
+  const dark = luminance(card) < 0.3;
+  const ink = contrast(look.ink, card) >= 4.5 ? look.ink : dark ? '#f5efe8' : '#241a20';
+  const accent = readableOn(look.accent, card, 3);
+  const onAccent = contrast(look.onAccent, accent) >= 4.5 ? look.onAccent : luminance(accent) > 0.35 ? '#1a1418' : '#ffffff';
+  return { ...look, card, ink, accent, accent2: readableOn(look.accent2, card, 1.8), onAccent, dark };
 }
 
 export { THEMES };

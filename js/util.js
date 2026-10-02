@@ -1,5 +1,9 @@
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
+// Escapes text and wraps each emoji so it stays upright inside italic lines.
+const EMOJI = /(?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:\uFE0F|\u200D\p{Extended_Pictographic}|\p{Emoji_Modifier})*/gu;
+export const escEmoji = s => esc(s).replace(EMOJI, m => `<span class="emo">${m}</span>`);
+
 export const $ = (sel, root = document) => root.querySelector(sel);
 
 export function toast(text) {

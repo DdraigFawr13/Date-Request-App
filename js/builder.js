@@ -6,7 +6,7 @@ import { FONTS, TEMPLATES, TEMPLATE_BY_ID, WORDING, resolveTheme } from './occas
 import { MODULES, MODULE_BY_ID, QUESTIONS } from './modules.js';
 import { encodeInvite } from './codec.js';
 import { applyTheme, esc, particles, renderCard, wordsFor } from './render.js';
-import { CORNER_OPTIONS, PAPERS, RULE_OPTIONS, SCENES, SIDE_OPTIONS, backdropCss, luminance, resolvePaper, safeHex } from './decor.js';
+import { CORNER_OPTIONS, GLOW_COLORS, PAPERS, RULE_OPTIONS, SCENES, SIDE_OPTIONS, backdropCss, luminance, resolvePaper, safeHex } from './decor.js';
 import { EMBLEM_GROUPS, FACE_FINISHES, SVG_EMBLEMS, WAX_BY_ID, WAX_COLORS, sealHtml } from './seal.js';
 import { WRAPPERS, playOpening, resolveWrapper, wrapperHtml } from './wrappers.js';
 import { shortenUrl } from './shorten.js';
@@ -24,7 +24,7 @@ function blankState() {
   return {
     id: randomId(), kind: 'custom', to: '', from: '', title: '', msg: '',
     date: isoDate(nextWeek), time: '19:00', endTime: '21:00', allDay: false, loc: '', addr: '',
-    look, font: '', lookTab: THEMES[look].cat, bs: 'look', bc: [], pp: 'look', dc: 'look', ds: 'look', dv: 'look',
+    look, font: '', lookTab: THEMES[look].cat, bs: 'look', bc: [], cc: '', gl: '', pp: 'look', dc: 'look', ds: 'look', dv: 'look',
     wrap: 'auto', sealColor: '', sealFace: '', sealEmblem: '', emblemTab: 'regal',
     mods: {}, dl: {}, asks: [], askCustom: [], custom: [], tx: {},
     remind: 60, smsText: '',
@@ -44,6 +44,9 @@ function normalize(saved) {
   if (!saved?.lookTab || !LOOK_CATEGORIES.some(c => c.id === st.lookTab)) st.lookTab = THEMES[st.look].cat;
   if (typeof st.askCustom === 'string') st.askCustom = st.askCustom.trim() ? [st.askCustom] : [];
   if (!Array.isArray(st.askCustom)) st.askCustom = [];
+  if (!safeHex(st.cc)) st.cc = '';
+  if (st.gl !== 'none' && !safeHex(st.gl)) st.gl = '';
+  if (!Array.isArray(st.bc) || !st.bc.every(c => safeHex(c))) st.bc = [];
   if (saved?.closing && !st.tx.close) st.tx = { ...st.tx, close: saved.closing };
   if (!TEMPLATE_BY_ID[st.kind]) st.kind = 'custom';
   if (WAX_COLORS.every(c => c.hex !== st.sealColor && c.id !== st.sealColor) && !safeHex(st.sealColor)) st.sealColor = '';
@@ -83,7 +86,7 @@ export function toInvite(st) {
     s: start.getTime(), e: end?.getTime(), ad: st.allDay, tz,
     loc: st.loc.trim(), addr: st.addr.trim(),
     th: st.look, fn: st.font || undefined,
-    bs: pick(st.bs), bc: st.bc?.length ? st.bc : undefined, pp: pick(st.pp), dc: pick(st.dc), ds: pick(st.ds), dv: pick(st.dv),
+    bs: pick(st.bs), bc: st.bc?.length ? st.bc : undefined, cc: st.cc || undefined, gl: st.gl || undefined, pp: pick(st.pp), dc: pick(st.dc), ds: pick(st.ds), dv: pick(st.dv),
     w: pick(st.wrap, 'auto'), sc: st.sealColor, sf: st.sealFace, se: st.sealEmblem.trim(),
     d, dl, q: st.asks, qc: st.askCustom.map(q => q.trim()).filter(Boolean),
     cf: st.custom.filter(c => c.l || c.v).map(c => ({ i: c.i, l: c.l.trim(), v: c.v.trim() })),
@@ -134,15 +137,29 @@ function renderLook() {
   }).join('');
   const [c1, c2] = state.bc;
   $('#bg-colors').innerHTML = `
-    ${optionBtn('bg-colors', 'look', 'Look’s colors', !state.bc.length)}
+    ${optionBtn('bg-colors', 'look', `<span class="mini-swatch" style="background:linear-gradient(135deg, ${look.bg[0]}, ${look.bg[1]})"></span>Look’s background`, !state.bc.length)}
     <label class="opt color-pair ${state.bc.length ? 'on' : ''}">Custom
       <input type="color" data-bg-color="0" value="${esc(c1 || look.bg[0])}" aria-label="Background color 1">
       <input type="color" data-bg-color="1" value="${esc(c2 || look.bg[1])}" aria-label="Background color 2">
     </label>`;
 
+  $('#page-colors').innerHTML = `
+    ${optionBtn('page-color', 'look', `<span class="mini-swatch" style="background:${look.card}"></span>Look’s page`, !state.cc)}
+    <label class="opt color-pair ${state.cc ? 'on' : ''}">Custom
+      <input type="color" data-page-color value="${esc(state.cc || look.card)}" aria-label="Page color">
+    </label>`;
+
+  const customGlow = safeHex(state.gl) && !GLOW_COLORS.some(g => g.hex === state.gl) ? state.gl : '';
+  $('#glow-colors').innerHTML = `
+    ${optionBtn('glow', '', look.glow ? 'Look’s pick' : 'Look’s pick (off)', !state.gl)}
+    ${optionBtn('glow', 'none', 'Off', state.gl === 'none')}
+    ${GLOW_COLORS.map(g => `<button type="button" class="glow-dot ${state.gl === g.hex ? 'on' : ''}" data-action="glow" data-id="${g.hex}" style="--dot:${g.hex}" title="${esc(g.name)}" aria-label="${esc(g.name)} glow"></button>`).join('')}
+    <label class="glow-dot ${customGlow ? 'on' : ''}" title="Any color" style="--dot:${customGlow || '#ffffff'}"><input type="color" data-glow-color value="${customGlow || '#ff3fd8'}" aria-label="Pick any glow color"></label>`;
+
   const paperNow = resolvePaper(inv, look);
+  const page = resolveTheme(inv);
   $('#papers').innerHTML = PAPERS.map(p => `<button type="button" class="paper-option ${state.pp === p.id ? 'on' : ''}" data-action="paper" data-id="${p.id}">
-    <span class="paper-art" data-paper="${p.id === 'look' ? paperNow : p.id}" style="--card:${look.card}"${look.dark ? ' data-dark' : ''}></span>${esc(p.label)}</button>`).join('');
+    <span class="paper-art" data-paper="${p.id === 'look' ? paperNow : p.id}" style="--card:${page.card};--accent:${page.accent};--accent2:${page.accent2}"${page.dark ? ' data-dark' : ''}></span>${esc(p.label)}</button>`).join('');
   $('#corners').innerHTML = CORNER_OPTIONS.map(o => optionBtn('corners', o.id, esc(o.label), state.dc === o.id)).join('');
   $('#sides').innerHTML = SIDE_OPTIONS.map(o => optionBtn('sides', o.id, esc(o.label), state.ds === o.id)).join('');
   $('#rules').innerHTML = RULE_OPTIONS.map(o => optionBtn('rules', o.id, esc(o.label), state.dv === o.id)).join('');
@@ -391,6 +408,8 @@ function onClick(e) {
     case 'look': state.look = id; renderLook(); renderDelivery(); refresh(); break;
     case 'scene': state.bs = id; renderLook(); refresh(); break;
     case 'bg-colors': state.bc = []; renderLook(); refresh(); break;
+    case 'glow': state.gl = id; renderLook(); previewMode = 'card'; refresh(); break;
+    case 'page-color': state.cc = ''; renderLook(); renderDelivery(); previewMode = 'card'; refresh(); break;
     case 'paper': state.pp = id; renderLook(); previewMode = 'card'; refresh(); break;
     case 'corners': state.dc = id; renderLook(); previewMode = 'card'; refresh(); break;
     case 'sides': state.ds = id; renderLook(); previewMode = 'card'; refresh(); break;
@@ -485,6 +504,14 @@ function onInput(e) {
     previewMode = 'wrapper';
     if (e.type === 'change') renderDelivery();
     else renderSealPreview();
+  } else if ('glowColor' in el.dataset) {
+    state.gl = el.value;
+    previewMode = 'card';
+    if (e.type === 'change') renderLook();
+  } else if ('pageColor' in el.dataset) {
+    state.cc = el.value;
+    previewMode = 'card';
+    if (e.type === 'change') { renderLook(); renderDelivery(); }
   } else if (el.dataset.bgColor) {
     const look = THEMES[state.look];
     const bc = state.bc.length ? [...state.bc] : [...look.bg];

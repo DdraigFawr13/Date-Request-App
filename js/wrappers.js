@@ -2,7 +2,7 @@
 // (envelope, scroll, bottle…), dressed in the look's colors and pattern, and
 // closed with the wax seal.
 
-import { esc } from './util.js';
+import { esc, escEmoji } from './util.js';
 import { cornerSvg, patternCss } from './decor.js';
 import { breakableSealHtml, shade } from './seal.js';
 import {
@@ -165,8 +165,8 @@ export function wrapperHtml(inv, look, words) {
         ${PARTS[type](seal, esc(look.glyph), look)}
         <span class="twinkles"><i>✦</i><i>✧</i><i>✦</i></span>
       </button>
-      ${words.tap ? `<p class="wrapper-hint">${esc(words.tap)}</p>` : ''}
-      ${words.fromLine ? `<p class="wrapper-from">${esc(words.fromLine)}</p>` : ''}
+      ${words.tap ? `<p class="wrapper-hint">${escEmoji(words.tap)}</p>` : ''}
+      ${words.fromLine ? `<p class="wrapper-from">${escEmoji(words.fromLine)}</p>` : ''}
     </div>`;
 }
 

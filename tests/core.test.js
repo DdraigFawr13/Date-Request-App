@@ -160,3 +160,39 @@ test('every look and occasion only references things that exist', async () => {
   for (const c of LOOK_CATEGORIES) assert.ok(Object.values(THEMES).some(t => t.cat === c.id), `empty tab ${c.id}`);
   for (const t of TEMPLATES) assert.ok(FONTS[t.font], `${t.id}: font ${t.font}`);
 });
+
+test('page color is independent of the background and stays readable', async () => {
+  const { contrast, backdropCss } = await import('../js/decor.js');
+  const { THEMES } = await import('../js/themes.js');
+  const base = { ...sample, th: 'candlelit' };
+  const dark = resolveTheme({ ...base, cc: '#141018' });
+  assert.equal(dark.card, '#141018');
+  assert.equal(dark.dark, true);
+  assert.ok(contrast(dark.ink, dark.card) >= 4.5, 'body text reads on a dark page');
+  assert.ok(contrast(dark.accent, dark.card) >= 3, 'title reads on a dark page');
+  assert.deepEqual(dark.bg, THEMES.candlelit.bg, 'background keeps the look’s colors');
+  const pale = resolveTheme({ ...base, th: 'neon', cc: '#fff7e8' });
+  assert.ok(contrast(pale.ink, pale.card) >= 4.5, 'body text reads on a pale page');
+  assert.ok(contrast(pale.accent, pale.card) >= 3, 'title reads on a pale page');
+  assert.equal(resolveTheme({ ...base, cc: 'red;x' }).card, THEMES.candlelit.card, 'bad colors are ignored');
+  // And the background can change without touching the page.
+  const both = { ...base, cc: '#141018', bc: ['#112233', '#445566'] };
+  assert.equal(resolveTheme(both).card, '#141018');
+  assert.match(backdropCss(resolveTheme(both), both), /#112233/);
+});
+
+test('neon glow follows the look, can be turned off, and only takes real colors', async () => {
+  const { resolveGlow } = await import('../js/decor.js');
+  const { THEMES } = await import('../js/themes.js');
+  assert.equal(resolveGlow({}, THEMES.neon), THEMES.neon.glow);
+  assert.equal(resolveGlow({}, THEMES.candlelit), null);
+  assert.equal(resolveGlow({ gl: 'none' }, THEMES.neon), null);
+  assert.equal(resolveGlow({ gl: '#2ee6ff' }, THEMES.candlelit), '#2ee6ff');
+  assert.equal(resolveGlow({ gl: 'red;}' }, THEMES.candlelit), null);
+});
+
+test('emoji in italic lines are wrapped so they stay upright, and text is still escaped', async () => {
+  const { escEmoji } = await import('../js/util.js');
+  assert.equal(escEmoji('🌕 Beneath the <full> moon'), '<span class="emo">🌕</span> Beneath the &lt;full&gt; moon');
+  assert.match(escEmoji('✨ It falls on Samhain itself ✨'), /^<span class="emo">✨<\/span>.*<span class="emo">✨<\/span>$/);
+});
