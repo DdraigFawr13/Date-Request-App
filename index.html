@@ -190,6 +190,18 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script type="module" src="js/app.js"></script>
+  <script type="module">
+    // Each deploy writes its release id to version.txt and stamps it on every
+    // import, so even if this page was cached, a reload runs the latest code.
+    // (Locally there is no version.txt and the files load as they are.)
+    let v = '';
+    try {
+      const res = await fetch('version.txt', { cache: 'no-store' });
+      if (res.ok) v = (await res.text()).trim();
+    } catch { /* offline or local: use the files as they are */ }
+    if (!/^[0-9a-f]{7,40}$/.test(v)) v = '';
+    if (v) document.querySelector('link[href^="css/styles.css"]').href = `css/styles.css?v=${v}`;
+    await import(v ? `./js/app.js?v=${v}` : './js/app.js');
+  </script>
 </body>
 </html>

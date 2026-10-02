@@ -258,3 +258,15 @@ test('every opening renders, and the telegram types escaped text', async () => {
     assert.ok(!/<img|<b>/i.test(html), `${w}: unescaped text`);
   }
 });
+
+test('every module import can be stamped with the release id on deploy', async () => {
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const dir = new URL('../js/', import.meta.url);
+  for (const file of readdirSync(dir).filter(f => f.endsWith('.js'))) {
+    const src = readFileSync(new URL(file, dir), 'utf8');
+    for (const [, spec] of src.matchAll(/\bfrom\s+["'`]([^"'`]+)["'`]/g)) {
+      assert.match(spec, /^\.\/[A-Za-z0-9_-]+\.js$/, `${file}: import "${spec}" must be a plain './name.js' so the deploy can stamp it`);
+    }
+    assert.ok(!/\bimport\s*\(/.test(src), `${file}: dynamic import() would not be stamped`);
+  }
+});
