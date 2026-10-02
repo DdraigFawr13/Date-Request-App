@@ -94,6 +94,10 @@ sparks when tapped:
 | 🍾 Message in a bottle | sea glass with sand, a starfish and twine on the neck, bobbing on foamy waves; the cork pops and the ribboned note rises out |
 | 🧰 Treasure chest | planked wood with gilded straps, brackets and a jewelled lid; the seal is the lock, and the lid tips back to reveal velvet, gold coins and gems |
 | 🎁 Gift box | patterned wrap, stitched satin ribbons, a full bow and a gift tag; the bow unties, the lid tumbles off, and the letter rises from tissue paper |
+| 📖 Pop-up book | a gilt-tooled leather book with a sealed clasp; the cover swings open and a paper-cut scene (arch, moon, hills, flowers, stars on wires) stands up with the letter |
+| 🦉 Owl post | a tawny owl on a mossy branch holding the sealed letter in its beak; it blinks, takes off with beating wings, drops the letter, and the letter slides out |
+| ⌨️ Telegram | a vintage typewriter in the look's enamel; breaking the seal sets it typing who it's for and the title, the carriage slides and dings, then the paper is pulled out |
+| 🗺️ Treasure map | aged parchment folded in three and tied with twine; it unfolds panel by panel, the dotted trail inks itself in, and X marks the spot |
 
 **Wax seal:** an SVG seal lit like real matte wax: an irregular poured
 puddle with fine grain, a raised rim, and an emblem either pressed into the
@@ -176,7 +180,7 @@ js/occasions.js     occasions (wording, lettering), font pairings, editable line
 js/decor.js         backgrounds, patterns, paper, corner/side ornaments, script lines
 js/seal.js          the SVG wax seal, wax colors, finishes and emblems
 js/wrappers.js      delivery styles (envelope, scroll…) and their animations
-js/wrapper-art.js   hand-drawn SVG detail for the envelope, bottle, chest and gift
+js/wrapper-art.js   hand-drawn SVG detail for every wrapper (envelope, owl, map…)
 js/shorten.js       short links via is.gd / v.gd
 js/modules.js       detail modules and questions
 js/calendar.js      .ics / Google / Outlook calendar links

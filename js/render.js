@@ -45,6 +45,9 @@ export function particles(el, theme, count = 16) {
     s.style.animationDuration = `${14 + ((i * 13) % 16)}s`;
     s.style.animationDelay = `${-((i * 17) % 30)}s`;
     s.style.setProperty('--drift', `${((i % 5) - 2) * 30}px`);
+    // Depth of field: a few near (large, soft), most mid (sharp), some far (small, hazy).
+    const depth = i % 5 === 0 ? 'near' : i % 3 === 0 ? 'far' : 'mid';
+    s.dataset.depth = depth;
     el.append(s);
   }
 }
@@ -94,7 +97,7 @@ export const ICONS = {
   download: icon('<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/>'),
   link: icon('<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
 };
-const medal = inner => `<span class="detail-icon">${inner}</span>`;
+const medal = inner => `<span class="detail-icon">${inner.startsWith('<svg') ? inner : `<span class="ink-emoji">${inner}</span>`}</span>`;
 
 // The paper, ornaments and body wrapper shared by every card on the page.
 export function cardOpen(inv, theme, tag = 'article', cls = '') {

@@ -6,8 +6,9 @@ import { esc, escEmoji, own } from './util.js';
 import { cornerSvg, patternCss } from './decor.js';
 import { breakableSealHtml, shade } from './seal.js';
 import {
-  bottleBack, bottleFront, bowHalf, bowKnot, chestBase, chestLid, chestLining, chestPlate, corkArt, envelopeFlap,
-  envelopeFront, giftTag, pageHtml, rolledNote, sprig, tissue, treasure,
+  bookCover, bottleBack, bottleFront, bowHalf, bowKnot, branch, chestBase, chestLid, chestLining, chestPlate, corkArt,
+  envelopeFlap, envelopeFront, giftTag, mapArt, mapBack, owlBody, owlWing, pageHtml, popFront, popHills, rolledNote,
+  sprig, tissue, treasure, twine, typewriterBody, typewriterCarriage,
 } from './wrapper-art.js';
 
 export const WRAPPERS = {
@@ -16,6 +17,10 @@ export const WRAPPERS = {
   bottle: { label: 'Message in a bottle', icon: '🍾', openMs: 1900 },
   chest: { label: 'Treasure chest', icon: '🧰', openMs: 1900 },
   gift: { label: 'Gift box', icon: '🎁', openMs: 1850 },
+  book: { label: 'Pop-up book', icon: '📖', openMs: 2500 },
+  owl: { label: 'Owl post', icon: '🦉', openMs: 2400 },
+  telegram: { label: 'Telegram', icon: '⌨️', openMs: 2700 },
+  map: { label: 'Treasure map', icon: '🗺️', openMs: 2500 },
 };
 
 export function resolveWrapper(inv, look) {
@@ -42,6 +47,8 @@ function materials(look) {
     '--ribbon': look.accent,
     '--sprig': look.accent2,
     '--gem': look.accent,
+    '--leather': shade(look.dark ? look.accent : mix(look.accent, look.ink, 0.35), -0.42),
+    '--machine': shade(mix(look.accent, '#2a2a2a', 0.35), look.dark ? -0.2 : -0.1),
   };
   return Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(';');
 }
@@ -71,6 +78,9 @@ function rollSvg(withTassels) {
     </defs>
     <rect x="10" y="21" width="300" height="10" rx="3" fill="url(#${id}w)"/>
     <rect x="40" y="3" width="240" height="46" rx="3" fill="url(#${id}p)"/>
+    <filter id="${id}a" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".035 .12" numOctaves="3" seed="${svgId}"/>
+      <feColorMatrix values="0 0 0 0 .42  0 0 0 0 .28  0 0 0 0 .1  0 0 0 1.3 -.55"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+    <rect x="40" y="3" width="240" height="46" rx="3" fill="#000" filter="url(#${id}a)" opacity=".5"/>
     <g fill="${gold}" opacity=".9"><rect x="47" y="3" width="2.2" height="46"/><rect x="51" y="3" width=".9" height="46"/><rect x="270.8" y="3" width="2.2" height="46"/><rect x="268.1" y="3" width=".9" height="46"/></g>
     <rect x="40" y="9" width="240" height="3.5" rx="1.7" fill="#fff" opacity=".35"/>
     ${ROLL_END(40)}${ROLL_END(280)}
@@ -106,6 +116,30 @@ const scrollPage = (glyph, look) => {
       <span class="scroll-flourish"></span>
     </span>`;
 };
+
+// A mini envelope (the owl carries one in its beak).
+const miniEnvelope = (seal, glyph, look) => `
+    <span class="env-back"></span>
+    <span class="env-liner"></span>
+    <span class="env-letter">${pageHtml(glyph, look)}</span>
+    <span class="env-front">${envelopeFront()}</span>
+    <span class="env-flap"><span class="flap-out">${envelopeFlap()}</span><span class="flap-in"></span></span>
+    <span class="seal-spot">${seal}${sparks()}</span>`;
+
+// The lines the typewriter taps out: who it's for, the title, then STOP.
+function telegramLines(inv, words) {
+  const lines = [words.for, inv.title || 'A little bit of magic'].map(t => String(t || '').trim().toUpperCase()).filter(Boolean);
+  lines.push('STOP');
+  return lines.slice(0, 3).map((t, i) => {
+    const chars = [...t];
+    let text = chars.join('');
+    if (chars.length > 22) {
+      const cut = chars.slice(0, 22).join('');
+      text = cut.lastIndexOf(' ') > 8 ? cut.slice(0, cut.lastIndexOf(' ')) : cut;
+    }
+    return `<span class="tw-line" style="--n:${[...text].length};--l:${i}"><span>${esc(text)}</span></span>`;
+  }).join('');
+}
 
 const PARTS = {
   envelope: (seal, glyph, look) => `
@@ -153,6 +187,51 @@ const PARTS = {
       <span class="gift-bow"><span class="bow-half l">${bowHalf()}</span><span class="bow-half r">${bowHalf()}</span><span class="knot">${bowKnot()}</span>
         <span class="gift-tag">${giftTag(glyph)}</span></span></span>
     <span class="seal-spot">${seal}${sparks()}</span>`,
+  book: (seal, glyph, look) => `
+    <span class="book-shadow"></span>
+    <span class="book-tilt">
+      <span class="book-spread">
+        <span class="book-back"></span>
+        <span class="book-edge r"></span>
+        <span class="book-leaf r"><span class="leaf-lines"></span></span>
+        <span class="book-cover">
+          <span class="cover-out">${bookCover()}<span class="cover-roundel"><span>${glyph}</span></span></span>
+          <span class="cover-in"><span class="book-leaf l"><span class="leaf-lines"></span></span></span>
+        </span>
+      </span>
+    </span>
+    <span class="book-popup">
+      <span class="pop pop-arch"><span class="pop-sky"></span><span class="pop-moon"><span>${glyph}</span></span></span>
+      <span class="pop pop-hills">${popHills()}</span>
+      <span class="pop pop-letter">${pageHtml(glyph, look)}</span>
+      <span class="pop pop-front">${popFront()}</span>
+      <span class="pop-stars"><i>✦</i><i>✧</i><i>✦</i><i>✧</i></span>
+    </span>
+    <span class="book-strap"></span>
+    <span class="seal-spot">${seal}${sparks()}</span>`,
+  owl: (seal, glyph, look) => `
+    <span class="owl-branch">${branch()}</span>
+    <span class="owl-bird">
+      <span class="owl-body">${owlBody()}</span>
+      <span class="owl-wing l">${owlWing()}</span>
+      <span class="owl-wing r">${owlWing()}</span>
+    </span>
+    <span class="owl-mail">${miniEnvelope(seal, glyph, look)}</span>
+    <span class="owl-feathers"><i></i><i></i><i></i></span>`,
+  telegram: (seal, glyph, look, { inv, words }) => `
+    <span class="tw-carriage">
+      <span class="tw-paper"><span class="tw-head">✦ Telegram ✦</span><span class="tw-text">${telegramLines(inv, words)}</span></span>
+      <span class="tw-platen">${typewriterCarriage()}</span>
+    </span>
+    <span class="tw-body">${typewriterBody()}</span>
+    <span class="tw-bell"></span>
+    <span class="seal-spot">${seal}${sparks()}</span>`,
+  map: seal => `
+    <span class="map-panel c"><span class="map-face front"><span class="map-third">${mapArt()}</span></span></span>
+    <span class="map-panel r"><span class="map-face front"><span class="map-third">${mapArt()}</span></span><span class="map-face back">${mapBack()}</span></span>
+    <span class="map-panel l"><span class="map-face front"><span class="map-third">${mapArt()}</span></span><span class="map-face back">${mapBack()}</span></span>
+    <span class="map-twine">${twine()}</span>
+    <span class="seal-spot">${seal}${sparks()}</span>`,
 };
 
 export function wrapperHtml(inv, look, words) {
@@ -162,7 +241,7 @@ export function wrapperHtml(inv, look, words) {
     <div class="wrapper-stage">
       ${words.for ? `<p class="wrapper-to">${esc(words.for)}</p>` : ''}
       <button type="button" class="wrapper ${type}" data-action="open" data-wrap="${type}" aria-label="Open the invitation" style="${esc(materials(look))}">
-        ${PARTS[type](seal, esc(look.glyph), look)}
+        ${PARTS[type](seal, esc(look.glyph), look, { inv, words })}
         <span class="twinkles"><i>✦</i><i>✧</i><i>✦</i></span>
       </button>
       ${words.tap ? `<p class="wrapper-hint">${escEmoji(words.tap)}</p>` : ''}
