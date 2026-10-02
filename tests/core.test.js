@@ -235,3 +235,15 @@ test('every look reads well: text, titles, buttons and text on the background', 
     assert.ok(Math.min(contrast(fg, t.bg[0]), contrast(fg, t.bg[1])) >= 3, `${t.id}: text on the background`);
   }
 });
+
+test('metallic foil accents only accept known finishes and pick a variant for the page', async () => {
+  const { resolveFoil, FOILS } = await import('../js/decor.js');
+  assert.equal(resolveFoil({}, true), null);
+  assert.equal(resolveFoil({ af: 'constructor' }, true), null);
+  assert.equal(resolveFoil({ af: 'gold;}' }, true), null);
+  assert.deepEqual(resolveFoil({ af: 'gold', at: true }, true), { id: 'gold', stops: FOILS.gold.bright, title: true });
+  assert.equal(resolveFoil({ af: 'silver' }, false).stops, FOILS.silver.deep, 'light pages get the deeper foil');
+  const card = renderCard({ ...sample, th: 'velvet', af: 'copper' }, resolveTheme({ ...sample, th: 'velvet', af: 'copper' }));
+  assert.match(card, /data-foil="copper"/);
+  assert.match(card, /<linearGradient id='fo\d+'/);
+});

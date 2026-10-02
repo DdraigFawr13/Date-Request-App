@@ -51,6 +51,9 @@ override any of them:
 
 - **Colors:** the page (card) color and the background colors can each be
   changed on their own. A custom page color keeps text and titles readable.
+- **Metallic accents:** stamp the ornaments, script lines, banner rules and
+  detail medallions in realistic gold, silver, copper or rose-gold foil, and
+  optionally the title too.
 - **Neon glow:** make the title, headings and card edge glow in hot pink,
   electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
 - **Background:** a soft glow, a moonlit sky, a haunted night, an aurora, a velvet curtain, bokeh lights,
@@ -92,8 +95,9 @@ sparks when tapped:
 | 🧰 Treasure chest | planked wood with gilded straps, brackets and a jewelled lid; the seal is the lock, and the lid tips back to reveal velvet, gold coins and gems |
 | 🎁 Gift box | patterned wrap, stitched satin ribbons, a full bow and a gift tag; the bow unties, the lid tumbles off, and the letter rises from tissue paper |
 
-**Wax seal:** an SVG seal with an irregular wax spill, a raised rim and a
-stamped emblem. Choose the wax (16 shades including metallic gold, copper,
+**Wax seal:** an SVG seal lit like real matte wax: an irregular poured
+puddle with fine grain, a raised rim, and an emblem either pressed into the
+wax or raised in a metallic finish. Choose the wax (16 shades including metallic gold, copper,
 bronze and silver, or any color), the emblem's finish (pressed into the wax,
 gold leaf, silver, copper, rose gold, bronze, pearl, jet, or any color), and
 the emblem: regal (crown, fleur-de-lis, shield, crossed swords, castle,
@@ -154,7 +158,7 @@ localhost.
   it like you would the text itself.
 - Short links are made by is.gd, which stores the full link (and so can see
   the invitation). If it can't be reached, Moonpost gives you the full link
-  instead.
+  instead and says why (for example, a content blocker blocking is.gd).
 - No phone numbers are stored. RSVPs aren't collected anywhere; they arrive as
   a normal text message from your guest.
 

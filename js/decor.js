@@ -245,6 +245,36 @@ export function resolveGlow(inv, look) {
   return safeHex(inv.gl) || look.glow || null;
 }
 
+// ── Metallic foil accents ────────────────────────────────────────────
+// Banded gradients like real foil stamping: bright highlights, darker folds.
+// 'bright' sits on dark pages, 'deep' on light pages (so it stays legible).
+const OFFS = [0, 0.18, 0.3, 0.45, 0.6, 0.78, 1];
+export const FOILS = {
+  gold: { name: 'Gold foil',
+    bright: ['#9a6b12', '#f8e28a', '#fffbe0', '#e7bd4a', '#a8781a', '#f5d873', '#c8962c'],
+    deep: ['#6e4a08', '#d4a83a', '#f6dd86', '#b88a22', '#7a5410', '#d8b04a', '#9a6f18'] },
+  silver: { name: 'Silver foil',
+    bright: ['#7a8088', '#e9edf1', '#ffffff', '#c3c9cf', '#8a9097', '#eef1f4', '#a7adb4'],
+    deep: ['#4f545b', '#aab0b7', '#e8ebef', '#858b92', '#53585f', '#b8bdc3', '#6c727a'] },
+  copper: { name: 'Copper foil',
+    bright: ['#8a3f18', '#f6b88c', '#ffe3cc', '#d47a44', '#93461f', '#f0aa7c', '#b8622f'],
+    deep: ['#62280c', '#cf8452', '#f3c09a', '#a9582a', '#662d10', '#c97a4a', '#86421c'] },
+  rosegold: { name: 'Rose gold foil',
+    bright: ['#93565a', '#f6c9c4', '#fff0ec', '#dc9f98', '#9c5f62', '#f2bdb6', '#c2817f'],
+    deep: ['#68363a', '#c98a85', '#efcac4', '#a76a68', '#6c393d', '#c3837f', '#8a5153'] },
+};
+export function resolveFoil(inv, dark) {
+  const f = typeof inv.af === 'string' && Object.hasOwn(FOILS, inv.af) ? FOILS[inv.af] : null;
+  return f ? { id: inv.af, stops: dark ? f.bright : f.deep, title: inv.at === true } : null;
+}
+export const foilCss = (stops, angle = 120) =>
+  `linear-gradient(${angle}deg, ${stops.map((c, i) => `${c} ${Math.round(OFFS[i] * 100)}%`).join(', ')})`;
+let foilUid = 0;
+// An SVG gradient definition plus the fill value that uses it.
+export function foilDef(stops, id = `fo${++foilUid}`) {
+  return { def: `<defs><linearGradient id='${id}' x1='0' y1='0' x2='1' y2='1'>${stops.map((c, i) => `<stop offset='${OFFS[i]}' stop-color='${c}'/>`).join('')}</linearGradient></defs>`, fill: `url(#${id})` };
+}
+
 // ── Paper textures (drawn by CSS; see [data-paper] in styles.css) ────
 export const PAPERS = [
   { id: 'look', label: 'Look’s pick' },
@@ -324,16 +354,21 @@ export const resolveDecor = (inv, look) => ({
 // Ornament markup for a card. Colors are the look's own (safe constants).
 export function decorHtml(inv, look) {
   const { corners, sides } = resolveDecor(inv, look);
-  const color = look.accent2, color2 = look.accent;
+  const color2 = look.accent;
   let out = '';
   if (CORNERS[corners]) {
-    const svg = `<svg viewBox='0 0 80 80' aria-hidden='true'><g fill='${color}' stroke='${color}'>${CORNERS[corners].replace(/var\(--c2\)/g, color2)}</g></svg>`;
-    out += ['tl', 'tr', 'bl', 'br'].map(p => `<span class="corner ${p}">${svg}</span>`).join('');
+    out += ['tl', 'tr', 'bl', 'br'].map(p => {
+      const f = look.foil ? foilDef(look.foil.stops) : null;
+      const color = f ? f.fill : look.accent2;
+      return `<span class="corner ${p}"><svg viewBox='0 0 80 80' aria-hidden='true'>${f ? f.def : ''}<g fill='${color}' stroke='${color}'>${CORNERS[corners].replace(/var\(--c2\)/g, color2)}</g></svg></span>`;
+    }).join('');
   }
   if (sides === 'frame' || sides === 'stitch') out += `<span class="side-frame ${sides}"></span>`;
   else if (SIDE_TILES[sides]) {
     const [w, h, body] = SIDE_TILES[sides];
-    const bg = `${svgUrl(svgTile(w, h, `<g fill='${color}' stroke='${color}'>${body}</g>`))} center top / ${w}px ${h}px repeat-y`;
+    const f = look.foil ? foilDef(look.foil.stops, 'f') : null;
+    const color = f ? f.fill : look.accent2;
+    const bg = `${svgUrl(svgTile(w, h, `${f ? f.def : ''}<g fill='${color}' stroke='${color}'>${body}</g>`))} center top / ${w}px ${h}px repeat-y`;
     const style = esc(`background:${bg}`);
     out += `<span class="side l" style="${style}"></span><span class="side r" style="${style}"></span>`;
   }
@@ -361,7 +396,9 @@ export function ruleHtml(id, look, glyphHtml) {
   if (id === 'emoji') return `<div class="divider" aria-hidden="true">${glyphHtml.emoji}</div>`;
   if (id === 'rule') return `<div class="rule fine" aria-hidden="true"><span></span><i>${glyphHtml.glyph}</i><span></span></div>`;
   const body = RULES[id] || RULES.swash;
-  return `<div class="rule" aria-hidden="true"><svg viewBox='0 0 200 24'><g fill='${look.accent2}' stroke='${look.accent2}'>${body}</g></svg></div>`;
+  const f = look.foil ? foilDef(look.foil.stops) : null;
+  const color = f ? f.fill : look.accent2;
+  return `<div class="rule" aria-hidden="true"><svg viewBox='0 0 200 24'>${f ? f.def : ''}<g fill='${color}' stroke='${color}'>${body}</g></svg></div>`;
 }
 export const resolveRule = (inv, look) =>
   (RULE_OPTIONS.some(o => o.id === inv.dv && o.id !== 'look') ? inv.dv : look.rule || 'swash');

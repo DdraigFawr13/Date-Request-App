@@ -79,14 +79,11 @@ export const SVG_EMBLEMS = {
     <g fill='#000'><path d='M33 62 C44 59 56 59 67 62 L68 66 C56 63 44 63 32 66Z'/><path d='M50 48 l1.6 3.4 3.6 .5 -2.6 2.5 .6 3.6 -3.2 -1.7 -3.2 1.7 .6 -3.6 -2.6 -2.5 3.6 -.5Z'/><circle cx='58' cy='38' r='1.6'/><circle cx='45' cy='56' r='1.2'/></g>`,
   wand: `<rect x='47.5' y='38' width='5' height='46' rx='2' transform='rotate(30 50 62)'/><path transform='translate(-2 8)' d='M62 18 L65.5 27 L75 28 L67.8 34.3 L70 43.6 L62 38.6 L54 43.6 L56.2 34.3 L49 28 L58.5 27Z'/>
     <circle cx='30' cy='30' r='2.4'/><circle cx='78' cy='52' r='2'/><circle cx='40' cy='20' r='1.6'/>`,
-  dragon: `<path d='M54 50 L34 14 C40 19 45 21 50 21 L54 9 C56 16 59 20 64 22 L70 13 C70 22 71 28 68 34 L66 48Z'/>
-    <path d='M68 44 C60 42 46 46 36 55 C33 60 37 65 44 63 C53 61 62 59 70 55Z'/>
-    <path d='M64 46 C67 40 70 34 76 30 C80 27 87 29 90 33 L84 36 C82 37 80 39 81 42 C77 45 73 49 70 55Z'/>
-    <path d='M77 30 L72 21 L80 27Z M82 29 L84 20 L86 29Z'/>
-    <path d='M38 58 C27 61 20 69 24 77 C27 83 35 81 34 75' fill='none' stroke='#fff' stroke-width='4' stroke-linecap='round'/>
-    <path d='M34 75 L28 72 L31 79Z'/>
-    <path d='M45 61 L43 70 L48 70Z M59 58 L60 67 L64 66Z'/>
-    <g fill='#000'><circle cx='83' cy='32.5' r='1.4'/><path d='M60 30 L58 44 M52 26 L54 44' stroke='#000' stroke-width='1.2' opacity='.45'/></g>`,
+  dragon: `<path d='M29 85 C27 74 30 64 33 56 C36 48 38 42 43 36 C40 30 34 24 22 20 C33 19 42 23 48 29 C55 27.5 61 29 66 32.5 C73 35 80 38 86 41 C89 42.5 89.5 46 87 47.6 L74 50.2 L83 53.8 C81.5 58.5 75 62.5 67.5 62.3 C60 62 54.5 64.5 50.5 69.5 C47 74 45.5 79.5 45.5 85Z'/>
+    <path d='M49 30 C47 22 43 15 35 10 C45 12 52 19 54 28.5Z'/>
+    <path d='M35.5 47 C30 45.5 25 46.5 21 49.5 C26 50 30 51.5 33.5 54Z M32.5 60 C27 59 22 60.5 18.5 64 C23.5 64 27.5 65.5 31 68Z M31.5 72.5 C26 72.5 21.5 74.5 18.5 78.5 C23 78 27 79 30.5 81Z'/>
+    <g fill='#000'><path d='M58.5 38.2 C61.5 35.8 66.8 36.2 69 39.2 C65.6 40.8 61.6 40.8 58.5 38.2Z'/><ellipse cx='82' cy='43.4' rx='1.6' ry='1.1'/>
+      <path d='M74 50.2 L64 51.3 L74 52.4Z'/></g>`,
   acorn: `<path d='M33 48 C33 66 42 78 50 82 C58 78 67 66 67 48Z'/><path d='M28 48 C28 32 72 32 72 48 C60 52 40 52 28 48Z'/><rect x='48' y='24' width='4' height='12' rx='2'/>
     <g fill='#000' opacity='.55'><circle cx='38' cy='42' r='1.4'/><circle cx='46' cy='39' r='1.4'/><circle cx='54' cy='39' r='1.4'/><circle cx='62' cy='42' r='1.4'/><circle cx='42' cy='46' r='1.2'/><circle cx='50' cy='44' r='1.2'/><circle cx='58' cy='46' r='1.2'/></g>`,
   teacup: `<path d='M26 46 H66 C66 62 58 72 46 72 C34 72 26 62 26 46Z'/><path d='M66 50 C76 48 80 56 74 62 C71 65 66 64 63 63' fill='none' stroke='#fff' stroke-width='4.5'/>
@@ -163,9 +160,46 @@ export function sealEmblem(inv, look) {
 
 export { shade };
 
-let uidCounter = 0;
 
 // The seal as SVG. Everything from the link is escaped or validated.
+// A small seeded random generator, so each emblem always pours the same puddle.
+function seeded(seed) {
+  let t = seed * 2654435761 >>> 0;
+  return () => ((t = (t ^ (t << 13)) >>> 0, t = (t ^ (t >>> 17)) >>> 0, t = (t ^ (t << 5)) >>> 0) % 10000) / 10000;
+}
+
+// An irregular puddle of wax: a wobbly circle with a couple of soft bulges,
+// smoothed into curves.
+function puddlePath(seed) {
+  const rnd = seeded(seed + 11);
+  const n = 22, pts = [];
+  const bulges = [rnd() * Math.PI * 2, rnd() * Math.PI * 2];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    let r = 44 + (rnd() - 0.5) * 3.2;
+    for (const b of bulges) {
+      const diff = ((a - b + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+      r += 2.6 * Math.exp(-(diff * diff) / 0.08);
+    }
+    pts.push([50 + Math.cos(a) * r, 50 + Math.sin(a) * r]);
+  }
+  const p = i => pts[(i + n) % n];
+  let d = `M${p(0)[0].toFixed(1)} ${p(0)[1].toFixed(1)}`;
+  for (let i = 0; i < n; i++) {
+    const [p0, p1, p2, p3] = [p(i - 1), p(i), p(i + 1), p(i + 2)];
+    const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+    const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+    d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return `${d}Z`;
+}
+
+let uidCounter = 0;
+
+// The seal as SVG, lit like real wax: the shape is drawn once as colors and
+// once as a height map (puddle, raised rim, pressed face, emblem in relief,
+// fine grain). Soft matte lighting from the upper left turns the height map
+// into shading that is blended over the colors.
 export function sealSvg(inv, look) {
   const id = `s${(++uidCounter).toString(36)}${Math.random().toString(36).slice(2, 6)}`;
   const wax = sealColor(inv, look);
@@ -173,6 +207,7 @@ export function sealSvg(inv, look) {
   const face = sealFace(inv, look);
   const emblem = sealEmblem(inv, look);
   const seed = [...emblem].reduce((a, ch) => a + ch.codePointAt(0), 7) % 97;
+  const puddle = puddlePath(seed);
 
   let art;
   if (emblem.startsWith('@')) art = `<g fill='#fff'>${SVG_EMBLEMS[emblem.slice(1)]}</g>`;
@@ -184,43 +219,54 @@ export function sealSvg(inv, look) {
       font-family="'Cinzel Decorative', 'Cormorant Garamond', serif" font-weight='700' font-size='${size}'>${esc(emblem)}</text>`;
   }
 
-  const light = shade(wax, metal ? 0.55 : 0.32), dark = shade(wax, -0.45), deep = shade(wax, -0.25);
-  const emblemLayer = face.id === 'pressed'
-    ? `<rect width='100' height='100' mask='url(#${id}m)' fill='${shade(wax, 0.4)}' opacity='.75' transform='translate(.9 1)'/>
-       <rect width='100' height='100' mask='url(#${id}m)' fill='${shade(wax, -0.32)}'/>`
-    : `<rect width='100' height='100' mask='url(#${id}m)' fill='${shade(wax, -0.55)}' opacity='.6' transform='translate(.8 1.1)'/>
-       <g filter='url(#${id}b)'><rect width='100' height='100' mask='url(#${id}m)' fill='url(#${id}f)'/></g>`;
+  // Colors stay nearly flat; the lighting does the shading, as on real wax.
+  const edge = shade(wax, -0.12), faceColor = shade(wax, -0.04);
+  const emblemColor = face.id === 'pressed'
+    ? `fill='${shade(wax, -0.2)}'`
+    : `fill='url(#${id}f)'`;
+  const ring = 'M50 12.6 A37.4 37.4 0 1 1 49.99 12.6 Z M50 18.4 A31.6 31.6 0 1 0 50.01 18.4 Z';
 
-  return `<svg class="wax-svg" viewBox="-12 -12 124 124" aria-hidden="true" focusable="false">
+  return `<svg class="wax-svg" viewBox="-12 -12 124 124" aria-hidden="true" focusable="false" style="isolation:isolate">
   <defs>
-    <radialGradient id="${id}g" cx="36%" cy="30%" r="75%"><stop offset="0" stop-color="${light}"/><stop offset=".5" stop-color="${wax}"/><stop offset="1" stop-color="${dark}"/></radialGradient>
-    <radialGradient id="${id}i" cx="56%" cy="60%" r="60%"><stop offset=".72" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></radialGradient>
+    <radialGradient id="${id}g" cx="50%" cy="50%" r="55%"><stop offset=".55" stop-color="${wax}"/><stop offset="1" stop-color="${edge}"/></radialGradient>
     <linearGradient id="${id}f" x1="0" y1="0" x2="1" y2="1">${(face.stops || []).map((c, i) => `<stop offset="${[0.05, 0.5, 0.95][i]}" stop-color="${c}"/>`).join('')}</linearGradient>
-    <filter id="${id}d" x="-30%" y="-30%" width="160%" height="160%">
-      <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="${seed}"/>
-      <feDisplacementMap in="SourceGraphic" scale="10" xChannelSelector="R" yChannelSelector="G"/>
-      <feDropShadow dx="0" dy="2.2" stdDeviation="2.2" flood-opacity=".45"/>
-    </filter>
+    <clipPath id="${id}c"><path d="${puddle}"/></clipPath>
     <filter id="${id}w"><feFlood flood-color="#fff"/><feComposite in2="SourceAlpha" operator="in"/></filter>
-    <filter id="${id}b" x="-10%" y="-10%" width="120%" height="120%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
-      <feSpecularLighting in="blur" surfaceScale="3.5" specularConstant=".95" specularExponent="16" lighting-color="#fff" result="spec">
-        <feDistantLight azimuth="225" elevation="42"/></feSpecularLighting>
-      <feComposite in="spec" in2="SourceAlpha" operator="in" result="specIn"/>
-      <feComposite in="SourceGraphic" in2="specIn" operator="arithmetic" k1="0" k2="1" k3=".75" k4="0"/>
+    <filter id="${id}s" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.4"/></filter>
+    <filter id="${id}l" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.15" result="h"/>
+      <feTurbulence type="fractalNoise" baseFrequency="1.3" numOctaves="2" seed="${seed}" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .04 0" result="grain"/>
+      <feComposite in="h" in2="grain" operator="arithmetic" k2="1" k3="1" result="hg"/>
+      <feDiffuseLighting in="hg" surfaceScale="${metal ? 4.5 : 5.5}" diffuseConstant="1.05" lighting-color="#fff">
+        <feDistantLight azimuth="225" elevation="34"/>
+      </feDiffuseLighting>
     </filter>
-    <filter id="${id}h"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="${id}m2" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation=".8" result="b"/>
+      <feSpecularLighting in="b" surfaceScale="2.5" specularConstant="${face.id === 'pressed' ? 0 : 0.45}" specularExponent="22" lighting-color="#fff" result="sp">
+        <feDistantLight azimuth="225" elevation="40"/></feSpecularLighting>
+      <feComposite in="sp" in2="SourceAlpha" operator="in" result="spi"/>
+      <feComposite in="SourceGraphic" in2="spi" operator="arithmetic" k2="1" k3=".6"/>
+    </filter>
     <mask id="${id}m" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><rect width="100" height="100" fill="#000"/>${art}</mask>
+    <mask id="${id}x" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><rect width="100" height="100" fill="#fff"/><g filter="url(#${id}k)">${art}</g></mask>
+    <filter id="${id}k"><feFlood flood-color="#000"/><feComposite in2="SourceAlpha" operator="in"/></filter>
   </defs>
-  <g filter="url(#${id}d)"><circle cx="50" cy="50" r="47" fill="${deep}"/><circle cx="48" cy="47" r="44" fill="url(#${id}g)"/></g>
-  <circle cx="50" cy="50" r="36" fill="url(#${id}g)"/>
-  <circle cx="50" cy="50" r="36" fill="none" stroke="${dark}" stroke-width="1.6" opacity=".55"/>
-  <circle cx="50" cy="50" r="33.6" fill="none" stroke="${light}" stroke-width=".9" opacity=".55"/>
-  <circle cx="50" cy="50" r="31.5" fill="${shade(wax, -0.1)}"/>
-  <circle cx="50" cy="50" r="31.5" fill="url(#${id}i)"/>
-  ${emblemLayer}
-  <ellipse cx="34" cy="26" rx="15" ry="7" fill="#fff" opacity="${metal ? 0.38 : 0.26}" transform="rotate(-32 34 26)" filter="url(#${id}h)"/>
-  <ellipse cx="29" cy="24" rx="4" ry="1.6" fill="#fff" opacity=".55" transform="rotate(-38 29 24)"/>
+  <path d="${puddle}" fill="#000" opacity=".42" transform="translate(1.2 2.6)" filter="url(#${id}s)"/>
+  <g clip-path="url(#${id}c)">
+    <path d="${puddle}" fill="url(#${id}g)"/>
+    <circle cx="50" cy="50" r="31.6" fill="${faceColor}"/>
+    <g filter="url(#${id}m2)"><rect width="100" height="100" mask="url(#${id}m)" ${emblemColor}/></g>
+    <g filter="url(#${id}l)" style="mix-blend-mode:soft-light">
+      <path d="${puddle}" fill="#fff" fill-opacity=".38"/>
+      <path d="${ring}" fill-rule="evenodd" fill="#fff" fill-opacity=".5"/>
+      ${face.id === 'pressed'
+        ? `<circle cx="50" cy="50" r="31.6" fill="#fff" fill-opacity=".22" mask="url(#${id}x)"/>`
+        : `<circle cx="50" cy="50" r="31.6" fill="#fff" fill-opacity=".14"/><rect width="100" height="100" mask="url(#${id}m)" fill="#fff" fill-opacity=".4"/>`}
+    </g>
+    <ellipse cx="38" cy="32" rx="26" ry="16" fill="#fff" opacity="${metal ? 0.16 : 0.05}" transform="rotate(-35 38 32)" filter="url(#${id}s)"/>
+  </g>
 </svg>`;
 }
 

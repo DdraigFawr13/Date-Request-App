@@ -2,7 +2,7 @@
 // the colors. Every line of text can be overridden by the sender (inv.tx).
 
 import { THEMES, resolveLook, seasonOf } from './themes.js';
-import { contrast, luminance, readableOn, safeHex } from './decor.js';
+import { contrast, luminance, readableOn, resolveFoil, safeHex } from './decor.js';
 import { own } from './util.js';
 
 // Font pairings: a display face for titles and a body face for everything else.
@@ -172,7 +172,8 @@ export function wording(inv, extra = {}) {
 // A look merged with its lettering — everything render code needs for styling.
 export function resolveTheme(inv) {
   const font = own(FONTS, inv.fn) || own(FONTS, occasionWords(inv).font) || FONTS.storybook;
-  return { ...withPageColor(resolveLook(inv), inv), display: font.display, body: font.body, fontId: font.id };
+  const look = withPageColor(resolveLook(inv), inv);
+  return { ...look, foil: resolveFoil(inv, look.dark), display: font.display, body: font.body, fontId: font.id };
 }
 
 // A custom page (card) color, independent of the background. Text and title
