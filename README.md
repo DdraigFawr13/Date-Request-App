@@ -9,7 +9,7 @@ their calendar, and texts their answer back to you.
 ## How it works
 
 1. **Build it.** Pick an occasion (dinner date, drinks, a night out dancing,
-   game night, birthday, Halloween party, after dark, a night of magic,
+   game night, birthday, Halloween party, a Halloween soirée at The Nocturne, after dark, a night of magic,
    dragon quest, woodland tea, royal feast, cat date, picnic, sabbat gathering…), fill in the basics, choose a look, and add only the
    details that matter.
 2. **Seal it.** Moonpost packs the whole invitation into the link itself.
@@ -43,7 +43,7 @@ their calendar, and texts their answer back to you.
 | 🏰 Medieval | Royal Court · Castle Keep · Illuminated |
 | 🐈‍⬛ Cats | Black Cat · Calico · Kitten Pastel · Cat Café |
 | 🎉 Parties | Speakeasy · Neon Club · Disco Fever · Game Night · Birthday Bash · Tiki Bar · Celebration |
-| 🎭 Stage | A Midsummer Night’s Dream (moonlit wood with fairy lights, pansy seal) · Theatre Night (red-velvet curtains, masks seal) · Broadway Musical (marquee lights, music-note seal) |
+| 🎭 Stage | A Midsummer Night’s Dream (moonlit wood with fairy lights, pansy seal) · Theatre Night (red-velvet curtains, masks seal) · Broadway Musical (marquee lights, music-note seal) · The Nocturne (a Halloween burlesque soirée: velvet curtains under a feather-boa swag, spotlight haze, fishnet texture, a vintage mic and coupe tower, moon and bats, kiss seal) |
 | 🖤 Dark side | Gothic · Emo · Kinky |
 | ✨ Night & glam | Night at the Show · Cozy Night In |
 
@@ -58,9 +58,9 @@ override any of them:
 - **Neon glow:** make the title, headings and card edge glow in hot pink,
   electric blue, lime, ultraviolet, tangerine, lemon, red, white or any color.
 - **Background:** a soft glow, a moonlit sky, a haunted night, an aurora, a velvet curtain, bokeh lights,
-  a neon grid, a sunburst, stage curtains, marquee lights, a moonlit wood, or a pattern (damask, stars, snowfall, blossoms,
+  a neon grid, a sunburst, stage curtains, marquee lights, a moonlit wood, a burlesque stage, or a pattern (damask, stars, snowfall, blossoms,
   leaves, hearts, paw prints, waves, castle stone, gingham, plaid, lace, bats, wands & hats, dragon scales,
-  constellations, acorns & mushrooms, theatre masks, moons & pansies,
+  constellations, acorns & mushrooms, theatre masks, moons & pansies, fishnet, plumes & bats,
   spiderwebs, stripes, cocktails, dice, checkerboard, disco tiles, music notes, confetti), in the look's
   colors or two of your own.
 - **Paper:** smooth card, handmade cotton, aged parchment, linen weave,

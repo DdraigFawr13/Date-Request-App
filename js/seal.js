@@ -105,6 +105,10 @@ export const SVG_EMBLEMS = {
     <path d='M0 0 C14 0 22 10 18 20 C14 28 -14 28 -18 20 C-22 10 -14 0 0 0Z'/>
     <g fill='none' stroke='#000' stroke-width='1.6' stroke-linecap='round' opacity='.75'><path d='M0 6 V16 M-4 6 L-8 14 M4 6 L8 14 M-6 2 L-14 6 M6 2 L14 6'/></g>
     <circle cy='3' r='3.6' fill='#000'/></g>`,
+  lips: `<g transform='translate(50 54)'><path d='M-30 -2 C-24 -12 -16 -18 -8 -16 C-4 -15 -2 -12 0 -10 C2 -12 4 -15 8 -16 C16 -18 24 -12 30 -2 C24 -1 18 0 0 2 C-18 0 -24 -1 -30 -2Z'/>
+    <path d='M-30 1 C-22 4 -14 5 0 5 C14 5 22 4 30 1 C24 14 14 20 0 20 C-14 20 -24 14 -30 1Z'/>
+    <path d='M-26 1 C-14 3.5 14 3.5 26 1' fill='none' stroke='#000' stroke-width='2.2' stroke-linecap='round'/>
+    <g fill='none' stroke='#000' stroke-width='1' opacity='.45' stroke-linecap='round'><path d='M-14 10 l2 6 M-6 11 l1 7 M4 11 l-1 7 M12 10 l-2 6 M-12 -8 l2 -5 M10 -8 l-2 -5'/></g></g>`,
   paw: `<g transform='translate(50 52) scale(2.6)'><ellipse cx='0' cy='4' rx='5.2' ry='4.4'/><ellipse cx='-6' cy='-3' rx='2.1' ry='2.7' transform='rotate(-20 -6 -3)'/>
     <ellipse cx='-2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='6' cy='-3' rx='2.1' ry='2.7' transform='rotate(20 6 -3)'/></g>`,
 };
@@ -135,7 +139,7 @@ export const EMBLEM_GROUPS = [
     { s: '🦋', name: 'Butterfly' }, { s: '🦉', name: 'Owl' }, { s: '🐚', name: 'Shell' }, { s: '🌾', name: 'Wheat' }, { s: '🍓', name: 'Strawberry' },
   ] },
   { id: 'stage', label: 'Stage', items: [
-    { s: '@masks', name: 'Theatre masks' }, { s: '@note', name: 'Music notes' }, { s: '@pansy', name: 'Pansy' }, { s: '♪', name: 'Note' },
+    { s: '@masks', name: 'Theatre masks' }, { s: '@lips', name: 'Kiss' }, { s: '@note', name: 'Music notes' }, { s: '@pansy', name: 'Pansy' }, { s: '♪', name: 'Note' },
     { s: '🎭', name: 'Masks' }, { s: '🎟️', name: 'Ticket' }, { s: '🎤', name: 'Microphone' }, { s: '🎻', name: 'Violin' }, { s: '🌹', name: 'Rose' },
   ] },
   { id: 'party', label: 'Party', items: [

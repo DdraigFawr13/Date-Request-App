@@ -222,6 +222,13 @@ export const THEMES = {
     pattern: 'notes', scene: 'marquee', wax: 'gold', waxFace: 'black', paper: 'silk', corners: 'deco', rule: 'swash',
   },
 
+  nocturne: {
+    name: 'The Nocturne', cat: 'stage', tagline: 'A Halloween burlesque soirée', glyph: '❦',
+    bg: ['#08030a', '#2c0716'], card: '#130910', ink: '#f8e9e4', accent: '#c8173d', accent2: '#d9a95b', onAccent: '#ffffff', dark: true,
+    particles: ['🦇', '🌹', '💋', '🥂', '🕯️', '✨'], seal: '@lips', divider: '✦ ❦ ✦', wrap: 'book',
+    pattern: 'fishnet', scene: 'burlesque', wax: 'scarlet', waxFace: 'gold', paper: 'silk', corners: 'deco', sides: 'lace', rule: 'swash',
+  },
+
   // ── Parties & nights out ─────────────────────────────────────────────
   speakeasy: {
     name: 'Speakeasy', cat: 'party', tagline: 'Emerald, brass & jazz', glyph: '🍸',
