@@ -206,7 +206,7 @@ export const THEMES = {
   midsummer: {
     name: 'A Midsummer Night’s Dream', cat: 'stage', tagline: 'A moonlit wood, fairies & mischief', glyph: '☾',
     bg: ['#0a1630', '#2b2a5e'], card: '#f6f0e2', ink: '#24233f', accent: '#6b4aa8', accent2: '#b89a4a', onAccent: '#ffffff',
-    particles: ['🧚', '✨', '🌙', '🌸', '🦋', '🍃'], seal: '@pansy', divider: '✧ ☾ ✧', wrap: 'scroll',
+    particles: ['🧚', '✨', '🌙', '🌸', '🦋', '🍃'], seal: '@donkey', divider: '✧ ☾ ✧', wrap: 'scroll',
     pattern: 'midsummer', scene: 'moonwood', wax: 'lavender', waxFace: 'gold', paper: 'vellum', corners: 'floral', sides: 'vine', rule: 'vine',
   },
   theatre: {
@@ -226,7 +226,7 @@ export const THEMES = {
     name: 'The Nocturne', cat: 'stage', tagline: 'A Halloween burlesque soirée', glyph: '❦',
     bg: ['#08030a', '#2c0716'], card: '#130910', ink: '#f8e9e4', accent: '#c8173d', accent2: '#d9a95b', onAccent: '#ffffff', dark: true,
     particles: ['🦇', '🌹', '💋', '🥂', '🕯️', '✨'], seal: '@lips', divider: '✦ ❦ ✦', wrap: 'book',
-    pattern: 'fishnet', scene: 'burlesque', wax: 'scarlet', waxFace: 'gold', paper: 'silk', corners: 'deco', sides: 'lace', rule: 'swash',
+    pattern: 'fishnet', scene: 'burlesque', wax: 'scarlet', waxFace: 'gold', paper: 'silk', corners: 'rhinestone', sides: 'plumes', rule: 'swash',
   },
 
   // ── Parties & nights out ─────────────────────────────────────────────

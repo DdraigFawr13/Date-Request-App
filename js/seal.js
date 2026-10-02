@@ -109,6 +109,15 @@ export const SVG_EMBLEMS = {
     <path d='M-30 1 C-22 4 -14 5 0 5 C14 5 22 4 30 1 C24 14 14 20 0 20 C-14 20 -24 14 -30 1Z'/>
     <path d='M-26 1 C-14 3.5 14 3.5 26 1' fill='none' stroke='#000' stroke-width='2.2' stroke-linecap='round'/>
     <g fill='none' stroke='#000' stroke-width='1' opacity='.45' stroke-linecap='round'><path d='M-14 10 l2 6 M-6 11 l1 7 M4 11 l-1 7 M12 10 l-2 6 M-12 -8 l2 -5 M10 -8 l-2 -5'/></g></g>`,
+  // Bottom's ass's head (A Midsummer Night's Dream), crowned with Titania's flowers.
+  donkey: `<path d='M46 37 C40 26 37 14 39 5 C45 11 51 23 52 35Z'/><path d='M53 35 C53 22 57 12 63 7 C63 17 61 28 58 37Z'/>
+    <path d='M35 88 C33 72 35 54 43 42 C49 34 56 33 61 37 C67 43 74 52 80 60 C84 66 82 74 75 76 C70 77 66 75 62 72 C58 70 56 75 57 88Z'/>
+    <path d='M42 41 Q34 42 36 49 Q30 53 34 59 Q29 64 34 69 Q30 75 34 79 Q32 85 36 88 L40 88 C38 72 39 56 45 43Z'/>
+    <g fill='#000'><path d='M44 33 C41 25 40 17 41 10 C44 16 47 24 48 32Z' opacity='.45'/><path d='M55 33 C56 24 58 17 61 12 C60 20 59 27 57 34Z' opacity='.45'/>
+      <ellipse cx='60' cy='48' rx='2.6' ry='2' transform='rotate(20 60 48)'/><path d='M57 45.5 C59 44 62 44.5 63.5 46.5' fill='none' stroke='#000' stroke-width='1'/>
+      <ellipse cx='76.5' cy='65.5' rx='2.2' ry='1.4' transform='rotate(-35 76.5 65.5)'/><path d='M69 73 C72 74.5 75.5 74 78 71.5' fill='none' stroke='#000' stroke-width='1.2'/>
+      <path d='M48 70 C52 66 54 60 52 54' fill='none' stroke='#000' stroke-width='1' opacity='.5'/></g>
+    ${[[43.5, 37.5, 5], [51, 33.5, 5.4], [59, 35, 4.6]].map(([x, y, r]) => `<g transform='translate(${x} ${y})'>${[0, 72, 144, 216, 288].map(a => `<ellipse cy='${-r * 0.55}' rx='${r * 0.38}' ry='${r * 0.55}' transform='rotate(${a})'/>`).join('')}<circle r='${r * 0.32}' fill='#000'/></g>`).join('')}`,
   paw: `<g transform='translate(50 52) scale(2.6)'><ellipse cx='0' cy='4' rx='5.2' ry='4.4'/><ellipse cx='-6' cy='-3' rx='2.1' ry='2.7' transform='rotate(-20 -6 -3)'/>
     <ellipse cx='-2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='2.2' cy='-6.6' rx='2.1' ry='2.8'/><ellipse cx='6' cy='-3' rx='2.1' ry='2.7' transform='rotate(20 6 -3)'/></g>`,
 };
@@ -139,7 +148,7 @@ export const EMBLEM_GROUPS = [
     { s: '🦋', name: 'Butterfly' }, { s: '🦉', name: 'Owl' }, { s: '🐚', name: 'Shell' }, { s: '🌾', name: 'Wheat' }, { s: '🍓', name: 'Strawberry' },
   ] },
   { id: 'stage', label: 'Stage', items: [
-    { s: '@masks', name: 'Theatre masks' }, { s: '@lips', name: 'Kiss' }, { s: '@note', name: 'Music notes' }, { s: '@pansy', name: 'Pansy' }, { s: '♪', name: 'Note' },
+    { s: '@masks', name: 'Theatre masks' }, { s: '@lips', name: 'Kiss' }, { s: '@note', name: 'Music notes' }, { s: '@donkey', name: 'Donkey head' }, { s: '@pansy', name: 'Pansy' }, { s: '♪', name: 'Note' },
     { s: '🎭', name: 'Masks' }, { s: '🎟️', name: 'Ticket' }, { s: '🎤', name: 'Microphone' }, { s: '🎻', name: 'Violin' }, { s: '🌹', name: 'Rose' },
   ] },
   { id: 'party', label: 'Party', items: [

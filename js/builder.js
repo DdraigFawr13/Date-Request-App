@@ -6,7 +6,7 @@ import { FONTS, TEMPLATES, TEMPLATE_BY_ID, WORDING, resolveTheme } from './occas
 import { MODULES, MODULE_BY_ID, QUESTIONS } from './modules.js';
 import { encodeInvite } from './codec.js';
 import { applyTheme, esc, particles, renderCard, wordsFor } from './render.js';
-import { CORNER_OPTIONS, FOILS, GLOW_COLORS, PAPERS, foilCss, RULE_OPTIONS, SCENES, SIDE_OPTIONS, backdropCss, luminance, resolvePaper, safeHex } from './decor.js';
+import { CORNER_OPTIONS, FOILS, GLOW_COLORS, PAPERS, foilCss, ornamentPreview, RULE_OPTIONS, SCENES, SIDE_OPTIONS, backdropCss, luminance, resolvePaper, safeHex } from './decor.js';
 import { EMBLEM_GROUPS, FACE_FINISHES, SVG_EMBLEMS, WAX_BY_ID, WAX_COLORS, sealHtml } from './seal.js';
 import { WRAPPERS, playOpening, resolveWrapper, wrapperHtml } from './wrappers.js';
 import { shortenUrl } from './shorten.js';
@@ -165,8 +165,8 @@ function renderLook() {
   const page = resolveTheme(inv);
   $('#papers').innerHTML = PAPERS.map(p => `<button type="button" class="paper-option ${state.pp === p.id ? 'on' : ''}" data-action="paper" data-id="${p.id}">
     <span class="paper-art" data-paper="${p.id === 'look' ? paperNow : p.id}" style="--card:${page.card};--accent:${page.accent};--accent2:${page.accent2}"${page.dark ? ' data-dark' : ''}></span>${esc(p.label)}</button>`).join('');
-  $('#corners').innerHTML = CORNER_OPTIONS.map(o => optionBtn('corners', o.id, esc(o.label), state.dc === o.id)).join('');
-  $('#sides').innerHTML = SIDE_OPTIONS.map(o => optionBtn('sides', o.id, esc(o.label), state.ds === o.id)).join('');
+  $('#corners').innerHTML = CORNER_OPTIONS.map(o => optionBtn('corners', o.id, ornamentPreview('corners', o.id) + esc(o.label), state.dc === o.id)).join('');
+  $('#sides').innerHTML = SIDE_OPTIONS.map(o => optionBtn('sides', o.id, ornamentPreview('sides', o.id) + esc(o.label), state.ds === o.id)).join('');
   $('#rules').innerHTML = RULE_OPTIONS.map(o => optionBtn('rules', o.id, esc(o.label), state.dv === o.id)).join('');
 }
 

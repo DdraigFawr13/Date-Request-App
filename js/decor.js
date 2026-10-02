@@ -450,6 +450,67 @@ const CORNERS = {
     <path d='M46 46 V64' stroke-width='0.7'/></g>
     <g transform='translate(46 68)'><ellipse rx='3.2' ry='3.8'/><circle cy='-4.4' r='2.2'/><g fill='none' stroke-width='0.9' stroke-linecap='round'><path d='M-2.6 -1 L-6.5 -4 M-2.8 1 L-7 0.5 M-2.6 2.6 L-6 5.5 M2.6 -1 L6.5 -4 M2.8 1 L7 0.5 M2.6 2.6 L6 5.5'/></g></g>`,
   paws: `${PAW(14, 15, 135, 1.35)}${PAW(36, 33, 135, 1.1)}${PAW(54, 55, 140, 0.85)}`,
+  // Ornate C-scrolls with acanthus leaves around a ridged scallop shell,
+  // mirrored across the corner.
+  baroque: (() => {
+    const half = `<g fill='none' stroke-width='1.3' stroke-linecap='round'><path d='M24 15 C34 10 46 9 56 12 C64 15 66 23 60 26 C55 28 52 23 55 20'/>
+      <path d='M60 12 C66 8 72 8 77 10' stroke-width='0.9'/><path d='M34 14 C38 17 44 18 50 16' stroke-width='0.7'/></g>
+      <path d='M30 13 C33 7 40 5 46 8 C41 9 36 11 34 15Z'/><path d='M46 9 C50 5 56 5 59 8 C55 8 51 10 49 13Z' fill-opacity='.75'/>
+      <circle cx='67' cy='17' r='1.3'/><circle cx='72' cy='14' r='0.9'/>`;
+    const ridges = [100, 117, 135, 153, 170].map(a => `M12 12 L${(12 + Math.cos(a * Math.PI / 180) * -11).toFixed(1)} ${(12 + Math.sin(a * Math.PI / 180) * -11).toFixed(1)}`).join(' ');
+    return `${half}<g transform='matrix(0 1 1 0 0 0)'>${half}</g>
+      <g fill='none' stroke-width='0.8'><path d='M4 76 V22 C4 12 12 4 22 4 H76'/></g>
+      <path d='M12 12 L25.5 16 A14 14 0 0 1 16 25.5Z'/>
+      <path d='${ridges.replace(/M12 12 L/g, 'M14 14 L').replace(/-/g, '')}' fill='none' stroke='#000' stroke-opacity='.35' stroke-width='0.8'/>
+      <circle cx='12' cy='12' r='3' style='fill:var(--c2)'/>`;
+  })(),
+  // A sinuous art-nouveau whiplash line ending in a lily bud.
+  nouveau: `<g fill='none' stroke-linecap='round'><path d='M4 78 C4 50 9 32 20 23 C31 14 44 22 37 31 C33 36 26 32 29 27' stroke-width='1.4'/>
+      <path d='M78 4 C52 4 36 8 26 16' stroke-width='1.4'/><path d='M10 78 C10 54 15 38 24 30' stroke-width='0.7'/><path d='M78 10 C56 10 42 13 32 19' stroke-width='0.7'/></g>
+    <path d='M40 40 C36 32 38 24 46 20 C47 28 45 35 40 40Z'/><path d='M40 40 C46 38 52 39 56 44 C49 46 44 44 40 40Z' fill-opacity='.75'/>
+    <path d='M40 40 C34 42 30 48 31 54 C37 51 40 46 40 40Z' fill-opacity='.75'/><circle cx='43' cy='31' r='1.8' style='fill:var(--c2)'/>`,
+  // Graduated rhinestones in gold settings, sweeping round the corner.
+  rhinestone: (() => {
+    const pts = [[13, 13, 6], [27, 8, 4.2], [8, 27, 4.2], [39, 6, 3.4], [6, 39, 3.4], [50, 5, 2.7], [5, 50, 2.7], [60, 4.5, 2.1], [4.5, 60, 2.1], [69, 4, 1.6], [4, 69, 1.6]];
+    return pts.map(([x, y, r]) => `<circle cx='${x}' cy='${y}' r='${r}'/><circle cx='${x}' cy='${y}' r='${(r * 0.72).toFixed(2)}' style='fill:var(--c2)'/>
+      <circle cx='${(x - r * 0.28).toFixed(2)}' cy='${(y - r * 0.3).toFixed(2)}' r='${(r * 0.22).toFixed(2)}' fill='#fff' fill-opacity='.85'/>`).join('')
+      + SPARKLE(24, 22, 0.55) + SPARKLE(34, 16, 0.32) + SPARKLE(16, 34, 0.32);
+  })(),
+  // Soft ostrich plumes curling along both edges, pinned with a jewel: long,
+  // drooping barbs that thin toward the tip, with a few loose wisps.
+  feather: (() => {
+    const plume = (len, curl, seed) => {
+      let n = seed;
+      const r = () => ((n = (n * 16807) % 2147483647) / 2147483647);
+      const at = t => [10 + t * len, 9 + t * t * curl];
+      const barbs = [];
+      for (let i = 1; i <= 26; i++) {
+        const t = i / 27, [x, y] = at(t), l = (13 - t * 8) * (0.8 + r() * 0.4);
+        barbs.push(`M${x.toFixed(1)} ${y.toFixed(1)} c${(l * 0.15).toFixed(1)} ${(-l * 0.5).toFixed(1)} ${(l * 0.7).toFixed(1)} ${(-l * 0.55).toFixed(1)} ${(l * 0.85).toFixed(1)} ${(-l * 0.25).toFixed(1)}`);
+        barbs.push(`M${x.toFixed(1)} ${y.toFixed(1)} c${(l * 0.1).toFixed(1)} ${(l * 0.55).toFixed(1)} ${(l * 0.6).toFixed(1)} ${(l * 0.85).toFixed(1)} ${(l * 0.95).toFixed(1)} ${(l * 0.9).toFixed(1)}`);
+      }
+      const [ex, ey] = at(1);
+      return `<path d='${barbs.join(' ')}' fill='none' stroke-width='0.7' stroke-linecap='round' stroke-opacity='.85'/>
+        <path d='M10 9 Q${10 + len * 0.6} 9 ${ex} ${ey}' fill='none' stroke-width='1.4'/>
+        <path d='M${ex} ${ey} q5 3 8 9 M${ex - 4} ${ey + 1} q4 5 5 11' fill='none' stroke-width='0.6' stroke-linecap='round'/>`;
+    };
+    return `${plume(56, 12, 3)}<g transform='matrix(0 1 1 0 0 0)'>${plume(48, 10, 9)}</g>
+      <circle cx='9' cy='9' r='5'/><circle cx='9' cy='9' r='3.5' style='fill:var(--c2)'/><circle cx='7.8' cy='7.8' r='1.1' fill='#fff' fill-opacity='.8'/>`;
+  })(),
+  // A rose in bloom with thorned stems and leaves along both edges.
+  rose: `<g fill='none' stroke-width='1.2' stroke-linecap='round'><path d='M24 12 C38 10 54 12 74 7'/><path d='M12 24 C10 38 12 54 7 74'/></g>
+    <g>${[[36, 11], [50, 11.5], [62, 9]].map(([x, y]) => `<path d='M${x} ${y} l2 -3.4 l1 3.2z'/>`).join('')}${[[11, 36], [11.5, 50], [9, 62]].map(([x, y]) => `<path d='M${x} ${y} l-3.4 2 l3.2 1z'/>`).join('')}</g>
+    ${LEAF(44, 6, 60, 0.6)}${LEAF(6, 44, 30, 0.6)}${LEAF(66, 12, 120, 0.5)}${LEAF(12, 66, -30, 0.5)}
+    <g transform='translate(15 15)'>
+      <path d='M-11 2 C-13 -8 -6 -13 0 -12 C7 -13 13 -7 11 2 C10 9 4 12 0 12 C-4 12 -10 9 -11 2Z'/>
+      <g fill='none' style='stroke:var(--c2)' stroke-width='1.2' stroke-linecap='round'>
+        <path d='M-9 3 C-6 9 6 9 9 3'/><path d='M-8 -4 C-8 -10 -1 -11 2 -9'/><path d='M8 -3 C9 3 5 7 0 7'/>
+        <path d='M-4 2 C-6 -3 -2 -6 2 -5 C5 -4 5 0 2 1 C0 2 -2 0 0 -2'/></g>
+      <path d='M-11 2 C-13 -8 -6 -13 0 -12 C7 -13 13 -7 11 2' fill='none' stroke='#fff' stroke-opacity='.3' stroke-width='0.8'/>
+    </g>`,
+  // Marquee bulbs along both edges, glowing.
+  marquee: `<g fill='none' stroke-width='0.9'><path d='M14 78 V14 H78'/></g>
+    ${[[7, 7], [19, 6], [31, 6], [43, 6], [55, 6], [67, 6], [6, 19], [6, 31], [6, 43], [6, 55], [6, 67]].map(([x, y]) => `<circle cx='${x}' cy='${y}' r='5.2' fill='#ffd98a' fill-opacity='.28' stroke='none'/><circle cx='${x}' cy='${y}' r='3'/><circle cx='${x}' cy='${y}' r='1.9' fill='#fff8e0' stroke='none'/>`).join('')}`,
 };
 // One corner ornament as SVG markup (for use outside the card, e.g. the scroll).
 export function cornerSvg(id, color, color2) {
@@ -460,24 +521,62 @@ export const CORNER_OPTIONS = [
   { id: 'look', label: 'Look’s pick' }, { id: 'none', label: 'None' },
   { id: 'filigree', label: 'Filigree' }, { id: 'gothic', label: 'Gothic' }, { id: 'floral', label: 'Floral vine' },
   { id: 'deco', label: 'Art deco' }, { id: 'celestial', label: 'Celestial' }, { id: 'web', label: 'Spiderweb' }, { id: 'stars', label: 'Constellation' }, { id: 'branch', label: 'Acorn branch' }, { id: 'paws', label: 'Paw prints' },
+  { id: 'baroque', label: 'Baroque scroll' }, { id: 'nouveau', label: 'Art nouveau' }, { id: 'rhinestone', label: 'Rhinestones' },
+  { id: 'feather', label: 'Ostrich plume' }, { id: 'rose', label: 'Thorned rose' }, { id: 'marquee', label: 'Marquee bulbs' },
 ];
 
 // ── Side borders ─────────────────────────────────────────────────────
 export const SIDE_OPTIONS = [
   { id: 'look', label: 'Look’s pick' }, { id: 'none', label: 'None' }, { id: 'frame', label: 'Double frame' },
   { id: 'vine', label: 'Climbing vine' }, { id: 'pearls', label: 'Pearls' }, { id: 'lace', label: 'Lace' }, { id: 'stitch', label: 'Stitching' }, { id: 'paws', label: 'Paw trail' },
+  { id: 'rhinestones', label: 'Rhinestones' }, { id: 'beads', label: 'Beads' }, { id: 'rope', label: 'Velvet rope' },
+  { id: 'bulbs', label: 'Marquee bulbs' }, { id: 'plumes', label: 'Feather boa' }, { id: 'thorns', label: 'Thorned vine' },
 ];
 const SIDE_TILES = {
   vine: [24, 60, `<g fill='none' stroke-width='1.2'><path d='M12 0 C4 15 20 30 12 45 C8 52 10 56 12 60'/></g>${LEAF(17, 14, 50, 0.6)}${LEAF(7, 40, -50, 0.6)}<circle cx='12' cy='30' r='1.4'/>`],
   pearls: [12, 16, `<circle cx='6' cy='8' r='2.6'/>`],
   lace: [20, 18, `<path d='M2 0 Q20 9 2 18' fill='none' stroke-width='1.2'/><path d='M2 3 Q13 9 2 15' fill='none' stroke-width='0.7'/><circle cx='5' cy='9' r='1.5'/><circle cx='14' cy='9' r='1'/>`],
   paws: [24, 64, `${PAW(9, 16, -8, 0.55)}${PAW(15, 46, 8, 0.55)}`],
+  rhinestones: [24, 26, `<circle cx='12' cy='8' r='4.4'/><circle cx='12' cy='8' r='3.1' style='fill:var(--c2)'/><circle cx='10.8' cy='6.7' r='1' fill='#fff' fill-opacity='.85'/>
+    <circle cx='12' cy='20' r='2.3'/><circle cx='12' cy='20' r='1.5' style='fill:var(--c2)'/><circle cx='11.4' cy='19.4' r='.5' fill='#fff' fill-opacity='.8'/>`],
+  beads: [24, 14, `<ellipse cx='12' cy='7' rx='2.7' ry='4.4'/><ellipse cx='11.2' cy='5.6' rx='.8' ry='1.4' fill='#fff' fill-opacity='.55'/><path d='M12 0 V2.4 M12 11.6 V14' stroke-width='.8'/>`],
+  rope: [24, 7, `<path d='M8.6 0.6 C11 2.2 13.9 4.6 15.4 7.6' fill='none' stroke-width='4' stroke-linecap='round'/>
+    <path d='M9.4 0.2 C11.6 1.8 13.6 3.6 14.8 5.6' fill='none' stroke='#fff' stroke-opacity='.3' stroke-width='.9' stroke-linecap='round'/>
+    <path d='M7.4 2.2 C9.6 3.8 12 5.8 13.2 8' fill='none' stroke='#000' stroke-opacity='.35' stroke-width='.7'/>`],
+  bulbs: [24, 24, `<circle cx='12' cy='12' r='7.5' fill='#ffd98a' fill-opacity='.25' stroke='none'/><circle cx='12' cy='12' r='3.6'/><circle cx='12' cy='12' r='2.3' fill='#fff8e0' stroke='none'/>`],
+  plumes: [24, 30, (() => {
+    let n = 11;
+    const r = () => ((n = (n * 16807) % 2147483647) / 2147483647);
+    const barbs = Array.from({ length: 34 }, (_, i) => {
+      const y = (i / 34) * 30, side = i % 2 ? 1 : -1, l = 5 + r() * 5, a = (r() - 0.5) * 6;
+      return `M${(12 + (r() - 0.5) * 2).toFixed(1)} ${y.toFixed(1)} c${(side * l * 0.5).toFixed(1)} ${(a - 1).toFixed(1)} ${(side * l * 0.9).toFixed(1)} ${(a + 1).toFixed(1)} ${(side * l).toFixed(1)} ${(a + 3).toFixed(1)}`;
+    }).join(' ');
+    return `<path d='${barbs}' fill='none' stroke-width='.7' stroke-linecap='round' stroke-opacity='.85'/><path d='M12 0 V30' stroke-width='1.6' stroke-opacity='.5'/>`;
+  })()],
+  thorns: [24, 52, `<path d='M12 0 C6 13 18 26 12 39 C9 45 11 49 12 52' fill='none' stroke-width='1.1'/><path d='M10.6 9 l-4 -1 l3 3z M14.8 21 l4 -1 l-3 3z M10.2 33 l-4 -1 l3 3z'/>
+    ${LEAF(17, 13, 50, 0.5)}${LEAF(7, 42, -50, 0.5)}<circle cx='12' cy='27' r='2.4' style='fill:var(--c2)'/>`],
 };
 
 export const resolveDecor = (inv, look) => ({
   corners: CORNER_OPTIONS.some(o => o.id === inv.dc && o.id !== 'look') ? inv.dc : look.corners || 'none',
   sides: SIDE_OPTIONS.some(o => o.id === inv.ds && o.id !== 'look') ? inv.ds : look.sides || 'none',
 });
+
+// A small drawing of a corner or side style, for the picker buttons.
+export function ornamentPreview(kind, id) {
+  if (kind === 'corners' && CORNERS[id]) {
+    return `<svg class='orn' viewBox='0 0 80 80' aria-hidden='true'><g fill='currentColor' stroke='currentColor'>${CORNERS[id].replace(/var\(--c2\)/g, 'currentColor')}</g></svg>`;
+  }
+  if (kind === 'sides' && SIDE_TILES[id]) {
+    const [w, h, body] = SIDE_TILES[id];
+    const tile = `<g fill='currentColor' stroke='currentColor'>${body.replace(/style='fill:var\(--c2\)'/g, "fill-opacity='.55'")}</g>`;
+    return `<svg class='orn' viewBox='0 0 ${w} ${h * 2}' aria-hidden='true'>${tile}<g transform='translate(0 ${h})'>${tile}</g></svg>`;
+  }
+  if (kind === 'sides' && (id === 'frame' || id === 'stitch')) {
+    return `<svg class='orn' viewBox='0 0 24 48' aria-hidden='true'><g fill='none' stroke='currentColor' stroke-width='2'>${id === 'frame' ? `<path d='M6 0 V48 M12 0 V48'/>` : `<path d='M10 0 V48' stroke-dasharray='5 4'/>`}</g></svg>`;
+  }
+  return '';
+}
 
 // Ornament markup for a card. Colors are the look's own (safe constants).
 export function decorHtml(inv, look) {
@@ -496,9 +595,9 @@ export function decorHtml(inv, look) {
     const [w, h, body] = SIDE_TILES[sides];
     const f = look.foil ? foilDef(look.foil.stops, 'f') : null;
     const color = f ? f.fill : look.accent2;
-    const bg = `${svgUrl(svgTile(w, h, `${f ? f.def : ''}<g fill='${color}' stroke='${color}'>${body}</g>`))} center top / ${w}px ${h}px repeat-y`;
+    const bg = `${svgUrl(svgTile(w, h, `${f ? f.def : ''}<g fill='${color}' stroke='${color}'>${body.replace(/var\(--c2\)/g, color2)}</g>`))} center top / ${w}px ${h}px repeat-y`;
     const style = esc(`background:${bg}`);
-    out += `<span class="side l" style="${style}"></span><span class="side r" style="${style}"></span>`;
+    out += `<span class="side l ${sides}" style="${style}"></span><span class="side r ${sides}" style="${style}"></span>`;
   }
   return out;
 }

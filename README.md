@@ -43,7 +43,7 @@ their calendar, and texts their answer back to you.
 | 🏰 Medieval | Royal Court · Castle Keep · Illuminated |
 | 🐈‍⬛ Cats | Black Cat · Calico · Kitten Pastel · Cat Café |
 | 🎉 Parties | Speakeasy · Neon Club · Disco Fever · Game Night · Birthday Bash · Tiki Bar · Celebration |
-| 🎭 Stage | A Midsummer Night’s Dream (moonlit wood with fairy lights, pansy seal) · Theatre Night (red-velvet curtains, masks seal) · Broadway Musical (marquee lights, music-note seal) · The Nocturne (a Halloween burlesque soirée: velvet curtains under a feather-boa swag, spotlight haze, fishnet texture, a vintage mic and coupe tower, moon and bats, kiss seal) |
+| 🎭 Stage | A Midsummer Night’s Dream (moonlit wood with fairy lights, a seal of Bottom's donkey head crowned with flowers) · Theatre Night (red-velvet curtains, masks seal) · Broadway Musical (marquee lights, music-note seal) · The Nocturne (a Halloween burlesque soirée: velvet curtains under a feather-boa swag, spotlight haze, fishnet texture, a vintage mic and coupe tower, moon and bats, kiss seal, rhinestone corners and feather-boa sides) |
 | 🖤 Dark side | Gothic · Emo · Kinky |
 | ✨ Night & glam | Night at the Show · Cozy Night In |
 
@@ -66,9 +66,12 @@ override any of them:
 - **Paper:** smooth card, handmade cotton, aged parchment, linen weave,
   watercolor wash, marble, kraft, vellum, silk, leather, speckled or shimmer.
 - **Ornaments:** corner pieces (filigree, gothic, floral vine, art deco,
-  celestial, paw prints), side borders (double frame, climbing vine, pearls,
-  stitching, paw trail) and script lines between sections (swash, flourish,
-  vine, fine rule).
+  celestial, spiderweb, constellation, acorn branch, paw prints, baroque
+  scroll, art nouveau, rhinestones, ostrich plume, thorned rose, marquee
+  bulbs), side borders (double frame, climbing vine, pearls, lace, stitching,
+  paw trail, rhinestones, beads, velvet rope, marquee bulbs, feather boa,
+  thorned vine) and script lines between sections (swash, flourish, vine,
+  fine rule). Each option shows a small drawing of the style.
 
 ## Wording
 

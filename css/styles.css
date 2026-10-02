@@ -219,6 +219,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .opt:hover { border-color: var(--ui-accent); }
 .opt.on { background: var(--ui-accent); border-color: var(--ui-accent); color: #fff; }
+.opt .orn { width: 1.35em; height: 1.35em; vertical-align: -0.35em; margin-right: 0.35em; }
 .step label.opt { display: inline-flex; margin: 0; font-weight: 600; }
 .color-setting { display: grid; grid-template-columns: 6.5rem 1fr; align-items: center; gap: 0.5rem; }
 .color-setting .mini-label { margin: 0; }
@@ -535,10 +536,12 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.35);
 }
 [data-paper=silk]::before {
+  /* Satin: one soft sheen from the lamp and fine horizontal threads. */
   mix-blend-mode: soft-light;
   background:
-    repeating-linear-gradient(100deg, rgba(255, 255, 255, 0) 0 14px, rgba(255, 255, 255, 0.85) 38px, rgba(255, 255, 255, 0) 62px, rgba(0, 0, 0, 0.32) 88px, rgba(255, 255, 255, 0) 116px),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.5), transparent 40%, rgba(0, 0, 0, 0.15));
+    radial-gradient(150% 70% at 18% -5%, rgba(255, 255, 255, 0.42), transparent 60%),
+    radial-gradient(120% 60% at 90% 105%, rgba(0, 0, 0, 0.2), transparent 65%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .6' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .12 -.03'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 [data-paper=leather]::before {
   background:
@@ -573,6 +576,7 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .corner.bl { bottom: 7px; left: 7px; transform: scaleY(-1); }
 .corner.br { bottom: 7px; right: 7px; transform: scale(-1, -1); }
 .side { position: absolute; z-index: 1; top: 16%; bottom: 16%; width: 24px; opacity: 0.6; pointer-events: none; }
+.side.rhinestones, .side.bulbs, .side.beads, .side.rope { opacity: 0.9; }
 .side.l { left: 6px; }
 .side.r { right: 6px; transform: scaleX(-1); }
 .side-frame { position: absolute; z-index: 1; pointer-events: none; }
