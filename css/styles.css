@@ -1111,8 +1111,8 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 /* Pop-up book: a gilt-tooled leather hardback on the table, its clasp sealed.
    As the cover swings open, a paper theatre rises out of the spread — sky,
    trees, footlights — and the velvet curtains part on the letter. */
-.wrapper.book { --w: min(86vw, 350px); --exit: 2.5s; --seal: calc(var(--w) * 0.14); height: calc(var(--w) * 1.02); }
-.book-stage { inset: 0; transform-origin: 50% 70%; transition: transform 1.2s 0.4s cubic-bezier(.45, .05, .3, 1); }
+.wrapper.book { --w: min(86vw, 350px); --exit: 2.5s; --seal: calc(var(--w) * 0.125); height: calc(var(--w) * 1.02); }
+.book-stage { inset: 0; transform-origin: 50% 70%; transform: translateY(-16%); transition: transform 1.2s 0.4s cubic-bezier(.45, .05, .3, 1); }
 .book-tilt { left: 0; right: 0; top: 40%; bottom: 3%; perspective: 1000px; perspective-origin: 50% 0%; }
 .book-spread {
   left: 2%; right: 2%; top: 0; bottom: 6%;
@@ -1147,12 +1147,16 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .book-shadow { left: 6%; right: 6%; bottom: -2%; height: 12%; border-radius: 50%; filter: blur(5px);
   background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.18) 70%, transparent);
   transform: scaleX(0.55); transition: transform 0.95s 0.42s cubic-bezier(.45, .05, .3, 1); }
-.book-strap { left: 61%; width: 15%; top: 68%; height: calc(var(--w) * 0.07); z-index: 5; border-radius: 3px 0 0 3px;
+/* The clasp lives on the cover itself, so it shares the cover's tilt and
+   perspective (and turns with it): a leather strap wrapping round the fore-edge,
+   fastened with the seal. */
+.book-clasp { inset: 0; transform: translateZ(1.5px); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.book-strap { left: 72%; right: -3%; top: calc(50% - var(--w) * 0.042); height: calc(var(--w) * 0.084); border-radius: 4px 0 0 4px;
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.18), transparent 40%, rgba(0, 0, 0, 0.35)), var(--leather);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.45), inset 0 0 0 2px rgba(0, 0, 0, 0.12);
   outline: 1px dashed rgba(255, 236, 190, 0.35); outline-offset: -4px;
-  transform-origin: 100% 50%; transition: transform 0.55s 0.25s ease-in, opacity 0.4s 0.4s; }
-.book .seal-spot { left: calc(63% - var(--seal) / 2); top: calc(68% + var(--w) * 0.035 - var(--seal) / 2); }
+  transition: transform 0.5s 0.25s ease-in, opacity 0.35s 0.35s; }
+.book .seal-spot { left: calc(80% - var(--seal) / 2); top: calc(50% - var(--seal) / 2); }
 /* The pop-up, standing on the open spread (positions are in screen space). */
 .book-popup { left: 2%; right: 2%; top: 6%; bottom: 30%; --tree: color-mix(in srgb, var(--sprig) 40%, #4f7a3a); perspective: 700px; perspective-origin: 50% 100%; z-index: 4; pointer-events: none; }
 .pop { transform-origin: 50% 100%; transform: rotateX(89deg); opacity: 0; transition: transform 0.85s cubic-bezier(.3, 1.35, .55, 1), opacity 0.25s; }
@@ -1197,7 +1201,7 @@ main.invite-stage { padding: max(1.5rem, env(safe-area-inset-top)) 16px 3rem; mi
 .book.opening .book-edge.l { opacity: 1; }
 .book.opening .book-shadow { transform: none; }
 .book.opening .book-ribbon { transform: translateX(-30%) rotate(-4deg); }
-.book.opening .book-strap { transform: translate(18%, 70%) rotate(-40deg); opacity: 0; }
+.book.opening .book-strap { transform: translateX(45%); opacity: 0; }
 .book.opening .pop { transform: none; opacity: 1; }
 .book.opening .pop-sky { transition-delay: 0.8s; }
 .book.opening .pop-letter { transition-delay: 0.9s; }
