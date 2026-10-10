@@ -12,22 +12,22 @@ const sample = (extra = {}) => ({
 const inviteUrl = async (extra, suffix = '') => `/#i=${await encodeInvite(sample(extra))}${suffix}`;
 
 // Every test: no outside network (fonts are recorded, not fetched; short links
-// go to an in-memory stand-in for the database), and no page errors.
-const RPC = /nroywllxiazkvyyvcbrj\.supabase\.co\/rest\/v1\/rpc\/(\w+)/;
+// go to an in-memory stand-in for the API), and no page errors.
+const API = /\/api\/invites/;
 let fonts, errors, stored;
 test.beforeEach(async ({ page }) => {
   fonts = [];
   errors = [];
   stored = new Map();
-  await page.route(RPC, route => {
-    const fn = route.request().url().match(RPC)[1];
-    const body = route.request().postDataJSON();
-    if (fn === 'create_invite') {
+  await page.route(API, route => {
+    const req = route.request();
+    if (req.method() === 'POST') {
       const code = `Test${String(stored.size).padStart(4, '0')}`;
-      stored.set(code, body.data);
-      return route.fulfill({ json: code });
+      stored.set(code, req.postDataJSON().data);
+      return route.fulfill({ json: { code } });
     }
-    return route.fulfill({ json: stored.get(body.code) ?? null });
+    const data = stored.get(new URL(req.url()).searchParams.get('code'));
+    return data ? route.fulfill({ contentType: 'text/plain', body: data }) : route.fulfill({ status: 404, json: { error: 'not found' } });
   });
   await page.route(/fonts\.(googleapis|gstatic)\.com/, route => {
     fonts.push(route.request().url());
@@ -35,8 +35,8 @@ test.beforeEach(async ({ page }) => {
   });
   page.on('pageerror', e => errors.push(e.message));
   // (version.txt only exists on the deployed site, so locally it's a 404; and
-  // some tests take the database away on purpose.)
-  page.on('console', m => { if (m.type() === 'error' && !/version\.txt|supabase\.co/.test(m.location().url)) errors.push(m.text()); });
+  // some tests take the link service away on purpose.)
+  page.on('console', m => { if (m.type() === 'error' && !/version\.txt|api\/invites/.test(m.location().url)) errors.push(m.text()); });
 });
 test.afterEach(() => {
   expect(errors, 'page errors').toEqual([]);
@@ -193,10 +193,10 @@ test('a short link that doesn’t exist has lost its way', async ({ page }) => {
   await expect(page.locator('.card.lost .title')).toContainText('lost its way');
 });
 
-test('when the database is away, the recipient can try again', async ({ page }) => {
+test('when the link service is away, the recipient can try again', async ({ page }) => {
   stored.set('aB3xYz9k', await encodeInvite(sample()));
   let down = true;
-  await page.route(RPC, route => (down ? route.fulfill({ status: 503, body: '' }) : route.fallback()));
+  await page.route(API, route => (down ? route.fulfill({ status: 503, body: '' }) : route.fallback()));
   await page.goto('/#aB3xYz9k');
   await expect(page.locator('.card.lost .title')).toContainText('post office');
   down = false;
@@ -205,13 +205,13 @@ test('when the database is away, the recipient can try again', async ({ page }) 
   await expect(page.locator('.card .title')).toHaveText('Dinner under the moon');
 });
 
-test('when the database is away, the sender gets the full link instead', async ({ page }) => {
-  await page.route(RPC, route => route.fulfill({ status: 503, body: '' }));
+test('when the link service is away, the sender gets the full link instead', async ({ page }) => {
+  await page.route(API, route => route.fulfill({ status: 503, body: '' }));
   await page.goto('/');
   await page.getByRole('button', { name: /Dinner date/ }).click();
   await page.getByRole('button', { name: '✨ Seal my invitation' }).click();
   await expect(page.locator('#result-url')).toHaveValue(/#i=y/);
-  await expect(page.locator('#result-note')).toContainText('the server said 503');
+  await expect(page.locator('#result-note')).toContainText('the link service said 503');
   await page.goto(await page.locator('#result-url').inputValue());
   await openIt(page);
   await expect(page.locator('.card .title')).toHaveText('Dinner for two');

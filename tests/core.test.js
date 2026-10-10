@@ -418,3 +418,17 @@ test('looks open as an envelope unless the opening is the point of the look', as
     assert.equal(t.wrap, SPECIAL[id] || 'envelope', `${id}: opens as ${t.wrap} (add it to SPECIAL with a reason, or use the envelope)`);
   }
 });
+
+test('the short-link API only stores real invitations under unguessable codes', async () => {
+  const { POST, GET, newCode, validData } = await import('../api/invites.js');
+  const codes = new Set(Array.from({ length: 200 }, newCode));
+  assert.equal(codes.size, 200);
+  for (const c of codes) assert.match(c, /^[A-Za-z0-9]{8}$/);
+  assert.ok(validData(await encodeInvite(sample)));
+  for (const bad of [undefined, '', 'x123', 'y<script>', 'y'.repeat(6001), 42]) assert.ok(!validData(bad), String(bad).slice(0, 20));
+  // Rejected before any storage is touched.
+  const post = body => POST(new Request('https://x/api/invites', { method: 'POST', body }));
+  assert.equal((await post('{"data":"<b>"}')).status, 400);
+  assert.equal((await post('not json')).status, 400);
+  assert.equal((await GET(new Request('https://x/api/invites?code=../../etc'))).status, 404);
+});
