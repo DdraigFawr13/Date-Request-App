@@ -124,6 +124,8 @@ test('group invitations ask for a headcount, and the sender can count the replie
   await page.locator('[data-bind=group]').check();
   await page.locator('[data-bind=hc]').fill('4');
   await page.getByRole('button', { name: '✨ Seal my invitation' }).click();
+  // Sealing waits for the short link, so wait for it before reading the box.
+  await expect(page.locator('#result-url')).toHaveValue(/#Test\d{4}$/);
   const link = await page.locator('#result-url').inputValue();
 
   await page.goto(link);
