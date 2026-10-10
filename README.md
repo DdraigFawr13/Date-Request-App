@@ -12,9 +12,11 @@ their calendar, and texts their answer back to you.
    game night, birthday, a neon city night, a fellowship gathering, a masquerade, Halloween party, a Halloween soirée at The Nocturne, after dark, a night of magic,
    dragon quest, woodland tea, royal feast, cat date, picnic, sabbat gathering…), fill in the basics, choose a look, and add only the
    details that matter.
-2. **Seal it.** Moonpost packs the whole invitation into the link itself.
-   There's no server, database or account. The link is then shortened with
-   [is.gd](https://is.gd) (or v.gd), so it looks like `is.gd/aB3xYz`.
+2. **Seal it.** Moonpost packs the invitation into a compact code and keeps it
+   under a random 8-letter code, so the link is short:
+   `moonpost.vercel.app/#aB3xYz9k`. No account needed. If that can't be
+   reached, the whole invitation travels in the link instead (longer, but it
+   works just the same).
 3. **Send it.** Tap **📋 Copy message** and paste your note and the link into a
    text (or anywhere else), or use **Share…**.
 4. **They open it.** They see your invitation arrive (an envelope, a scroll,
@@ -191,8 +193,8 @@ npm run test:e2e  # browser tests: build, seal, open every wrapper, answer
 ```
 
 The browser tests use Playwright with Chromium (`npx playwright install
-chromium` the first time). Both suites run on every push and pull request,
-and a deploy only goes out when both pass.
+chromium` the first time). Both suites run in GitHub Actions on every push
+and pull request.
 
 (Any static server works, e.g. `python3 -m http.server`. Opening
 `index.html` directly as a file won't work, because browsers block JS
@@ -200,13 +202,15 @@ modules over `file://`.)
 
 ## Putting it online (free)
 
-The included workflow tests the app and publishes it to **GitHub Pages**
-whenever `main` changes:
+The site and its short-link API run on **Vercel** (the free Hobby plan; nothing
+to keep awake). GitHub Actions runs the tests on every push and pull request.
 
-1. Merge this into `main`.
-2. In the repo, go to **Settings → Pages → Build and deployment** and set
-   **Source** to **GitHub Actions**.
-3. Your app will be live at `https://ddraigfawr13.github.io/Date-Request-App/`.
+1. In Vercel, **Add New… → Project**, import this repository and name the
+   project `moonpost`. The settings come from `vercel.json`; just press Deploy.
+2. In the project, **Storage → Create Database → Blob**, and connect it to the
+   project (this adds the `BLOB_READ_WRITE_TOKEN` it needs). Redeploy once.
+3. Every push to `main` now deploys to `https://moonpost.vercel.app/` (or
+   whatever address Vercel gives the project).
 
 Links you send only work from the deployed site, since the invitation is
 opened on whatever address made it. Build invitations from the live URL, not
@@ -230,13 +234,15 @@ from Safari's).
 
 ## Privacy notes
 
-- The invitation lives in the part of the URL after `#`, which browsers never
-  send to a server. Anyone *with the link* can read it, though, so share
-  it like you would the text itself.
-- Short links are made by is.gd, which stores the full link (and so can see
-  the invitation). Its script runs inside a sandboxed frame, so it can't
-  read or change the page, your draft or your sent invitations. If it can't be reached, Moonpost gives you the full link
-  instead and says why (for example, a content blocker blocking is.gd).
+- Short links are stored by Moonpost's own little API (`api/invites.js`) in
+  Vercel Blob storage. It can only store an invitation or fetch one by its
+  exact code: nobody can list, browse or change them, and the 8-letter codes
+  (about 200 trillion possibilities) can't realistically be guessed.
+  Anyone *with the link* can read it, though, so share it like you would the
+  text itself.
+- The code after `#` is never sent to the web server that hosts the page. If
+  the API can't be reached, Moonpost gives you a link carrying the whole
+  invitation instead and says why.
 - Your sent invitations and logged replies stay in this browser
   (localStorage) and are never uploaded.
 - No phone numbers are stored. RSVPs aren't collected anywhere; they arrive as
@@ -248,7 +254,7 @@ from Safari's).
 index.html          page shell (builder + invitation views)
 css/styles.css      the invitation's styling, including envelope & particle animations
 css/builder.css     the builder's styling (loaded only on the builder)
-js/app.js           routes between builder and invitation (#i=…), loading each on demand
+js/app.js           routes between builder and invitation (#aB3xYz9k or #i=…), loading each on demand
 js/builder.js       the sender's form, live preview and "seal & send"
 js/invite.js        the recipient's envelope, RSVP and replies
 js/render.js        renders the invitation card (shared by both views)
@@ -258,14 +264,16 @@ js/decor.js         backgrounds, patterns, paper, corner/side ornaments, script 
 js/seal.js          the SVG wax seal, wax colors, finishes and emblems
 js/wrappers.js      delivery styles (envelope, scroll…) and their animations
 js/wrapper-art.js   hand-drawn SVG detail for every wrapper (envelope, owl, map…)
-js/shorten.js       short links via is.gd / v.gd
+js/links.js         short links: stores and fetches invitations by code
 js/modules.js       detail modules and questions
 js/calendar.js      .ics / Google / Outlook calendar links
-js/codec.js         packs the invitation into the link (compressed)
+js/codec.js         packs the invitation into a compact code (and reads older links)
 js/fonts.js         loads only the web fonts a page needs
 js/replies.js       sent invitations, reading pasted replies, headcounts
 tests/              unit tests (node --test)
 e2e/                browser tests (Playwright) and a tiny static server
+api/invites.js      the short-link API (a Vercel function + Blob storage)
+scripts/build.sh    the Vercel build: copies the site to dist/ and stamps the release
 icons/, manifest.webmanifest   home-screen app icons
 ```
 
@@ -279,14 +287,11 @@ icons/, manifest.webmanifest   home-screen app icons
 
 ## Ideas for later
 
-- A tiny backend (e.g. a Cloudflare Worker) for our own short links (no is.gd),
-  per-invite link previews ("Dinner under the Hunter's Moon, from Sam"), photo
+- Per-invite link previews ("Dinner under the Hunter's Moon, from Sam"), photo
   backgrounds, and replies that arrive by themselves (seen / said yes), which
   would also make group headcounts automatic.
 - One-tap replies: an optional "your number" field so "Text my answer" opens
   already addressed to the sender (`ph` is already supported in the link).
-- Shorter links: a preset deflate dictionary of common keys and words, so a
-  full link is shorter when shortening fails.
 - Reschedule round-trip: "Maybe" proposes a new date that comes back to the
   sender as a ready-made, re-sealed invitation.
 - Photo or GIF header on the card.

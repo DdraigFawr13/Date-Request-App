@@ -4,6 +4,7 @@
 import { resolveTheme } from './occasions.js';
 import { QUESTION_BY_ID } from './modules.js';
 import { decodeInvite } from './codec.js';
+import { loadInvite } from './links.js';
 import { loadThemeFonts } from './fonts.js';
 import { downloadIcs, googleUrl, isPast, outlookUrl } from './calendar.js';
 import { ICONS, applyTheme, cardOpen, esc, formatWhen, particles, renderCard, sectionRule, wordsFor } from './render.js';
@@ -190,7 +191,21 @@ function onClick(e) {
   }
 }
 
-export async function showInvite(code, { preview: isPreview = false } = {}) {
+// Short links (…/#aB3xYz9k) are fetched from the post office first.
+async function fetchCode(root, short) {
+  const slow = setTimeout(() => {
+    root.innerHTML = '<div class="card lost" role="status"><h1 class="title">Your invitation is on its way ✉︎</h1></div>';
+  }, 400);
+  try {
+    return await loadInvite(short);
+  } finally {
+    clearTimeout(slow);
+  }
+}
+
+// `link` is { code } for a link that carries the whole invitation, or
+// { short } for a short link.
+export async function showInvite(link, { preview: isPreview = false } = {}) {
   const root = $('#invite');
   preview = isPreview;
   $('#builder').hidden = true;
@@ -198,7 +213,20 @@ export async function showInvite(code, { preview: isPreview = false } = {}) {
   root.hidden = false;
   document.body.classList.remove('show-preview');
   document.body.classList.toggle('previewing', preview);
+  let code = link.code;
+  if (link.short) {
+    try {
+      code = await fetchCode(root, link.short);
+    } catch {
+      root.innerHTML = `<div class="card lost"><h1 class="title">The post office is closed for a moment 🌙</h1>
+        <p>We couldn’t fetch your invitation just now. Check your connection and try again.</p>
+        <p><button type="button" class="btn primary">Try again</button></p></div>`;
+      root.querySelector('button').addEventListener('click', () => showInvite(link, { preview }), { once: true });
+      return;
+    }
+  }
   try {
+    if (!code) throw new Error('No such invitation');
     inv = await decodeInvite(code);
     resolveTheme(inv); wordsFor(inv); // fail here, not halfway through drawing the page
   } catch {

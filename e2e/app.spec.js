@@ -11,18 +11,32 @@ const sample = (extra = {}) => ({
 });
 const inviteUrl = async (extra, suffix = '') => `/#i=${await encodeInvite(sample(extra))}${suffix}`;
 
-// Every test: no outside network (fonts are recorded, not fetched), and no page errors.
-let fonts, errors;
+// Every test: no outside network (fonts are recorded, not fetched; short links
+// go to an in-memory stand-in for the API), and no page errors.
+const API = /\/api\/invites/;
+let fonts, errors, stored;
 test.beforeEach(async ({ page }) => {
   fonts = [];
   errors = [];
+  stored = new Map();
+  await page.route(API, route => {
+    const req = route.request();
+    if (req.method() === 'POST') {
+      const code = `Test${String(stored.size).padStart(4, '0')}`;
+      stored.set(code, req.postDataJSON().data);
+      return route.fulfill({ json: { code } });
+    }
+    const data = stored.get(new URL(req.url()).searchParams.get('code'));
+    return data ? route.fulfill({ contentType: 'text/plain', body: data }) : route.fulfill({ status: 404, json: { error: 'not found' } });
+  });
   await page.route(/fonts\.(googleapis|gstatic)\.com/, route => {
     fonts.push(route.request().url());
     return route.fulfill({ status: 200, contentType: 'text/css', body: '' });
   });
   page.on('pageerror', e => errors.push(e.message));
-  // (version.txt only exists on the deployed site, so locally it's a 404.)
-  page.on('console', m => { if (m.type() === 'error' && !/version\.txt/.test(m.location().url)) errors.push(m.text()); });
+  // (version.txt only exists on the deployed site, so locally it's a 404; and
+  // some tests take the link service away on purpose.)
+  page.on('console', m => { if (m.type() === 'error' && !/version\.txt|api\/invites/.test(m.location().url)) errors.push(m.text()); });
 });
 test.afterEach(() => {
   expect(errors, 'page errors').toEqual([]);
@@ -44,7 +58,8 @@ test('the builder starts in quick mode and seals an invitation into the history'
   await page.getByRole('button', { name: '✨ Seal my invitation' }).click();
 
   await expect(page.locator('#result')).toBeVisible();
-  await expect(page.locator('#result-url')).toHaveValue(/#i=[zj]/);
+  await expect(page.locator('#result-url')).toHaveValue(/\/#Test0000$/);
+  expect(stored.get('Test0000')).toMatch(/^y/);
   await expect(page.locator('#history')).toBeVisible();
   await expect(page.locator('#history-label')).toHaveText('Your invitations (1)');
   await expect(page.locator('.sent-head')).toContainText('Dinner under the moon');
@@ -74,7 +89,7 @@ test('the recipient loads only their invitation’s code and fonts, opens it and
   await expect(title).toHaveText('Dinner under the moon');
   await expect(title).toBeFocused();
 
-  expect(requested.filter(u => /builder\.(js|css)|shorten\.js/.test(u)), 'builder code').toEqual([]);
+  expect(requested.filter(u => /builder\.(js|css)/.test(u)), 'builder code').toEqual([]);
   const loaded = fonts.join(' ');
   expect(loaded).toContain('Playfair+Display'); // the dinner date's lettering
   expect(loaded).not.toContain('Creepster');
@@ -166,23 +181,40 @@ test('keyboard: tabs move with the arrow keys and choices keep focus', async ({ 
   await expect(page.locator('[data-action=paper]').nth(2)).toHaveAttribute('aria-pressed', 'true');
 });
 
-test('the link shortener runs is.gd’s script in a sandbox it can’t escape', async ({ page }) => {
-  await page.route(/https:\/\/(is|v)\.gd\/create\.php/, route => route.fulfill({
-    contentType: 'text/javascript',
-    body: `try { parent.document.title = 'pwned'; } catch {}
-           try { parent.localStorage.setItem('pwned', '1'); } catch {}
-           cb({ shorturl: 'https://is.gd/abc123' });`,
-  }));
+test('a short link opens the stored invitation', async ({ page }) => {
+  stored.set('aB3xYz9k', await encodeInvite(sample()));
+  await page.goto('/#aB3xYz9k');
+  await openIt(page);
+  await expect(page.locator('.card .title')).toHaveText('Dinner under the moon');
+});
+
+test('a short link that doesn’t exist has lost its way', async ({ page }) => {
+  await page.goto('/#Nowhere1');
+  await expect(page.locator('.card.lost .title')).toContainText('lost its way');
+});
+
+test('when the link service is away, the recipient can try again', async ({ page }) => {
+  stored.set('aB3xYz9k', await encodeInvite(sample()));
+  let down = true;
+  await page.route(API, route => (down ? route.fulfill({ status: 503, body: '' }) : route.fallback()));
+  await page.goto('/#aB3xYz9k');
+  await expect(page.locator('.card.lost .title')).toContainText('post office');
+  down = false;
+  await page.getByRole('button', { name: 'Try again' }).click();
+  await openIt(page);
+  await expect(page.locator('.card .title')).toHaveText('Dinner under the moon');
+});
+
+test('when the link service is away, the sender gets the full link instead', async ({ page }) => {
+  await page.route(API, route => route.fulfill({ status: 503, body: '' }));
   await page.goto('/');
-  const before = await page.title();
-  const result = await page.evaluate(async () => {
-    const { shortenUrl } = await import('/js/shorten.js');
-    return shortenUrl('https://example.com/#i=zabc');
-  });
-  expect(result).toEqual({ url: 'https://is.gd/abc123' });
-  expect(await page.title()).toBe(before);
-  expect(await page.evaluate(() => localStorage.getItem('pwned'))).toBeNull();
-  await expect(page.locator('iframe[sandbox]')).toHaveCount(0);
+  await page.getByRole('button', { name: /Dinner date/ }).click();
+  await page.getByRole('button', { name: '✨ Seal my invitation' }).click();
+  await expect(page.locator('#result-url')).toHaveValue(/#i=y/);
+  await expect(page.locator('#result-note')).toContainText('the link service said 503');
+  await page.goto(await page.locator('#result-url').inputValue());
+  await openIt(page);
+  await expect(page.locator('.card .title')).toHaveText('Dinner for two');
 });
 
 test('it can be added to a home screen', async ({ page, request }) => {
