@@ -1,6 +1,6 @@
 // Short links: stores an encoded invitation under a random 8-character code
 // (POST { data } → { code }) and hands it back (GET ?code=…). Invitations are
-// kept in Vercel Blob storage; the store's token never leaves the server.
+// kept in a private Vercel Blob store: only this function can read them.
 
 import { get, put } from '@vercel/blob';
 import { randomBytes } from 'node:crypto';
@@ -21,7 +21,7 @@ export async function POST(request) {
   for (let attempt = 0; attempt < 3; attempt++) {
     const code = newCode();
     try {
-      await put(path(code), body.data, { access: 'public', addRandomSuffix: false, allowOverwrite: false, contentType: 'text/plain' });
+      await put(path(code), body.data, { access: 'private', addRandomSuffix: false, allowOverwrite: false, contentType: 'text/plain' });
       return json({ code });
     } catch (e) {
       if (!/exist/i.test(e.message)) throw e; // a taken code: pick another
@@ -33,7 +33,7 @@ export async function POST(request) {
 export async function GET(request) {
   const code = new URL(request.url).searchParams.get('code');
   if (!CODE.test(code || '')) return json({ error: 'not found' }, 404);
-  const found = await get(path(code), { access: 'public' });
+  const found = await get(path(code), { access: 'private' });
   if (!found) return json({ error: 'not found' }, 404);
   // An invitation never changes once stored, so browsers may keep it.
   return new Response(found.stream, { headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'public, max-age=86400' } });
