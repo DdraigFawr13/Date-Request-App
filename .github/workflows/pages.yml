@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      - run: npm ci --omit=dev
       - run: npm test
 
   # Browser smoke tests: build, seal, open every kind of wrapper, answer.
