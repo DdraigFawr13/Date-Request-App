@@ -1,0 +1,21 @@
+name: Keep the short-link database awake
+
+# Free Supabase projects pause after a week without any requests, and short
+# links stop opening until the project is restored. A tiny weekly lookup
+# counts as activity.
+on:
+  schedule:
+    - cron: '17 9 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -fsS -X POST https://nroywllxiazkvyyvcbrj.supabase.co/rest/v1/rpc/get_invite \
+            -H 'apikey: sb_publishable_f91cCeJoLcLoff4cNkOVxg_BeDqOgFE' \
+            -H 'content-type: application/json' \
+            -d '{"code":"00000000"}'

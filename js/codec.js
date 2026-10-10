@@ -1,6 +1,12 @@
-// Packs an invitation into a URL-safe string so the whole thing travels in the
-// link itself — no server or database needed. Uses deflate when the browser
-// supports it ('z' prefix) and plain base64 JSON otherwise ('j' prefix).
+// Packs an invitation into a URL-safe string: it's stored behind a short link,
+// or travels whole in the link itself when the short-link service is away.
+// Formats, by their first letter:
+//   y  compact, deflated: minute times, occasion defaults left out (current)
+//   z  deflated JSON (older links)
+//   j  plain base64 JSON (browsers without compression)
+
+import { TEMPLATE_BY_ID } from './occasions.js';
+import { own } from './util.js';
 
 function toB64Url(bytes) {
   let bin = '';
@@ -38,22 +44,72 @@ export function prune(value) {
   return value;
 }
 
+// ── The compact 'y' format ────────────────────────────────────────────
+// The occasion's details and questions, as they'd travel if left untouched
+// (a link detail only counts once it has an address, as in the builder).
+function occasionDefaults(k) {
+  const t = own(TEMPLATE_BY_ID, k);
+  const d = {};
+  for (const [key, v] of Object.entries(t?.mods || {})) {
+    if (key === 'link') { if (v?.u) d.link = { l: v.l, u: v.u }; }
+    else if (typeof v === 'string' && v.trim()) d[key] = v.trim();
+  }
+  return { d, q: t?.asks || [] };
+}
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const MIN = 6e4;
+
+// Times become whole minutes (the end as minutes after the start); details
+// matching the occasion's are left out, with `dx` naming any the sender
+// removed; questions are left out when they're the occasion's (0 = none).
+export function pack(invite) {
+  const { v, s, e, d = {}, q = [], ...rest } = invite;
+  const def = occasionDefaults(invite.k);
+  const out = { ...rest, s: Math.round(s / MIN) };
+  if (e) out.e = Math.round((e - s) / MIN);
+  const dd = {};
+  for (const [key, val] of Object.entries(d)) if (!same(val, def.d[key])) dd[key] = val;
+  out.d = dd;
+  out.dx = Object.keys(def.d).filter(key => !(key in d));
+  if (!same(q, def.q)) out.q = q.length ? q : 0;
+  return out;
+}
+
+export function unpack(raw) {
+  if (!plainObject(raw)) return raw;
+  const { s, e, d, dx, q, ...rest } = raw;
+  const def = occasionDefaults(raw.k);
+  const out = { ...rest };
+  if (typeof s === 'number') {
+    out.s = s * MIN;
+    if (typeof e === 'number') out.e = (s + e) * MIN;
+  }
+  const details = { ...def.d };
+  if (Array.isArray(dx)) for (const key of dx) delete details[key];
+  if (plainObject(d)) Object.assign(details, d);
+  if (Object.keys(details).length) out.d = details;
+  if (q === undefined) { if (def.q.length) out.q = [...def.q]; }
+  else if (q !== 0) out.q = q;
+  return out;
+}
+
 export async function encodeInvite(invite) {
-  const bytes = new TextEncoder().encode(JSON.stringify(prune(invite) ?? {}));
+  const json = obj => new TextEncoder().encode(JSON.stringify(prune(obj) ?? {}));
   if (typeof CompressionStream !== 'undefined') {
     try {
-      return 'z' + toB64Url(await pipe(bytes, new CompressionStream('deflate-raw')));
+      return 'y' + toB64Url(await pipe(json(pack(invite)), new CompressionStream('deflate-raw')));
     } catch { /* fall through to uncompressed */ }
   }
-  return 'j' + toB64Url(bytes);
+  return 'j' + toB64Url(json(invite));
 }
 
 export async function decodeInvite(code) {
   const kind = code[0];
   let bytes = fromB64Url(code.slice(1));
-  if (kind === 'z') bytes = await pipe(bytes, new DecompressionStream('deflate-raw'));
+  if (kind === 'y' || kind === 'z') bytes = await pipe(bytes, new DecompressionStream('deflate-raw'));
   else if (kind !== 'j') throw new Error('Unknown invitation format');
-  return normalizeInvite(JSON.parse(new TextDecoder().decode(bytes)));
+  const raw = JSON.parse(new TextDecoder().decode(bytes));
+  return normalizeInvite(kind === 'y' ? unpack(raw) : raw);
 }
 
 // ── Cleaning a decoded invitation ─────────────────────────────────────

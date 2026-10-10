@@ -17,10 +17,61 @@ const sample = {
 
 test('invitations survive an encode/decode round trip', async () => {
   const code = await encodeInvite(sample);
-  assert.match(code, /^[zj][A-Za-z0-9_-]+$/, 'code is URL-safe');
+  assert.match(code, /^y[A-Za-z0-9_-]+$/, 'code is URL-safe');
   const back = await decodeInvite(code);
-  assert.deepEqual(back, prune(sample));
+  const { v, ...expected } = prune(sample);
+  assert.deepEqual(back, expected);
   assert.equal(back.empty, undefined);
+});
+
+// How links were written before the compact format: they must keep opening.
+const legacyCode = async obj => {
+  const bytes = new TextEncoder().encode(JSON.stringify(prune(obj)));
+  const z = new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
+  const b64 = bytes => Buffer.from(bytes).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return { z: 'z' + b64(z), j: 'j' + b64(bytes) };
+};
+
+test('older links (z and j formats) still open exactly as before', async () => {
+  const { z, j } = await legacyCode(sample);
+  assert.deepEqual(await decodeInvite(z), prune(sample));
+  assert.deepEqual(await decodeInvite(j), prune(sample));
+});
+
+test('the compact format leaves out the occasion’s defaults and brings them back', async () => {
+  const { TEMPLATE_BY_ID } = await import('../js/occasions.js');
+  const { pack } = await import('../js/codec.js');
+  const dinner = TEMPLATE_BY_ID.dinner;
+  const base = { ...sample, k: 'dinner', cf: undefined };
+  const roundTrip = async inv => decodeInvite(await encodeInvite(inv));
+
+  // Untouched: nothing about the details travels, and it all comes back.
+  const untouched = { ...base, d: { ...dinner.mods }, q: [...dinner.asks] };
+  assert.deepEqual(prune(pack(untouched)).d, undefined);
+  assert.equal(prune(pack(untouched)).q, undefined);
+  assert.deepEqual((await roundTrip(untouched)).d, dinner.mods);
+  assert.deepEqual((await roundTrip(untouched)).q, dinner.asks);
+
+  // One detail edited, one removed, one added; no questions at all.
+  const { vibe, ...kept } = dinner.mods;
+  const edited = { ...base, d: { ...kept, dress: 'Black tie', parking: 'On the street' }, q: [] };
+  const packed = prune(pack(edited));
+  assert.deepEqual(packed.d, { dress: 'Black tie', parking: 'On the street' });
+  assert.deepEqual(packed.dx, ['vibe']);
+  assert.equal(packed.q, 0);
+  const back = await roundTrip(edited);
+  assert.deepEqual(back.d, edited.d);
+  assert.equal(back.q, undefined);
+
+  // Times survive to the minute; the end is kept as a duration.
+  assert.equal(back.s, sample.s);
+  assert.equal(back.e, sample.e);
+  assert.equal(packed.e, 120);
+
+  // A template link with no address doesn't count as a default to remove.
+  const show = TEMPLATE_BY_ID.show;
+  const { link, ...showMods } = show.mods;
+  assert.equal(prune(pack({ ...base, k: 'show', d: showMods, q: show.asks })).dx, undefined);
 });
 
 test('garbled links are rejected', async () => {
@@ -339,13 +390,6 @@ test('group replies carry a headcount and a name the sender can count', async ()
   assert.equal(normalizeInvite({ s: inv.s, hc: 7.6 }).hc, 8);
   assert.equal(normalizeInvite({ s: inv.s, hc: 1e9 }).hc, 50);
   for (const bad of [0, -2, '5', NaN, null]) assert.equal(normalizeInvite({ s: inv.s, hc: bad }).hc, undefined, `hc ${bad}`);
-});
-
-test('the shortener sandbox can’t be broken out of by a crafted link', async () => {
-  const { sandboxDoc } = await import('../js/shorten.js');
-  const doc = sandboxDoc('https://is.gd/create.php?format=json&url=</script><script>alert(1)</script>', 'id"1');
-  assert.equal(doc.match(/<\/script>/g).length, 1, 'only the sandbox’s own closing tag');
-  assert.ok(!/<script>alert/.test(doc));
 });
 
 test('every occasion has its own wording for each answer', async () => {

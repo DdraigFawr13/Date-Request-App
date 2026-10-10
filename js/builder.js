@@ -11,7 +11,7 @@ import { SENT_KEY, cleanSent, parseReply, tally, upsertSent } from './replies.js
 import { CORNER_OPTIONS, FOILS, GLOW_COLORS, PAPERS, foilCss, ornamentPreview, RULE_OPTIONS, SCENES, SIDE_OPTIONS, backdropCss, luminance, resolvePaper, safeHex } from './decor.js';
 import { EMBLEM_GROUPS, FACE_FINISHES, WAX_BY_ID, WAX_COLORS, fittedEmblem, sealHtml } from './seal.js';
 import { WRAPPERS, playOpening, resolveWrapper, wrapperHtml } from './wrappers.js';
-import { shortenUrl } from './shorten.js';
+import { saveInvite } from './links.js';
 import { loadAllFonts } from './fonts.js';
 import { $, copyText, own, randomId, store, toast } from './util.js';
 
@@ -626,7 +626,7 @@ async function createLink() {
     const inv = toInvite(state);
     const code = await encodeInvite(inv);
     const longUrl = `${location.origin}${location.pathname}#i=${code}`;
-    const { url, error: shortError } = await shortenUrl(longUrl);
+    const { url, error: shortError } = await saveInvite(code);
     lastUrl = url;
     lastMessage = `${state.smsText.trim() || defaultSmsText(state)} ${url}`;
     $('#result').hidden = false;
