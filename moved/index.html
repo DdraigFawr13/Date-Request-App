@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Moonpost has moved</title>
+  <!-- Link previews of old links still look like an invitation. -->
+  <meta property="og:title" content="You’ve received a Moonpost ✉︎☾">
+  <meta property="og:description" content="Someone has sent you a whimsical invitation. Tap to open it.">
+  <meta property="og:image" content="https://moonpost-invite.vercel.app/og.png">
+  <meta name="theme-color" content="#2a1b4a">
+  <script>
+    // Moonpost now lives at moonpost-invite.vercel.app. Invitation links carry
+    // everything after the #, so they open there exactly as before.
+    if (location.hash.length > 1) location.replace('https://moonpost-invite.vercel.app/' + location.hash);
+  </script>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #2a1b4a; color: #fbf5e8;
+      font: 18px/1.5 system-ui, sans-serif; text-align: center; padding: 16px; box-sizing: border-box; }
+    a { display: inline-block; margin-top: 12px; padding: 12px 22px; border-radius: 999px; background: #f2c46d; color: #2a1b4a;
+      font-weight: 700; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Moonpost has moved ☾</h1>
+    <p>Make your invitations at the new address.</p>
+    <a href="https://moonpost-invite.vercel.app/">Go to Moonpost →</a>
+  </main>
+</body>
+</html>

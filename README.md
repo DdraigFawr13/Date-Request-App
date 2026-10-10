@@ -14,7 +14,7 @@ their calendar, and texts their answer back to you.
    details that matter.
 2. **Seal it.** Moonpost packs the invitation into a compact code and keeps it
    under a random 8-letter code, so the link is short:
-   `moonpost.vercel.app/#aB3xYz9k`. No account needed. If that can't be
+   `moonpost-invite.vercel.app/#aB3xYz9k`. No account needed. If that can't be
    reached, the whole invitation travels in the link instead (longer, but it
    works just the same).
 3. **Send it.** Tap **📋 Copy message** and paste your note and the link into a
@@ -205,12 +205,14 @@ modules over `file://`.)
 The site and its short-link API run on **Vercel** (the free Hobby plan; nothing
 to keep awake). GitHub Actions runs the tests on every push and pull request.
 
-1. In Vercel, **Add New… → Project**, import this repository and name the
-   project `moonpost`. The settings come from `vercel.json`; just press Deploy.
+1. In Vercel, **Add New… → Project**, import this repository. The settings come from `vercel.json`; just press Deploy.
 2. In the project, **Storage → Create Database → Blob**, and connect it to the
    project (this adds the `BLOB_READ_WRITE_TOKEN` it needs). Redeploy once.
-3. Every push to `main` now deploys to `https://moonpost.vercel.app/` (or
-   whatever address Vercel gives the project).
+3. Every push to `main` now deploys to `https://moonpost-invite.vercel.app/`.
+
+The old GitHub Pages address (`ddraigfawr13.github.io/Date-Request-App/`) only
+forwards: invitation links sent from there open on the new address
+(`moved/index.html`).
 
 Links you send only work from the deployed site, since the invitation is
 opened on whatever address made it. Build invitations from the live URL, not
