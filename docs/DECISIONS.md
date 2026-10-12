@@ -13,3 +13,9 @@ Settled rules for this project. Not a changelog: an entry stays while the rule i
 - **Status:** Accepted (before 2026-10-12, recorded from README "Privacy notes")
 - **Decision:** Sent invitations and replies stay in the sender's browser. Short links are stored by code only, with no listing or browsing. No phone numbers are stored.
 - **Why:** privacy by default; the app has no accounts.
+
+## D-003 Vercel deploys from main only
+
+- **Status:** Accepted (2026-10-12, Morgan)
+- **Decision:** `vercel.json` sets `git.deploymentEnabled` so only `main` deploys; branch previews are off (WEB-04).
+- **Why:** matches the other projects; every merge still deploys, and PR pushes no longer build previews.

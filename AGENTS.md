@@ -33,4 +33,3 @@ Shared rules come from AI-Master-Instructions and load through CLAUDE.md (`.clau
 ## Overrides
 
 - **WEB-01**: plain JavaScript with no build toolchain; CI and Vercel use Node 22 and the lockfile. Pin exact versions if a build step is added.
-- **WEB-04**: Vercel still builds branch previews; turning them off is an open question for Morgan (`docs/HANDOFF.md`).
