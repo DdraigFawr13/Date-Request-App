@@ -11,6 +11,11 @@ export default defineConfig({
     baseURL: 'http://localhost:4173',
     ...devices['Pixel 7'],
     trace: 'retain-on-failure',
+    // Cloud sessions: the session hook points this at the container's Chromium when
+    // Playwright's pinned build is missing. CI leaves it unset.
+    ...(process.env.PLAYWRIGHT_CHROMIUM_PATH
+      ? { launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH } }
+      : {}),
   },
   webServer: {
     command: 'node e2e/serve.js',

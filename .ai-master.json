@@ -1,0 +1,15 @@
+{
+  "version": "v0.2.0",
+  "layers": [
+    "core",
+    "stacks/node-web",
+    "project-types/web-app"
+  ],
+  "exclude": [],
+  "overrides": [
+    {
+      "id": "WEB-01",
+      "reason": "Plain JavaScript with no build toolchain; CI and Vercel use Node 22 and the lockfile. Pin exact versions if a build step is added."
+    }
+  ]
+}

@@ -3,5 +3,11 @@
   "framework": null,
   "installCommand": "npm ci --omit=dev",
   "buildCommand": "sh scripts/build.sh",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "git": {
+    "deploymentEnabled": {
+      "**": false,
+      "main": true
+    }
+  }
 }
