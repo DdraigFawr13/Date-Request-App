@@ -12,9 +12,14 @@ Shared rules come from AI-Master-Instructions and load through CLAUDE.md (`.clau
 
 ## Local checks (run before pushing)
 
-- Every push: `npm test` (Node's test runner, `tests/`).
+- Every push: `npm run check` (`npm test`, Node's test runner on `tests/`, then the warn-only `test-traps.mjs` scan from the `test-design` skill).
 - UI, invitation or `e2e/` changes: also `npm run test:e2e` (Playwright, Chromium on a Pixel 7 viewport).
 - After a sync: `node .claude/master/sync.mjs --check`.
+
+Time budgets (approved by Morgan 2026-11-03; measured in a cloud session on Node 22):
+
+- `npm run check` under 10 s (measured 0.44-0.77 s over 3 runs of `npm test`; `test-traps.mjs` 0.04 s).
+- `npm run test:e2e` under 60 s (measured 31.3 s and 35.3 s over 2 runs, 22 tests).
 
 ## What CI runs
 

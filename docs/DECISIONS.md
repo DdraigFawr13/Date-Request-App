@@ -17,5 +17,5 @@ Settled rules for this project. Not a changelog: an entry stays while the rule i
 ## D-003 Vercel deploys from main only
 
 - **Status:** Accepted (2026-10-12, Morgan)
-- **Decision:** `vercel.json` sets `git.deploymentEnabled` so only `main` deploys; branch previews are off (WEB-04).
+- **Decision:** `vercel.json` sets `git.deploymentEnabled` so only `main` deploys; branch previews are off (CI-05; was WEB-04).
 - **Why:** matches the other projects; every merge still deploys, and PR pushes no longer build previews.

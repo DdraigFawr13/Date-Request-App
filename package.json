@@ -7,6 +7,7 @@
   "scripts": {
     "start": "npx --yes http-server -c-1 -p 8080 .",
     "test": "node --test",
+    "check": "node --test && node .claude/skills/test-design/scripts/test-traps.mjs",
     "test:e2e": "playwright test"
   },
   "devDependencies": {
