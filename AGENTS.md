@@ -16,7 +16,7 @@ Shared rules come from AI-Master-Instructions and load through CLAUDE.md (`.clau
 - UI, invitation or `e2e/` changes: also `npm run test:e2e` (Playwright, Chromium on a Pixel 7 viewport).
 - After a sync: `node .claude/master/sync.mjs --check`.
 
-Time budgets (proposed 2026-11-03, waiting for Morgan's approval; measured in a cloud session on Node 22):
+Time budgets (approved by Morgan 2026-11-03; measured in a cloud session on Node 22):
 
 - `npm run check` under 10 s (measured 0.44-0.77 s over 3 runs of `npm test`; `test-traps.mjs` 0.04 s).
 - `npm run test:e2e` under 60 s (measured 31.3 s and 35.3 s over 2 runs, 22 tests).

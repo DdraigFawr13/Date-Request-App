@@ -14,14 +14,15 @@ Maintenance. The app is live at https://moonpost-invite.vercel.app/.
 
 ## Next
 
-1. Morgan approves the test time budgets in AGENTS.md (proposed: `npm run check` < 10 s, `npm run test:e2e` < 60 s); then drop "proposed" and mark the PR ready so CI runs.
+1. Mark PR #28 ready so CI runs; merge once green and Morgan confirms.
 2. After merge, check the first `main` run and that Vercel deployed the merge commit (CI-05).
 
 ## Open questions
 
-- Test time budgets (see Next 1).
+- None.
 
 ## Decisions since the last plan update
 
+- 2026-11-03 Morgan approved test time budgets: `npm run check` < 10 s, `npm run test:e2e` < 60 s (AGENTS.md).
 - 2026-10-12 D-001: AI rules come from AI-Master-Instructions.
 - 2026-10-12 D-003: Vercel deploys from `main` only; branch previews are off.
